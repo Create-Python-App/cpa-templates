@@ -27,5 +27,42 @@
       "labels": ["FastAPI", "API", "Python", "uv", "Backend"]
     }
   ],
-  "extensions": []
+  "extensions": [
+    {
+      "name": "GitHub Setup",
+      "slug": "github-setup",
+      "description": "GitHub Actions CI, Dependabot, issue templates, and PR template",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/github-setup",
+      "type": ["fastapi-backend"],
+      "category": "tooling",
+      "labels": ["GitHub", "CI", "DevOps"]
+    },
+    {
+      "name": "Python Docker",
+      "slug": "python-docker",
+      "description": "Dockerfile and docker-compose for local and containerized runs",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-docker",
+      "type": ["fastapi-backend"],
+      "category": "tooling",
+      "labels": ["Docker", "DevOps", "Container"]
+    },
+    {
+      "name": "Python Postgres",
+      "slug": "python-postgres",
+      "description": "PostgreSQL docker-compose overlay and environment examples",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-postgres",
+      "type": ["fastapi-backend"],
+      "category": "tooling",
+      "labels": ["PostgreSQL", "Database", "Docker"]
+    },
+    {
+      "name": "Python Dev Container",
+      "slug": "python-devcontainer",
+      "description": "VS Code Dev Container with Python 3.12 and uv",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-devcontainer",
+      "type": ["fastapi-backend"],
+      "category": "tooling",
+      "labels": ["DevContainer", "VS Code", "uv"]
+    }
+  ]
 }

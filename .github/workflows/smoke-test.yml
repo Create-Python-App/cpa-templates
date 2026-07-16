@@ -1,0 +1,57 @@
+name: Smoke Test
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-test:
+    name: Smoke test scaffolded projects
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: fastapi-starter
+            addons: ""
+          - name: fastapi-starter + github-setup
+            addons: '--addons "file://${{ github.workspace }}?subdir=extensions/github-setup"'
+          - name: fastapi-starter + docker
+            addons: '--addons "file://${{ github.workspace }}?subdir=extensions/python-docker"'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install create-awesome-python-app
+        run: uv tool install create-awesome-python-app
+
+      - name: Scaffold project
+        env:
+          CI: "true"
+          CPA_SKIP_GIT: "1"
+        run: |
+          create-awesome-python-app smoke-test-project \
+            --template "file://${{ github.workspace }}?subdir=templates/fastapi-starter" \
+            --no-interactive --no-install \
+            ${{ matrix.addons }}
+          echo "Project scaffolded: ${{ matrix.name }}"
+
+      - name: Run basic checks
+        working-directory: smoke-test-project
+        run: |
+          uv sync
+          uv run ruff check .
+          uv run pytest -q
+          echo "Smoke test passed: ${{ matrix.name }}"
