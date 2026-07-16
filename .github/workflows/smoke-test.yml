@@ -17,16 +17,23 @@ jobs:
       matrix:
         include:
           - name: fastapi-starter
-            addons: ""
+            extension: ""
           - name: fastapi-starter + github-setup
-            addons: '--addons "file://${{ github.workspace }}?subdir=extensions/github-setup"'
+            extension: github-setup
           - name: fastapi-starter + docker
-            addons: '--addons "file://${{ github.workspace }}?subdir=extensions/python-docker"'
+            extension: python-docker
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout cpa-templates
         uses: actions/checkout@v4
         with:
+          persist-credentials: false
+
+      - name: Checkout create-python-app
+        uses: actions/checkout@v4
+        with:
+          repository: Create-Python-App/create-python-app
+          path: create-python-app
           persist-credentials: false
 
       - name: Install uv
@@ -34,18 +41,24 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Install create-awesome-python-app
-        run: uv tool install create-awesome-python-app
+      - name: Install CLI from source
+        working-directory: create-python-app
+        run: uv sync --group dev
 
       - name: Scaffold project
         env:
           CI: "true"
           CPA_SKIP_GIT: "1"
+          CPA_TEMPLATES_ROOT: ${{ github.workspace }}
         run: |
-          create-awesome-python-app smoke-test-project \
-            --template "file://${{ github.workspace }}?subdir=templates/fastapi-starter" \
+          ADDON_ARGS=()
+          if [ -n "${{ matrix.extension }}" ]; then
+            ADDON_ARGS+=(--addons "file://${CPA_TEMPLATES_ROOT}?subdir=extensions/${{ matrix.extension }}")
+          fi
+          uv run --directory create-python-app create-awesome-python-app smoke-test-project \
+            --template "file://${CPA_TEMPLATES_ROOT}?subdir=templates/fastapi-starter" \
             --no-interactive --no-install \
-            ${{ matrix.addons }}
+            "${ADDON_ARGS[@]}"
           echo "Project scaffolded: ${{ matrix.name }}"
 
       - name: Run basic checks
