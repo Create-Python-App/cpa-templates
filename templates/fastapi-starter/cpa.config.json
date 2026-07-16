@@ -1,0 +1,17 @@
+{
+  "name": "fastapi-starter",
+  "customOptions": [
+    {
+      "key": "apiPrefix",
+      "type": "string",
+      "message": "API URL prefix (e.g. /api/v1)",
+      "default": "/api/v1"
+    },
+    {
+      "key": "enableCors",
+      "type": "string",
+      "message": "Enable CORS middleware (true/false)",
+      "default": "true"
+    }
+  ]
+}
