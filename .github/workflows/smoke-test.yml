@@ -22,6 +22,8 @@ jobs:
             extension: github-setup
           - name: fastapi-starter + docker
             extension: python-docker
+          - name: fastapi-starter + postgres
+            extension: python-postgres
     runs-on: ubuntu-latest
     steps:
       - name: Checkout cpa-templates
@@ -41,9 +43,18 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Install CLI from source
-        working-directory: create-python-app
-        run: uv sync --group dev
+      - name: Resolve CLI (PyPI preferred, source fallback)
+        id: cli
+        run: |
+          if uv tool install "create-awesome-python-app>=0.1.0"; then
+            echo "mode=pypi" >> "$GITHUB_OUTPUT"
+            echo "bin=create-awesome-python-app" >> "$GITHUB_OUTPUT"
+          else
+            echo "PyPI install failed; using create-python-app source checkout"
+            uv sync --directory create-python-app --group dev
+            echo "mode=source" >> "$GITHUB_OUTPUT"
+            echo "bin=uv run --directory create-python-app create-awesome-python-app" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Scaffold project
         env:
@@ -55,11 +66,11 @@ jobs:
           if [ -n "${{ matrix.extension }}" ]; then
             ADDON_ARGS+=(--addons "file://${CPA_TEMPLATES_ROOT}?subdir=extensions/${{ matrix.extension }}")
           fi
-          uv run --directory create-python-app create-awesome-python-app smoke-test-project \
+          ${{ steps.cli.outputs.bin }} smoke-test-project \
             --template "file://${CPA_TEMPLATES_ROOT}?subdir=templates/fastapi-starter" \
             --no-interactive --no-install \
             "${ADDON_ARGS[@]}"
-          echo "Project scaffolded: ${{ matrix.name }}"
+          echo "Project scaffolded: ${{ matrix.name }} (cli=${{ steps.cli.outputs.mode }})"
 
       - name: Run basic checks
         working-directory: smoke-test-project
@@ -67,4 +78,6 @@ jobs:
           uv sync
           uv run ruff check .
           uv run pytest -q
+          if [ -f compose.yml ]; then test -f compose.yml; fi
+          if [ -f docker/postgres/compose.yml ]; then test -f docker/postgres/compose.yml; fi
           echo "Smoke test passed: ${{ matrix.name }}"

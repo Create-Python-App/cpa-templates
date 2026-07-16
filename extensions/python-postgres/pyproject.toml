@@ -1,0 +1,4 @@
+[project]
+dependencies = [
+  "psycopg[binary]>=3.2",
+]

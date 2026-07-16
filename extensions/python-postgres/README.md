@@ -2,6 +2,8 @@
 
 Postgres Compose service under `docker/postgres/` — same layout pattern as cna-templates DB extensions (`docker/<engine>/compose.yml`).
 
+This extension also merges a partial `pyproject.toml` that adds `psycopg[binary]`, and appends Postgres env vars via `.env.example.append`.
+
 ## Quick start (Postgres only)
 
 ```sh
@@ -17,7 +19,7 @@ From the project root (after both extensions are applied):
 docker compose -f compose.yml -f docker/postgres/compose.yml up --build
 ```
 
-Copy `docker/postgres/.env.example` values into your root `.env` (or extend it):
+Root `.env.example` gains Postgres keys from `.env.example.append`. Typical values:
 
 ```env
 DATABASE_URL=postgresql+psycopg://app:app@db:5432/app
@@ -28,8 +30,4 @@ POSTGRES_DB=app
 
 ## Local development without Docker
 
-```sh
-uv add "psycopg[binary]"
-```
-
-Wire SQLAlchemy or your ORM in the application layer when you add persistence.
+`psycopg` is added automatically via the merged `pyproject.toml`. Wire SQLAlchemy or your ORM when you add persistence.

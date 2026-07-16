@@ -83,7 +83,7 @@ extensions/python-postgres/
 └── README.md
 ```
 
-Until pyproject merge lands in `create-python-app-core`, prefer adding new files over shipping a full replacement `pyproject.toml`.
+`create-python-app-core` merges `pyproject.toml` across layers (union deps by package name; later wins on conflicts). Extensions may ship a partial `pyproject.toml` with only the keys they add. See create-python-app `docs/PYPROJECT_MERGE.md`.
 
 ## Registering in `templates.json`
 
@@ -119,8 +119,9 @@ Until pyproject merge lands in `create-python-app-core`, prefer adding new files
 
 | Suffix | Behavior |
 |---|---|
-| `.template` | Jinja2 processing, suffix stripped (when core supports it) |
+| `.template` | Jinja2 processing (`{{ var }}`), suffix stripped. Undefined vars fail (StrictUndefined). |
 | `.append` | Content appended to the matching file |
+| `.append.template` / `.template.append` | Render then append |
 | `[name]/` | Directory renamed from `customOptions` answer (planned) |
 
-Use static files when the core version you target does not yet process a suffix.
+Scaffold variables include `projectName`, `cpa.config.json` defaults, and CLI `--set key=value`.
