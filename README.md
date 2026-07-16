@@ -1,5 +1,60 @@
 # CPA Templates
 
-Template and extension bank for [create-awesome-python-app](https://github.com/Create-Python-App/create-python-app).
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Python Version](https://img.shields.io/badge/python-3.12+-green.svg)
 
-> Bootstrapping in progress.
+Official templates and extensions for [create-awesome-python-app](https://github.com/Create-Python-App/create-python-app).
+
+## Quick start
+
+Scaffold locally with the CLI:
+
+```sh
+# Interactive mode
+uvx create-awesome-python-app
+
+# With template and extensions
+uvx create-awesome-python-app my-api \
+  --template fastapi-starter \
+  --addons github-setup python-docker
+```
+
+For local development against this checkout:
+
+```sh
+CI=true uvx create-awesome-python-app my-api \
+  --template "file://$PWD?subdir=templates/fastapi-starter" \
+  --no-interactive
+```
+
+## Available templates
+
+| Template | Type | Use case |
+|----------|------|----------|
+| [fastapi-starter](./templates/fastapi-starter) | `fastapi-backend` | HTTP APIs with FastAPI, uv, ruff, pytest |
+
+## Documentation
+
+| File | Contents |
+|---|---|
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | System overview, type system, generation flow |
+| [docs/AUTHORING.md](./docs/AUTHORING.md) | Directory layout, `cpa.config.json`, extensions |
+| [docs/TESTING.md](./docs/TESTING.md) | Local testing and CI workflow |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | How to add templates and extensions |
+
+## Registry
+
+The canonical catalog is [`templates.json`](./templates.json), consumed by the CLI from:
+
+`https://raw.githubusercontent.com/Create-Python-App/cpa-templates/main/templates.json`
+
+## CI
+
+| Workflow | Trigger | Scope |
+|----------|---------|-------|
+| [Smoke Test](./.github/workflows/smoke-test.yml) | PRs to `main` | Scaffold + basic checks on generated projects |
+
+## Related repositories
+
+- [create-python-app](https://github.com/Create-Python-App/create-python-app) — CLI monorepo (scaffolding engine)
+- [Create-Python-App](https://github.com/Create-Python-App) — organization home
