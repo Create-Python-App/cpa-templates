@@ -2,13 +2,21 @@
 
 Run the API in a container with [uv](https://docs.astral.sh/uv/).
 
-## Build and run
+Compose files follow the same convention as [cna-templates](https://github.com/Create-Node-App/cna-templates): **`compose.yml`** (not `docker-compose.yml`).
+
+## Development
 
 ```sh
 docker compose up --build
 ```
 
 API: http://localhost:8000/docs
+
+## Production-style run
+
+```sh
+docker compose -f compose.yml -f compose.prod.yml up --build -d
+```
 
 ## Production notes
 

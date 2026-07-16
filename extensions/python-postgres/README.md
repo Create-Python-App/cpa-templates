@@ -1,26 +1,35 @@
-# PostgreSQL overlay
+# PostgreSQL
 
-Use with the `python-docker` extension (or any compose-based setup).
+Postgres Compose service under `docker/postgres/` — same layout pattern as cna-templates DB extensions (`docker/<engine>/compose.yml`).
 
-## Quick start
+## Quick start (Postgres only)
 
 ```sh
-# Start API + Postgres
-docker compose -f docker-compose.yml -f docker-compose.postgres.yml up --build
+docker compose -f docker/postgres/compose.yml up -d
 ```
 
-Set in `.env`:
+## With the `python-docker` extension
+
+From the project root (after both extensions are applied):
+
+```sh
+# API (compose.yml) + Postgres (docker/postgres/compose.yml)
+docker compose -f compose.yml -f docker/postgres/compose.yml up --build
+```
+
+Copy `docker/postgres/.env.example` values into your root `.env` (or extend it):
 
 ```env
 DATABASE_URL=postgresql+psycopg://app:app@db:5432/app
+POSTGRES_USER=app
+POSTGRES_PASSWORD=app
+POSTGRES_DB=app
 ```
 
 ## Local development without Docker
 
-Install a driver and point `DATABASE_URL` at your instance:
-
 ```sh
-uv add psycopg[binary]
+uv add "psycopg[binary]"
 ```
 
 Wire SQLAlchemy or your ORM in the application layer when you add persistence.

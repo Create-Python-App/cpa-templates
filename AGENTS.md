@@ -8,7 +8,7 @@ This repo is the template and extension bank for [create-awesome-python-app](htt
 - **`type`** — links templates to extensions. A template has one type string; extensions list one or more compatible types. Only matching extensions appear when a template is selected.
 - **`cpa.config.json`** — lives in the template directory, defines `customOptions` (interactive CLI prompts). Answers become scaffold variables for future templating support.
 - **`template/` subdirectory** — optional; when present, CPA copies from `template/` instead of the template root.
-- **Copy-only merge** — CPA currently merges layers with `copy_tree` (later layers overwrite). No `.append` or EJS processing yet.
+- **Copy-only merge** — Prefer new files; core is adding Jinja `.template`, `.append`, and `pyproject.toml` merge.
 
 ## How to test
 

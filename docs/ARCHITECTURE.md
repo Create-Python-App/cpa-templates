@@ -42,14 +42,14 @@ compatible = [ext.type].flat().includes(template.type)
 
 ### Current limitations (vs CNA)
 
-| Feature | CNA | CPA (today) |
-|---------|-----|-------------|
-| EJS `.template` files | Yes | Planned |
-| `.append` files | Yes | Planned |
-| `pyproject.toml` merge for extensions | `package/index.js` | Copy-only |
+| Feature | CNA | CPA |
+|---------|-----|-----|
+| EJS / Jinja `.template` files | EJS | Jinja2 in create-python-app-core (rolling out) |
+| `.append` files | Yes | Rolling out in core |
+| Manifest merge for extensions | `package/index.js` | `pyproject.toml` merge in core (rolling out) |
 | Bracket `[dir]/` renaming | Yes | Planned |
 
-Extensions should therefore ship complete files or overlays that can safely overwrite template files.
+Compose file naming matches CNA: prefer `compose.yml`, not `docker-compose.yml`.
 
 ## Repository layout
 

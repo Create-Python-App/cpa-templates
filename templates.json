@@ -40,7 +40,7 @@
     {
       "name": "Python Docker",
       "slug": "python-docker",
-      "description": "Dockerfile and docker-compose for local and containerized runs",
+      "description": "Dockerfile, compose.yml, and compose.prod.yml for local and containerized runs",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-docker",
       "type": ["fastapi-backend"],
       "category": "tooling",
@@ -49,7 +49,7 @@
     {
       "name": "Python Postgres",
       "slug": "python-postgres",
-      "description": "PostgreSQL docker-compose overlay and environment examples",
+      "description": "PostgreSQL service under docker/postgres/compose.yml plus env examples",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-postgres",
       "type": ["fastapi-backend"],
       "category": "tooling",
