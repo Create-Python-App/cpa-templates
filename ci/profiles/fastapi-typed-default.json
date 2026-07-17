@@ -1,6 +1,0 @@
-{
-  "id": "fastapi-typed-default",
-  "description": "Typed FastAPI API: GitHub CI + Docker + Postgres",
-  "templateDir": "fastapi-typed-starter",
-  "addons": ["github-setup", "python-docker", "python-postgres"]
-}

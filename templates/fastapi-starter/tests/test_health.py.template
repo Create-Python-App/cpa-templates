@@ -37,5 +37,8 @@ def test_ping_returns_ok(client: TestClient) -> None:
 
 
 def test_cors_middleware_matches_scaffold_option() -> None:
-    middleware_names = [middleware.cls.__name__ for middleware in app.user_middleware]
+    middleware_names = [
+        getattr(middleware.cls, "__name__", type(middleware.cls).__name__)
+        for middleware in app.user_middleware
+    ]
     assert ("CORSMiddleware" in middleware_names) is settings.enable_cors

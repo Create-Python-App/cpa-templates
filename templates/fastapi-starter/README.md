@@ -1,6 +1,6 @@
 # FastAPI Starter
 
-Production-oriented FastAPI API starter with [uv](https://docs.astral.sh/uv/), [Ruff](https://docs.astral.sh/ruff/), and [pytest](https://docs.pytest.org/).
+Production-oriented FastAPI API starter with [uv](https://docs.astral.sh/uv/), [Ruff](https://docs.astral.sh/ruff/), [pytest](https://docs.pytest.org/), [mypy](https://mypy.readthedocs.io/), and [pyright](https://github.com/microsoft/pyright).
 
 ## Quick start
 
@@ -18,6 +18,8 @@ Open http://127.0.0.1:8000/docs for interactive API documentation.
 | `uv run uvicorn app.main:app --reload` | Start dev server |
 | `uv run ruff check .` | Lint |
 | `uv run ruff format .` | Format |
+| `uv run mypy app` | Type-check with mypy |
+| `uv run pyright` | Type-check with pyright |
 | `uv run pytest` | Run tests |
 
 ## Project layout

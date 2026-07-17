@@ -31,8 +31,7 @@ CI=true uvx create-awesome-python-app my-api \
 
 | Template | Type | Use case |
 |----------|------|----------|
-| [fastapi-starter](./templates/fastapi-starter) | `fastapi-backend` | HTTP APIs with FastAPI, uv, ruff, pytest |
-| [fastapi-typed-starter](./templates/fastapi-typed-starter) | `fastapi-backend` | FastAPI APIs with strict typing, mypy, and pyright |
+| [fastapi-starter](./templates/fastapi-starter) | `fastapi-backend` | HTTP APIs with FastAPI, uv, ruff, pytest, mypy, and pyright |
 
 ## Documentation
 

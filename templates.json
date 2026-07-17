@@ -60,7 +60,7 @@
     {
       "name": "FastAPI Starter",
       "slug": "fastapi-starter",
-      "description": "Production-ready FastAPI API with uv, Ruff, pytest, and pydantic-settings",
+      "description": "Production-ready FastAPI API with uv, Ruff, pytest, mypy, pyright, and pydantic-settings",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/fastapi-starter",
       "type": "fastapi-backend",
       "category": "backend-applications",
@@ -69,20 +69,7 @@
         "API",
         "Python",
         "uv",
-        "Backend"
-      ]
-    },
-    {
-      "name": "FastAPI Typed Starter",
-      "slug": "fastapi-typed-starter",
-      "description": "FastAPI starter with strict typing support, mypy, pyright, and type-focused developer tooling",
-      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/fastapi-typed-starter",
-      "type": "fastapi-backend",
-      "category": "backend-applications",
-      "labels": [
-        "FastAPI",
-        "API",
-        "Python",
+        "Backend",
         "Type Hints",
         "mypy",
         "pyright"
