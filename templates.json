@@ -93,7 +93,7 @@
     {
       "name": "GitHub Setup",
       "slug": "github-setup",
-      "description": "GitHub Actions CI, Dependabot, issue templates, and PR template",
+      "description": "GitHub Actions CI, MegaLinter, Danger PR review, todo-to-issue, Dependabot, and issue/PR templates",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/github-setup",
       "type": [
         "fastapi-backend"
@@ -102,7 +102,9 @@
       "labels": [
         "GitHub",
         "CI",
-        "DevOps"
+        "DevOps",
+        "MegaLinter",
+        "Danger"
       ]
     },
     {

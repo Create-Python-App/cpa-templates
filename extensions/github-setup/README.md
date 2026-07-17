@@ -1,36 +1,38 @@
 # GitHub Setup
 
-Adds GitHub Actions CI, Dependabot, issue templates, and a pull request template to a generated Python project.
+Adds a complete GitHub automation setup to a generated Python/uv project: CI,
+code quality, dependency updates, PR-review automation, and structured
+issue/PR templates.
+
+> **Authoring note:** everything that gets copied into the generated project
+> lives under [`template/`](./template). This file (the extension's own README)
+> stays at the extension root and is **not** copied — CPA copies from
+> `template/` when it exists (see [`docs/AUTHORING.md`](../../docs/AUTHORING.md)),
+> so it never overwrites the generated project's `README.md`.
 
 ## When to use
 
-- You plan to host the project on GitHub and want CI from day one.
-- You want Dependabot to keep GitHub Actions up to date.
-- You want structured bug reports, feature requests, and PR descriptions without writing YAML from scratch.
+- You host the project on GitHub and want CI, linting, and PR automation from day one.
+- You want Dependabot to keep both Python dependencies and GitHub Actions up to date.
+- You want structured bug reports, feature requests, and PR descriptions without writing YAML by hand.
 
-Skip this extension if you use another CI provider (GitLab CI, CircleCI, etc.) — copy the workflow patterns manually instead.
+Skip this extension if you use another CI provider (GitLab CI, CircleCI, etc.).
 
 ## What it adds
 
 | Path | Purpose |
 |------|---------|
-| `.github/workflows/ci.yml` | Lint + test on push/PR to `main` |
-| `.github/dependabot.yml` | Weekly GitHub Actions updates |
-| `.github/ISSUE_TEMPLATE/` | Bug report and feature request forms |
-| `.github/PULL_REQUEST_TEMPLATE.md` | Default PR description |
-
-## CI workflow
-
-The `ci.yml` workflow runs on push and pull requests targeting `main`:
-
-1. Checkout
-2. Install [uv](https://docs.astral.sh/uv/) via `astral-sh/setup-uv@v5` (with caching)
-3. `uv python install 3.12`
-4. `uv sync`
-5. `uv run ruff check .`
-6. `uv run pytest`
-
-Customize steps in `.github/workflows/ci.yml` as your project grows (type checking, coverage, Docker builds, etc.).
+| `.github/workflows/ci.yml` | uv → ruff → mypy/pyright (when configured) → pytest, on push/PR to `main` |
+| `.github/workflows/mega-linter.yml` | MegaLinter (Python flavor) as a secondary quality pass |
+| `.github/workflows/pr-review.yml` | Danger JS validates PR title, description, sections, and diff size |
+| `.github/workflows/todo.yml` | Converts `# TODO:` comments into GitHub issues |
+| `.mega-linter.yml` | Python-focused MegaLinter config (`APPLY_FIXES: none`) |
+| `.github/dependabot.yml` | Weekly `pip` + `github-actions` updates, grouped |
+| `.github/ISSUE_TEMPLATE/` | Bug report, feature request, and documentation forms + config |
+| `.github/PULL_REQUEST_TEMPLATE.md` | PR template matching the Danger checks |
+| `.github/CODE_OF_CONDUCT.md` | Contributor Covenant v2.1 |
+| `tools/danger/` | Dangerfile, `package.json`, `tsconfig.json`, `.gitignore` |
+| `docs/GITHUB_SETUP_GUIDE.md` | Full guide to the shipped files |
 
 ## Usage
 
@@ -42,18 +44,19 @@ uvx create-awesome-python-app my-api \
   --addons github-setup
 ```
 
-Or add manually by copying this extension directory into an existing project.
+Or add manually by copying the contents of this extension's `template/` directory
+into an existing project.
 
 ## Verification
 
-After pushing to GitHub:
+After scaffolding and pushing to GitHub:
 
-1. Open the **Actions** tab — the CI workflow should appear.
-2. Push a commit or open a PR against `main` — the **CI** workflow should run and pass.
-3. Open **Issues → New issue** — bug report and feature request templates should be available.
-4. Open a PR — the PR template body should pre-fill.
+1. Open the **Actions** tab — the CI, MegaLinter, and PR validation workflows appear.
+2. Open a PR against `main` — CI runs, and Danger comments on the PR description.
+3. Open **Issues → New issue** — bug, feature, and documentation templates are available.
+4. Open a PR — the PR template body pre-fills.
 
-Locally (before pushing):
+Locally, before pushing (same checks CI runs):
 
 ```sh
 uv sync
@@ -61,10 +64,5 @@ uv run ruff check .
 uv run pytest
 ```
 
-These are the same commands CI runs.
-
-## Customization
-
-- **Python version:** Change `uv python install 3.12` to match your `pyproject.toml` `requires-python`.
-- **Branches:** Edit `on.push.branches` and `on.pull_request.branches` if your default branch is not `main`.
-- **Extra jobs:** Add matrix builds, deploy steps, or `uv run mypy` in separate jobs as needed.
+See [`template/docs/GITHUB_SETUP_GUIDE.md`](./template/docs/GITHUB_SETUP_GUIDE.md)
+for full configuration and customization details.

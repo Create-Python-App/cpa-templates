@@ -1,0 +1,26 @@
+# MegaLinter configuration — https://megalinter.io
+# The workflow (.github/workflows/mega-linter.yml) runs the Python flavor image:
+# oxsecurity/megalinter/flavors/python@v8
+---
+APPLY_FIXES: none
+DEFAULT_BRANCH: main
+VALIDATE_ALL_CODEBASE: false
+SHOW_ELAPSED_TIME: true
+FLAVOR_SUGGESTIONS: false
+
+# Keep linting lean and Python-focused:
+# - Ruff is the source of truth for Python style, imports, and common lint rules.
+# - Type checking (mypy / pyright) is handled by the CI workflow (ci.yml).
+# Disable overlapping or noisy linters so MegaLinter complements rather than
+# duplicates the primary quality gate.
+DISABLE:
+  - SPELL       # cspell/misspell is too noisy for scaffolded projects
+  - COPYPASTE   # jscpd reports false positives across template files
+
+DISABLE_LINTERS:
+  - PYTHON_BLACK    # Ruff formatter/linter is the source of truth
+  - PYTHON_ISORT    # covered by Ruff (I rules)
+  - PYTHON_FLAKE8   # covered by Ruff
+  - PYTHON_PYLINT   # avoid duplicate/opinionated noise
+  - PYTHON_MYPY     # typing handled by ci.yml when configured
+  - PYTHON_PYRIGHT  # typing handled by ci.yml when configured

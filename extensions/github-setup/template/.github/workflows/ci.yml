@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Lint (ruff)
+        run: uv run ruff check .
+
+      - name: Type check (mypy)
+        run: |
+          if uv run python -c "import tomllib,pathlib; d=tomllib.loads(pathlib.Path('pyproject.toml').read_text()); raise SystemExit(0 if (d.get('tool') or {}).get('mypy') else 1)"; then
+            uv run mypy .
+          else
+            echo "mypy not configured in pyproject.toml — skip"
+          fi
+
+      - name: Type check (pyright)
+        run: |
+          if uv run python -c "import tomllib,pathlib; d=tomllib.loads(pathlib.Path('pyproject.toml').read_text()); raise SystemExit(0 if (d.get('tool') or {}).get('pyright') else 1)"; then
+            uv run pyright
+          else
+            echo "pyright not configured in pyproject.toml — skip"
+          fi
+
+      - name: Test (pytest)
+        run: uv run pytest

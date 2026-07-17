@@ -1,0 +1,7 @@
+# Node dependencies (installed on-demand by the pr-review workflow)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*

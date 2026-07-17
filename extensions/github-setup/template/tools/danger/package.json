@@ -1,0 +1,9 @@
+{
+  "name": "danger-local",
+  "private": true,
+  "devDependencies": {
+    "danger": "^12.3.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.0"
+  }
+}

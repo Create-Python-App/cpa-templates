@@ -1,0 +1,55 @@
+# MegaLinter GitHub Action configuration file
+# More info at https://megalinter.io
+---
+name: MegaLinter
+
+# Trigger MegaLinter on pull requests to main. Uncomment the push block below
+# if you also want it to run on pushes to main (costs more GH Actions minutes).
+on:
+  # push:
+  #   branches:
+  #     - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  megalinter:
+    name: MegaLinter
+    runs-on: ubuntu-latest
+
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          # fetch-depth 0 lets MegaLinter lint only the diff with main
+          fetch-depth: 0
+
+      - name: MegaLinter
+        # Python flavor image for faster runs on Python projects.
+        # More info at https://megalinter.io/latest/flavors/
+        uses: oxsecurity/megalinter/flavors/python@v8
+        id: ml
+        env:
+          # Lint the whole codebase on main, only the diff on PRs.
+          VALIDATE_ALL_CODEBASE: >-
+            ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Archive MegaLinter reports
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: MegaLinter reports
+          path: |
+            megalinter-reports
+            mega-linter.log

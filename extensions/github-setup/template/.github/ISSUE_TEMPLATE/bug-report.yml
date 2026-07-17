@@ -1,0 +1,63 @@
+name: "🐛 Bug Report"
+description: Report a defect or regression
+title: "[Bug]: "
+labels: [bug]
+assignees: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Steps
+      description: |
+        Provide a self-contained, concise snippet or steps to reproduce the issue.
+        For complex issues, link to a minimal repository that reproduces the bug.
+      placeholder: |
+        1. Run `uv run ...`
+        2. Send request to `...`
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Current Behavior
+      description: |
+        What actually happened? Include full errors, stack traces, and relevant logs.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version used
+      description: Version of the project (or relevant dependency) you are running.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        OS name and version, Python version (`python --version`), uv version (`uv --version`), etc.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Anything else that might be relevant for troubleshooting.
+    validations:
+      required: false
