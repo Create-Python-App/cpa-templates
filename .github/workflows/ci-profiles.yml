@@ -1,0 +1,86 @@
+name: CI Profiles (L3)
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Generate profile matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+      count: ${{ steps.set.outputs.count }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate L3 matrix
+        id: set
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="origin/${BASE_REF}"
+            git fetch origin "${BASE_REF}" --depth=1 || true
+            python scripts/ci/generate-matrix.py --layer profiles --changed-only --base-ref "$BASE"
+          else
+            python scripts/ci/generate-matrix.py --layer profiles
+          fi
+
+  profiles:
+    name: ${{ matrix.cell.id }}
+    needs: generate
+    if: needs.generate.outputs.count != '0'
+    strategy:
+      fail-fast: false
+      matrix:
+        cell: ${{ fromJson(needs.generate.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Scaffold check (curated profile via uvx/PyPI)
+        env:
+          CI: "true"
+          CPA_SKIP_GIT: "1"
+          PROFILE_SETS: ${{ toJson(matrix.cell.sets) }}
+        run: |
+          EXTRA=()
+          while IFS= read -r line; do
+            [ -n "$line" ] && EXTRA+=(--set "$line")
+          done < <(python -c 'import json,os; s=json.loads(os.environ.get("PROFILE_SETS") or "{}");
+[print(f"{k}={v}") for k,v in s.items()]')
+
+          ADDON_ARGS=()
+          for url in ${{ join(matrix.cell.addons, ' ') }}; do
+            ADDON_ARGS+=(--addon-url "$url")
+          done
+          python scripts/ci/run-scaffold-check.py \
+            --template-url "${{ matrix.cell.templateUrl }}" \
+            --workdir "${{ runner.temp }}/cpa-l3" \
+            "${ADDON_ARGS[@]}" \
+            "${EXTRA[@]}"

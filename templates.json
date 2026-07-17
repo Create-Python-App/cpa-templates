@@ -5,15 +5,55 @@
       "slug": "backend-applications",
       "name": "Backend Applications",
       "description": "API and service starters for FastAPI and similar Python backends.",
-      "details": "Use when the deliverable is an HTTP API or background worker — FastAPI for async APIs with OpenAPI docs.",
-      "labels": ["Backend", "API", "Python", "FastAPI"]
+      "details": "Use when the deliverable is an HTTP API or background worker \u2014 FastAPI for async APIs with OpenAPI docs.",
+      "labels": [
+        "Backend",
+        "API",
+        "Python",
+        "FastAPI"
+      ]
     },
     {
-      "slug": "tooling",
-      "name": "Tooling",
-      "description": "Extensions that add CI, containers, databases, and developer ergonomics.",
-      "details": "Layer these on top of a compatible template after choosing your base stack.",
-      "labels": ["DevOps", "CI", "Docker", "Tooling"]
+      "slug": "ci",
+      "name": "CI",
+      "description": "Continuous integration and repository automation.",
+      "details": "GitHub Actions, Dependabot, and related repository workflows.",
+      "labels": [
+        "CI",
+        "GitHub",
+        "DevOps"
+      ]
+    },
+    {
+      "slug": "containers",
+      "name": "Containers",
+      "description": "Docker and Compose packaging for the app.",
+      "details": "Add when you want container images and compose stacks for the API.",
+      "labels": [
+        "Docker",
+        "Compose",
+        "DevOps"
+      ]
+    },
+    {
+      "slug": "database",
+      "name": "Database",
+      "description": "Database services and connection scaffolding.",
+      "details": "Pair with the app when you need Postgres (or similar) locally/in compose.",
+      "labels": [
+        "PostgreSQL",
+        "Database"
+      ]
+    },
+    {
+      "slug": "editor",
+      "name": "Editor",
+      "description": "Editor and remote development ergonomics.",
+      "details": "Dev Containers and related IDE integrations.",
+      "labels": [
+        "DevContainer",
+        "VS Code"
+      ]
     }
   ],
   "templates": [
@@ -24,7 +64,13 @@
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/fastapi-starter",
       "type": "fastapi-backend",
       "category": "backend-applications",
-      "labels": ["FastAPI", "API", "Python", "uv", "Backend"]
+      "labels": [
+        "FastAPI",
+        "API",
+        "Python",
+        "uv",
+        "Backend"
+      ]
     },
     {
       "name": "FastAPI Typed Starter",
@@ -33,7 +79,14 @@
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/fastapi-typed-starter",
       "type": "fastapi-backend",
       "category": "backend-applications",
-      "labels": ["FastAPI", "API", "Python", "Type Hints", "mypy", "pyright"]
+      "labels": [
+        "FastAPI",
+        "API",
+        "Python",
+        "Type Hints",
+        "mypy",
+        "pyright"
+      ]
     }
   ],
   "extensions": [
@@ -42,36 +95,60 @@
       "slug": "github-setup",
       "description": "GitHub Actions CI, Dependabot, issue templates, and PR template",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/github-setup",
-      "type": ["fastapi-backend"],
-      "category": "tooling",
-      "labels": ["GitHub", "CI", "DevOps"]
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "ci",
+      "labels": [
+        "GitHub",
+        "CI",
+        "DevOps"
+      ]
     },
     {
       "name": "Python Docker",
       "slug": "python-docker",
       "description": "Dockerfile, compose.yml, and compose.prod.yml for local and containerized runs",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-docker",
-      "type": ["fastapi-backend"],
-      "category": "tooling",
-      "labels": ["Docker", "DevOps", "Container"]
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "containers",
+      "labels": [
+        "Docker",
+        "DevOps",
+        "Container"
+      ]
     },
     {
       "name": "Python Postgres",
       "slug": "python-postgres",
       "description": "PostgreSQL service under docker/postgres/compose.yml plus env examples",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-postgres",
-      "type": ["fastapi-backend"],
-      "category": "tooling",
-      "labels": ["PostgreSQL", "Database", "Docker"]
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "database",
+      "labels": [
+        "PostgreSQL",
+        "Database",
+        "Docker"
+      ]
     },
     {
       "name": "Python Dev Container",
       "slug": "python-devcontainer",
       "description": "VS Code Dev Container with Python 3.12 and uv",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-devcontainer",
-      "type": ["fastapi-backend"],
-      "category": "tooling",
-      "labels": ["DevContainer", "VS Code", "uv"]
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "editor",
+      "labels": [
+        "DevContainer",
+        "VS Code",
+        "uv"
+      ]
     }
   ]
 }

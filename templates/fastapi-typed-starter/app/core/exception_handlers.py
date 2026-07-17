@@ -55,5 +55,7 @@ async def unexpected_error_handler(request: Request, exc: Exception) -> JSONResp
 
 def register_exception_handlers(app: FastAPI) -> None:
     """Register application exception handlers."""
-    app.add_exception_handler(RequestValidationError, request_validation_handler)
+    # Starlette's add_exception_handler types handlers as Exception-wide; FastAPI
+    # still dispatches the concrete exception type at runtime.
+    app.add_exception_handler(RequestValidationError, request_validation_handler)  # type: ignore[arg-type]
     app.add_exception_handler(Exception, unexpected_error_handler)

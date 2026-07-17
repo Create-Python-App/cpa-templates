@@ -1,0 +1,65 @@
+name: CI Templates (L1)
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Generate template matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+      count: ${{ steps.set.outputs.count }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate L1 matrix
+        id: set
+        run: python scripts/ci/generate-matrix.py --layer templates
+
+  templates:
+    name: ${{ matrix.cell.id }}
+    needs: generate
+    if: needs.generate.outputs.count != '0'
+    strategy:
+      fail-fast: false
+      matrix:
+        cell: ${{ fromJson(needs.generate.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Scaffold check (template alone via uvx/PyPI)
+        env:
+          CI: "true"
+          CPA_SKIP_GIT: "1"
+        run: |
+          python scripts/ci/run-scaffold-check.py \
+            --template-url "${{ matrix.cell.templateUrl }}" \
+            --workdir "${{ runner.temp }}/cpa-l1"

@@ -53,7 +53,12 @@ The canonical catalog is [`templates.json`](./templates.json), consumed by the C
 
 | Workflow | Trigger | Scope |
 |----------|---------|-------|
-| [Smoke Test](./.github/workflows/smoke-test.yml) | PRs to `main` | Scaffold + basic checks on generated projects |
+| [CI Integrity (L0)](./.github/workflows/ci-integrity.yml) | PR + `main` + weekly | Registry paths + curated profiles |
+| [CI Templates (L1)](./.github/workflows/ci-templates.yml) | PR + `main` + weekly | Every template alone via `uvx` (PyPI) |
+| [CI Extensions (L2)](./.github/workflows/ci-extensions.yml) | PR (changed) + weekly | One extension × canonical template |
+| [CI Profiles (L3)](./.github/workflows/ci-profiles.yml) | PR (changed) + weekly | Curated stacks in `ci/profiles/` |
+
+Scaffolding always uses `uvx create-awesome-python-app@latest` from PyPI (never a source checkout of the CLI). Details: [docs/TESTING.md](./docs/TESTING.md), [#46](https://github.com/Create-Python-App/cpa-templates/issues/46).
 
 ## Related repositories
 

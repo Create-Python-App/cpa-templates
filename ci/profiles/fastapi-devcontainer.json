@@ -1,0 +1,6 @@
+{
+  "id": "fastapi-devcontainer",
+  "description": "FastAPI with GitHub CI and VS Code Dev Container",
+  "templateDir": "fastapi-starter",
+  "addons": ["github-setup", "python-devcontainer"]
+}

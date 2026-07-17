@@ -1,0 +1,35 @@
+name: CI Integrity (L0)
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    name: Registry + profiles
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate templates.json (on-disk paths + categories)
+        run: python scripts/ci/validate-registry.py
+
+      - name: Validate curated CI profiles
+        run: python scripts/ci/generate-matrix.py --layer validate-profiles

@@ -94,7 +94,7 @@ A major dependency update is high-risk. For each major:
 
 1. Read the changelog or migration guide.
 2. Check `requires-python` and transitive requirements.
-3. Test with the full matrix of the affected template.
+3. Test with L2 isolation for the affected extension(s) and the relevant curated L3 profile(s).
 4. If breaking changes affect generated code, update template `.template` files or extension files.
 
 ---

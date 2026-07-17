@@ -20,25 +20,19 @@ Use `file://` URLs to test unpublished templates or extensions without pushing t
 ```sh
 REPO=/absolute/path/to/cpa-templates
 
-# Local template only
-CI=true uv run create-awesome-python-app my-app \
+# Local template only (always use published CLI via uvx)
+CI=true uvx create-awesome-python-app my-app \
   --template "file://$REPO?subdir=templates/fastapi-starter" \
   --no-interactive
 
 # Local template + local extensions
-CI=true uv run create-awesome-python-app my-app \
+CI=true uvx create-awesome-python-app my-app \
   --template "file://$REPO?subdir=templates/fastapi-starter" \
   --addons \
     "file://$REPO?subdir=extensions/github-setup" \
     "file://$REPO?subdir=extensions/python-docker" \
   --no-interactive
 cd my-app && uv sync && uv run pytest
-
-# Remote template slug + local extension (extension-only development)
-CI=true uvx create-awesome-python-app my-app \
-  --template fastapi-starter \
-  --addons "file://$REPO?subdir=extensions/my-new-extension" \
-  --no-interactive
 ```
 
 ### Environment variables
@@ -49,52 +43,38 @@ CI=true uvx create-awesome-python-app my-app \
 | `CPA_SKIP_GIT=1` | Skip `git init` after scaffold |
 | `CPA_CACHE_DIR` | Override template download cache |
 
-### Debug output
+## Layered CI (L0–L3)
 
-Add `--verbose` to scaffold commands when supported by the CLI.
+CI must always scaffold with **`uvx create-awesome-python-app@latest` from PyPI**. It never checks out `create-python-app` and never falls back to source.
 
-## Smoke test CI
+| Layer | Workflow | What green means |
+|-------|----------|------------------|
+| **L0** | `ci-integrity.yml` | Registry paths exist; categories valid; curated profiles valid |
+| **L1** | `ci-templates.yml` | Every template scaffolds alone + `uv sync` + ruff (+ mypy/pyright when configured) + pytest |
+| **L2** | `ci-extensions.yml` | Each extension alone on the canonical template (`fastapi-starter`) |
+| **L3** | `ci-profiles.yml` | Curated one-per-category stacks in `ci/profiles/*.json` |
 
-`.github/workflows/smoke-test.yml` runs on pull requests to `main`. It scaffolds projects with `file://` URLs from the PR checkout and runs `uv sync`, lint, and tests.
+**Not run:** stacking every compatible extension at once (that is not a user journey and hides attribution).
 
-## Combination matrix CI
-
-`.github/workflows/test-combinations.yml` exercises template × extension combinations from `templates.json`:
-
-- **Push to `main`**: one randomly selected extension per category per template (respecting `incompatibleWith`).
-- **Weekly schedule / manual dispatch**: all mutually compatible extensions applied together per template.
-
-Each job scaffolds with `file://` URLs, then runs `uv sync`, `uv run ruff check .`, and `uv run pytest -q`.
-
-To reproduce locally:
+### Local reproduction of CI
 
 ```sh
 REPO="$PWD"
-CI=true CPA_SKIP_GIT=1 uvx create-awesome-python-app combo-test-app \
-  --template "file://$REPO?subdir=templates/fastapi-starter" \
-  --addons \
-    "file://$REPO?subdir=extensions/github-setup" \
-    "file://$REPO?subdir=extensions/python-docker" \
-  --no-interactive --no-install
-cd combo-test-app && uv sync && uv run ruff check . && uv run pytest -q
-```
+python scripts/ci/validate-registry.py
+python scripts/ci/generate-matrix.py --layer validate-profiles
 
-## Smoke test local reproduction
-
-To reproduce the PR smoke test locally:
-
-```sh
-REPO="$PWD"
-CI=true CPA_SKIP_GIT=1 uvx create-awesome-python-app smoke-test-app \
-  --template "file://$REPO?subdir=templates/fastapi-starter" \
-  --no-interactive --no-install
-cd smoke-test-app && uv sync && uv run ruff check . && uv run pytest
+# Same runner the Actions use
+python scripts/ci/run-scaffold-check.py \
+  --template-url "file://$REPO?subdir=templates/fastapi-starter" \
+  --workdir /tmp/cpa-check
 ```
 
 ## Checklist before opening a PR
 
-- [ ] Scaffold succeeds with `file://` URL
+- [ ] Scaffold succeeds with `file://` URL via `uvx` (PyPI CLI)
 - [ ] `uv sync` completes without errors
 - [ ] `uv run ruff check .` passes (when ruff is configured)
+- [ ] Typed templates: `uv run mypy .` / `uv run pyright` pass
 - [ ] `uv run pytest` passes (when tests exist)
 - [ ] Entry added or updated in `templates.json`
+- [ ] New extension has a distinct `category` (ci / containers / database / editor / …)

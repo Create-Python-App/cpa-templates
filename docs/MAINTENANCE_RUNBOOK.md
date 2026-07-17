@@ -13,7 +13,7 @@ The project is two repositories that must stay in sync:
 - `create-python-app` — the CLI scaffolding tool, published to PyPI as `create-awesome-python-app`.
 - `cpa-templates` — the template and extension bank consumed by the CLI.
 
-Both have automated CI, automated releases, and a growing surface area of dependencies. A change in one repo (a new FastAPI version, a conflicting extra in an extension, a Python requirement bump) can break the full matrix in the other. This runbook makes that work repeatable and traceable.
+Both have automated CI, automated releases, and a growing surface area of dependencies. A change in one repo (a new FastAPI version, a conflicting extra in an extension, a Python requirement bump) can break layered CI in the other. This runbook makes that work repeatable and traceable.
 
 ---
 
@@ -65,9 +65,7 @@ Use this to decide which procedure to follow:
 
 ```text
 CI is red
-├── Failure is in .github/workflows/test-combinations.yml
-│   └── Read MAINTENANCE_CI.md
-├── Failure is in .github/workflows/smoke-test.yml
+├── Failure is in .github/workflows/ci-*.yml (L0–L3)
 │   └── Read MAINTENANCE_CI.md
 ├── Failure is dependency resolution (uv sync, version conflict, Python requirement)
 │   └── Read MAINTENANCE_DEPENDENCIES.md
@@ -104,7 +102,7 @@ Every task should follow these phases:
 
 - Decide the fix strategy.
 - Identify affected templates/extensions and the CI matrix.
-- Estimate risk. If the change is high-risk, run the full matrix manually before merging.
+- Estimate risk. If the change is high-risk, run L2 for touched extensions and the relevant L3 profile(s) before merging.
 
 ### 5.3 Implement
 
@@ -142,7 +140,7 @@ Every task should follow these phases:
 | Repo | What it is | Critical files | Critical CI |
 |---|---|---|---|
 | `create-python-app` | CLI + monorepo | `packages/*/pyproject.toml`, `.github/workflows/publish.yml` | `test.yml`, `lint.yml`, `type-check.yml`, `publish.yml`, `osv-scanner.yml` |
-| `cpa-templates` | Template/extension bank | `templates.json`, `templates.schema.json`, `templates/`, `extensions/` | `smoke-test.yml`, `test-combinations.yml` |
+| `cpa-templates` | Template/extension bank | `templates.json`, `templates.schema.json`, `templates/`, `extensions/`, `ci/profiles/` | `ci-integrity.yml`, `ci-templates.yml`, `ci-extensions.yml`, `ci-profiles.yml` |
 
 ---
 
@@ -167,10 +165,10 @@ uv run pytest -q
 gh run view <run-id> --repo Create-Python-App/<repo> --log-failed
 
 # --- Run cpa-templates CI manually ---
-gh workflow run "Smoke Test" \
-  --repo Create-Python-App/cpa-templates --ref main
-gh workflow run "Test Template and Extension Combinations" \
-  --repo Create-Python-App/cpa-templates --ref main
+gh workflow run "CI Integrity (L0)" --repo Create-Python-App/cpa-templates --ref main
+gh workflow run "CI Templates (L1)" --repo Create-Python-App/cpa-templates --ref main
+gh workflow run "CI Extensions (L2)" --repo Create-Python-App/cpa-templates --ref main
+gh workflow run "CI Profiles (L3)" --repo Create-Python-App/cpa-templates --ref main
 gh run watch <run-id> --repo Create-Python-App/cpa-templates --exit-status
 
 # --- Inspect package versions on PyPI ---

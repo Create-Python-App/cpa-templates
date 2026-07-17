@@ -153,7 +153,7 @@ Remove extensions one at a time until the project passes. Then fix the last remo
 4. Add an entry to `templates.json` under `templates`.
 5. Ensure the `url` matches the directory structure (`?subdir=templates/<directory>`).
 6. Run local validation against the new template.
-7. Run smoke test and full matrix after merge.
+7. After merge, confirm L1 (and L2 if applicable) are green on `main`.
 
 ### 5.2 Directory naming caveat
 
@@ -168,7 +168,7 @@ The directory name in `templates/` and the slug in `templates.json` may differ. 
 1. Re-scaffold the template with a representative set of extensions.
 2. Apply the change.
 3. Validate ruff and pytest.
-4. Re-scaffold with **all** compatible extensions (full matrix worst case) to detect conflicts.
+4. Re-scaffold with the relevant **curated L3 profile** (or L2 isolation for each touched extension) — do not stack every extension at once.
 
 ---
 
@@ -181,16 +181,16 @@ The directory name in `templates/` and the slug in `templates.json` may differ. 
 3. Add files, templates, or appends as needed.
 4. Add the extension to `templates.json` under `extensions`.
 5. Set `type` to match compatible template types.
-6. Set `category` to avoid selecting multiple extensions from the same category in random CI.
+6. Set `category` so curated L3 profiles can pick one extension per category (`ci`, `containers`, `database`, `editor`, …).
 7. Define `incompatibleWith` if it cannot coexist with other extensions.
-8. Validate locally with **each** compatible template.
-9. Validate the full matrix after merge.
+8. Validate locally with **each** compatible template (L2-style isolation).
+9. Confirm L2/L3 stay green after merge.
 
 ### 6.2 Modifying an extension
 
 1. Identify all templates compatible with the extension (`type` match).
 2. Test the extension against **at least one** template locally.
-3. If the change affects dependencies, also test the full matrix of that template (all extensions at once) to detect merge conflicts.
+3. If the change affects dependencies, also test the relevant curated L3 profile(s) for that template — not an all-extensions stack.
 
 ---
 
@@ -209,7 +209,7 @@ In `templates.json`, add `incompatibleWith` to both extensions:
 }
 ```
 
-The CI generator reads this and never selects both in the same combination. The full matrix generator also respects it.
+The CI profile validator and L2 isolation honor `incompatibleWith`. Do not rely on stacking every extension.
 
 ### 7.2 Via dependency constraints
 
@@ -269,4 +269,4 @@ If any step fails, fix the template or extension, then regenerate from scratch. 
 - [ ] `incompatibleWith` is defined for mutually exclusive extensions.
 - [ ] `.template` files use available scaffold variables.
 - [ ] Local validation passes.
-- [ ] Full matrix worst case (all compatible extensions) is tested for risky changes.
+- [ ] Risky changes are covered by L2 isolation + relevant L3 profile(s), not an all-extensions stack.
