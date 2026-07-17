@@ -1,0 +1,6 @@
+{
+  "id": "django-default",
+  "description": "Django API with GitHub CI + Dev Container",
+  "templateDir": "django-api",
+  "addons": ["github-setup", "python-devcontainer"]
+}

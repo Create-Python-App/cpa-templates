@@ -136,6 +136,21 @@
         "Python",
         "uv"
       ]
+    },
+    {
+      "name": "Django API",
+      "slug": "django-api",
+      "description": "Django + DRF API starter with uv, Ruff, pytest-django, and health probes",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/django-api",
+      "type": "django-backend",
+      "category": "backend-applications",
+      "labels": [
+        "Django",
+        "DRF",
+        "API",
+        "Python",
+        "uv"
+      ]
     }
   ],
   "extensions": [
@@ -147,6 +162,7 @@
       "type": [
         "celery-worker",
         "cli-app",
+        "django-backend",
         "fastapi-backend"
       ],
       "category": "ci",
@@ -182,6 +198,7 @@
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-postgres",
       "type": [
         "celery-worker",
+        "django-backend",
         "fastapi-backend"
       ],
       "category": "database",
@@ -199,6 +216,7 @@
       "type": [
         "celery-worker",
         "cli-app",
+        "django-backend",
         "fastapi-backend"
       ],
       "category": "editor",

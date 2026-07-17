@@ -1,0 +1,37 @@
+[project]
+name = "django-api"
+version = "0.1.0"
+description = "Django API starter scaffolded with create-awesome-python-app"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "django>=5.1.0",
+  "djangorestframework>=3.15.0",
+  "python-dotenv>=1.0.0",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0.0",
+  "pytest-django>=4.9.0",
+  "ruff>=0.8.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["config", "api"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

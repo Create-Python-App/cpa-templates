@@ -1,0 +1,22 @@
+import pytest
+from rest_framework.test import APIClient
+
+API_PREFIX = "{{ apiPrefix }}".rstrip("/")
+
+
+@pytest.fixture
+def client() -> APIClient:
+    return APIClient()
+
+
+def test_healthz_returns_healthy(client: APIClient) -> None:
+    response = client.get(f"{API_PREFIX}/healthz")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["status"] == "healthy"
+
+
+def test_ping_returns_ok(client: APIClient) -> None:
+    response = client.get("/ping/")
+    assert response.status_code == 200
+    assert response.json()["status"] == "ok"
