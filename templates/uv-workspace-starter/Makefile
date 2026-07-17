@@ -13,8 +13,9 @@ lint: ## Lint every member with Ruff
 format: ## Auto-format the workspace with Ruff
 	uv run ruff format .
 
-typecheck: ## Type-check every member with Pyright
+typecheck: ## Type-check every member with Pyright + mypy
 	uv run pyright
+	uv run mypy
 
 test: ## Run the test suite across all members
 	uv run pytest

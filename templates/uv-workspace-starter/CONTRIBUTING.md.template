@@ -1,0 +1,140 @@
+# Contributing
+
+Thanks for your interest in contributing to this project! This document is the
+human entry point after reading the README. It explains how to work effectively
+inside a uv workspace monorepo generated from this template.
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Project Bootstrap](#project-bootstrap)
+- [Scripts & Tooling](#scripts--tooling)
+- [Workspace Conventions](#workspace-conventions)
+- [Coding Standards](#coding-standards)
+- [Adding a Member](#adding-a-member)
+- [Adding Dependencies](#adding-dependencies)
+- [Git / Branch Workflow](#git--branch-workflow)
+- [Commit Messages](#commit-messages)
+- [Testing Strategy](#testing-strategy)
+- [Releasing](#releasing)
+- [Documentation](#documentation)
+- [Pull Request Checklist](#pull-request-checklist)
+
+## Prerequisites
+
+Install [uv](https://docs.astral.sh/uv/) and Python 3.12+. uv manages the
+interpreter pinned in `.python-version`, the single lockfile, and the shared
+`.venv` for every workspace member.
+
+## Project Bootstrap
+
+```bash
+uv sync                          # install every member into one .venv
+uv run {{ commandName }} hello   # run the CLI app (apps/cli)
+uv run pytest                    # verify the workspace is healthy
+```
+
+## Scripts & Tooling
+
+Run these from the workspace root (or use the `make` shortcuts):
+
+| Command | `make` | Description |
+| ------- | ------ | ----------- |
+| `uv sync` | `make sync` | Install/relink every member |
+| `uv run ruff check .` | `make lint` | Lint every member |
+| `uv run ruff format .` | `make format` | Format the workspace |
+| `uv run pyright && uv run mypy` | `make typecheck` | Type-check every member |
+| `uv run pytest` | `make test` | Test all members |
+| — | `make check` | Lint + typecheck + test |
+
+Keep a clean working tree — run `make check` before opening a PR.
+
+## Workspace Conventions
+
+Read [docs/PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md) first.
+
+- Libraries live under `packages/`; deployable apps live under `apps/`.
+- Each member is a real distribution with a `src/<module>/` layout, a
+  `py.typed` marker, tests under `tests/`, and its own `pyproject.toml`.
+- The workspace root is **virtual** (no `[project]` table) and is never published;
+  it only declares members and shared tooling.
+- Members reference each other by distribution name plus a workspace source —
+  never by relative path.
+
+## Coding Standards
+
+- **Typed by default** — every member ships `py.typed`; keep Pyright and mypy green.
+  Avoid `Any`/untyped `# type: ignore` unless justified with a comment.
+- **Reuse before build** — prefer extending an existing `packages/*` library over
+  adding a new dependency.
+- Keep modules small and focused; avoid cross-member churn without justification.
+- Follow the Ruff rule set configured at the root (`E`, `F`, `I`, `UP`, `B`, `SIM`).
+
+## Adding a Member
+
+See [docs/PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md#adding-a-member). In short:
+
+1. Create `packages/<name>/` (library) or `apps/<name>/` (app) — the workspace
+   globs pick it up automatically.
+2. Add a `pyproject.toml` with `requires-python = ">=3.12"`, a `hatchling`
+   build system, and `[tool.hatch.build.targets.wheel] packages = ["src/<module>"]`.
+3. Add code under `src/<module>/` (with `py.typed`) and tests under `tests/`.
+4. Register the member's `src/` in the root `[tool.pyright] extraPaths`,
+   `[tool.mypy] mypy_path`, and `[tool.pytest.ini_options] pythonpath`.
+5. Run `uv sync` to relink the workspace.
+
+## Adding Dependencies
+
+Before adding a new external dependency, check whether an existing member already
+solves the problem. When you do add one, document the rationale in the PR description.
+
+```bash
+uv add --package {{ packagePrefix }}-core httpx   # add to a specific member
+uv add --dev pytest-cov                           # add a shared dev tool
+```
+
+Make one member depend on another by adding its distribution name to `dependencies`
+and declaring the workspace source:
+
+```toml
+[tool.uv.sources]
+"{{ packagePrefix }}-core" = { workspace = true }
+```
+
+## Git / Branch Workflow
+
+- Create feature branches from `main`: `feat/short-description`.
+- Rebase before opening a PR.
+
+## Commit Messages
+
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
+`feat(core): add greeting formatter`, `fix(cli): handle empty name`. Squash locally
+if you produced noisy commits.
+
+## Testing Strategy
+
+Add tests under each member's `tests/` directory. Keep them fast and network-free.
+Run the whole suite with `uv run pytest`, or scope to a member with
+`uv run pytest packages/core`.
+
+## Releasing
+
+Each member is versioned and published independently — there is no root package.
+See [docs/RELEASING.md](./docs/RELEASING.md) for the full flow.
+
+## Documentation
+
+Update or add docs in [docs/](./docs) when introducing new members, conventions,
+or architectural changes.
+
+## Pull Request Checklist
+
+- [ ] Change scoped to the right member(s) & documented
+- [ ] `make lint` passes
+- [ ] `make typecheck` (Pyright + mypy) passes
+- [ ] Added / updated tests (or documented why not)
+- [ ] Updated docs if needed
+- [ ] No unused or dead code
+
+Happy hacking! 🚀

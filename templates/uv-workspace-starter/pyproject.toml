@@ -15,6 +15,7 @@ python-preference = "managed"
 dev = [
     "ruff>=0.15.0",
     "pyright>=1.1.400",
+    "mypy>=1.13.0",
     "pytest>=8.0.0",
     "pre-commit>=4.0.0",
 ]
@@ -44,6 +45,16 @@ pythonVersion = "3.12"
 typeCheckingMode = "basic"
 venvPath = "."
 venv = ".venv"
+
+[tool.mypy]
+# Typed by default: every member ships py.typed and is checked here.
+python_version = "3.12"
+files = ["packages", "apps"]
+mypy_path = ["packages/core/src", "apps/cli/src"]
+namespace_packages = true
+explicit_package_bases = true
+warn_return_any = true
+warn_unused_configs = true
 
 [tool.pytest.ini_options]
 addopts = "-q"

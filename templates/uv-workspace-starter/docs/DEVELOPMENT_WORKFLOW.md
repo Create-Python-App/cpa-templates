@@ -16,7 +16,7 @@ Run these from the workspace root (or use the `Makefile` shortcuts):
 | `uv sync` | `make sync` | Install/relink all members |
 | `uv run ruff check .` | `make lint` | Lint all members |
 | `uv run ruff format .` | `make format` | Format the workspace |
-| `uv run pyright` | `make typecheck` | Type-check all members |
+| `uv run pyright && uv run mypy` | `make typecheck` | Type-check all members (Pyright + mypy) |
 | `uv run pytest` | `make test` | Test all members |
 | — | `make check` | Lint + typecheck + test |
 | `uv build --all-packages` | `make build` | Build all members |
@@ -63,7 +63,8 @@ then `uv sync`.
 
 - **`ModuleNotFoundError` for a local member** — run `uv sync`; a new member is
   only linked after a sync.
-- **Pyright can't resolve a member** — confirm the module is under `src/<module>/`
-  and listed in `extraPaths` in the root `[tool.pyright]` (add new members there).
+- **Pyright/mypy can't resolve a member** — confirm the module is under
+  `src/<module>/` and its `src/` is listed in the root `[tool.pyright] extraPaths`
+  and `[tool.mypy] mypy_path` (add new members to both).
 - **Circular imports between members** — extract the shared piece into a third
   library under `packages/`.

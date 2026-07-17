@@ -1,42 +1,94 @@
 # uv Workspace Monorepo
 
-Multi-package Python monorepo powered by [uv workspaces](https://docs.astral.sh/uv/concepts/projects/workspaces/).
-One lockfile, one virtual environment, shared tooling — with libraries under
+Multi-package Python monorepo powered by [uv workspaces](https://docs.astral.sh/uv/concepts/projects/workspaces/) —
+one lockfile, one virtual environment, and shared tooling, with libraries under
 `packages/` and deployable apps under `apps/`.
 
 > Scaffolded with [create-awesome-python-app](https://github.com/Create-Python-App/create-python-app).
-> Don't use this repo as-is — generate your own and pick your options.
+> **DON'T USE THIS REPO AS IS!** Generate your own and pick your options in the
+> interactive menu. Check the docs for more information!
+
+## Features
+
+- 📦 **uv workspace** — one lockfile and one `.venv` for every member ([uv](https://docs.astral.sh/uv/))
+- 🧱 **apps/ + packages/ split** — deployable apps consume shared libraries
+- 🔗 **Local source wiring** — members depend on each other via `{ workspace = true }`
+- 🦾 **Typed by default** — every member ships `py.typed`, checked with Pyright **and** mypy
+- 🎯 **Shared tooling** — Ruff, Pyright, mypy, and pytest configured once at the root
+- 🚀 **Independent releases** — build and publish each member on its own version
+
+## Architecture
+
+This template follows a monorepo layout inspired by turborepo's `apps/` + `packages/`
+split, adapted to Python with a uv workspace. Code is organized around deployable
+units and the shared libraries they consume, making it:
+
+- 📦 **Modular** — each member is a self-contained distribution with its own `pyproject.toml`
+- 🔄 **Maintainable** — edits to a library are visible to consumers immediately, no publish step
+- 🚀 **Scalable** — new members are globbed in automatically (`packages/*`, `apps/*`)
+- 🎨 **Clear** — the directory structure reflects what ships versus what is shared
+
+For detailed information about the architecture, see [Project Structure](./docs/PROJECT_STRUCTURE.md).
+
+## Extra documentation
+
+You can find useful information such as the project structure, development
+workflow, releasing guide, and much more in the [docs](./docs) folder!
+
+## Pre-packed
+
+### Dev tools
+
+- [uv](https://docs.astral.sh/uv/) — package manager, workspace, and virtual environment
+- [Ruff](https://docs.astral.sh/ruff/) — fast linter and formatter
+- [Pyright](https://microsoft.github.io/pyright/) — static type checker
+- [mypy](https://mypy.readthedocs.io/) — static type checker (typed-by-default policy)
+- [pytest](https://docs.pytest.org/) — test runner across all members
+- [pre-commit](https://pre-commit.com/) — Git hooks to keep the tree clean
+- [hatchling](https://hatch.pypa.io/latest/) — build backend for each member
+
+### Members
+
+- **`packages/core`** — an example shared library (`src/` layout, `py.typed`, tests).
+- **`apps/cli`** — a [Typer](https://typer.tiangolo.com/) CLI that consumes `core`
+  through the workspace, with a console script and a `python -m cli_app` entrypoint.
 
 ## Quickstart
 
 You need [uv](https://docs.astral.sh/uv/) and Python 3.12+.
 
 ```bash
-uv sync                     # install every workspace member into one .venv
-uv run {{ commandName }} hello        # run the CLI app (apps/cli)
-uv run pytest               # test all members
+uv sync                          # install every workspace member into one .venv
+uv run {{ commandName }} hello   # run the CLI app (apps/cli)
+uv run pytest                    # test all members
 ```
 
-## What's inside
+## Development
 
-- **Workspace root** — virtual root `pyproject.toml` with `[tool.uv.workspace]`,
-  a shared `dev` dependency group, and shared Ruff / Pyright / pytest config.
-- **`packages/core`** — a shared library (`src/` layout) with tests.
-- **`apps/cli`** — a [Typer](https://typer.tiangolo.com/) CLI that consumes
-  `core` through the workspace source (`{ workspace = true }`).
-- **`Makefile`** — `make sync | lint | format | typecheck | test | check | build`.
+While developing, you will rely mostly on `uv run` and the `make` shortcuts.
+Run these from the workspace root:
 
-## Common tasks
+| Command | `make` | Description |
+| ------- | ------ | ----------- |
+| `uv sync` | `make sync` | Install/relink every member into a single `.venv` |
+| `uv run {{ commandName }} hello [NAME]` | — | Run the CLI app (`apps/cli`) |
+| `uv run pytest` | `make test` | Run the whole test suite |
+| `uv run ruff check .` | `make lint` | Lint every member |
+| `uv run ruff format .` | `make format` | Format the workspace |
+| `uv run pyright && uv run mypy` | `make typecheck` | Type-check every member |
+| — | `make check` | Lint + typecheck + test |
 
-| Command | Description |
-| ------- | ----------- |
-| `uv sync` | Install all members into a single `.venv` |
-| `uv run {{ commandName }} hello [NAME]` | Run the CLI app |
-| `uv run pytest` | Run the whole test suite |
-| `uv run ruff check .` | Lint every member |
-| `uv run ruff format .` | Format the workspace |
-| `uv run pyright` | Type-check every member |
-| `uv build --all-packages` | Build wheels/sdists for every member |
+## Production
+
+Scripts for building and publishing individual members:
+
+| Command | `make` | Description |
+| ------- | ------ | ----------- |
+| `uv build --all-packages` | `make build` | Build wheels/sdists for every member |
+| `uv build --package {{ packagePrefix }}-core` | — | Build a single member |
+| `uv publish --package {{ packagePrefix }}-core` | — | Publish a single member to an index |
+
+See [docs/RELEASING.md](./docs/RELEASING.md) for the full versioning and publishing flow.
 
 ## Add a member
 
@@ -51,6 +103,12 @@ uv run pytest               # test all members
   "{{ packagePrefix }}-core" = { workspace = true }
   ```
 
-See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md),
-[`docs/DEVELOPMENT_WORKFLOW.md`](docs/DEVELOPMENT_WORKFLOW.md), and
-[`docs/RELEASING.md`](docs/RELEASING.md) for details.
+See [docs/PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md) and
+[docs/DEVELOPMENT_WORKFLOW.md](./docs/DEVELOPMENT_WORKFLOW.md) for details.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the local contribution workflow
+(branching, commits, member conventions). For overarching template issues or
+improvements, open issues / PRs in the main monorepo:
+[Create-Python-App/cpa-templates](https://github.com/Create-Python-App/cpa-templates).
