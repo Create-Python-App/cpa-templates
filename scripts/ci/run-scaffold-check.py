@@ -161,9 +161,10 @@ def main() -> None:
         "--no-interactive",
         "--no-install",
     ]
-    if args.addon_url:
-        scaffold_cmd.append("--addons")
-        scaffold_cmd.extend(args.addon_url)
+    # Typer list options take one value per flag. Passing multiple URLs after a
+    # single --addons makes later URLs look like project_directory / COMMAND.
+    for addon_url in args.addon_url:
+        scaffold_cmd.extend(["--addons", addon_url])
     for assignment in args.sets:
         scaffold_cmd.extend(["--set", assignment])
     scaffold_cmd.append(args.project_name)
