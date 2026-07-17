@@ -1,78 +1,34 @@
-# Docker
+# Docker (extension bank)
 
-Run the API in a container with [uv](https://docs.astral.sh/uv/). Compose files follow the same convention as [cna-templates](https://github.com/Create-Node-App/cna-templates): **`compose.yml`** (not `docker-compose.yml`).
+Maintainer-facing notes for the **python-docker** extension in `cpa-templates`.
 
-## When to use
-
-- You want a reproducible local dev environment without installing Python on the host.
-- You deploy the API as a container image.
-- You need a production-style compose overlay (`compose.prod.yml`) alongside dev settings.
-
-Pair with **`python-postgres`** when the API needs a database — see that extension's README for multi-file compose commands.
-
-## What it adds
+Copied into generated projects (via `template/`):
 
 | Path | Purpose |
 |------|---------|
-| `Dockerfile` | Multi-stage-friendly image based on `ghcr.io/astral-sh/uv:python3.12-bookworm-slim` |
-| `.dockerignore` | Keeps `.venv`, caches, and git metadata out of the build context |
-| `compose.yml` | Dev: bind-mount source, `--reload`, port `8000` |
-| `compose.prod.yml` | Prod overlay: no bind mount, `restart: always`, no reload |
+| `Dockerfile` | uv-based Python 3.12 image |
+| `.dockerignore` | Excludes `.venv`, caches, git metadata |
+| `compose.yml` | Dev compose (bind mount + reload) |
+| `compose.prod.yml` | Prod overlay (no reload, restart always) |
+| `docs/DOCKER_GUIDE.md` | Long-form guide for the generated project |
+| `docs/README.md.append` | Index bullet for `docs/README.md` |
 
-## Environment variables
+The bank `README.md` (this file) stays **outside** `template/` so it does not overwrite the project README.
 
-Create `.env` at the project root (copy from `.env.example` after scaffold). Common keys from `fastapi-starter`:
+## Apply
 
-| Variable | Default | Notes |
-|----------|---------|-------|
-| `DEBUG` | `false` | Set `true` for local dev outside Docker |
-| `HOST` | `127.0.0.1` | Compose overrides via uvicorn `--host 0.0.0.0` |
-| `PORT` | `8000` | Mapped in `compose.yml` |
-| `API_PREFIX` | `/api/v1` | From template scaffold options |
-| `CORS_ORIGINS` | localhost URLs | Comma-separated |
+```sh
+uvx create-awesome-python-app my-api \
+  --template fastapi-starter \
+  --addons python-docker \
+  --yes
+```
 
-For production-style runs, set `DEBUG=false` in `.env`.
-
-## Development
+## Verify after scaffold
 
 ```sh
 docker compose up --build
+curl -s http://localhost:8000/api/v1/healthz
 ```
 
-- API docs: http://localhost:8000/docs
-- Health probe: http://localhost:8000/ping
-
-The dev compose file bind-mounts the project directory and runs uvicorn with `--reload`.
-
-## Production-style run
-
-```sh
-docker compose -f compose.yml -f compose.prod.yml up --build -d
-```
-
-The prod overlay removes the source bind mount and `--reload`, and sets `restart: always`.
-
-## With `python-postgres`
-
-From the project root (after both extensions are applied):
-
-```sh
-docker compose -f compose.yml -f docker/postgres/compose.yml up --build
-```
-
-The postgres extension's compose file adds a `db` service and wires `DATABASE_URL` on the `api` service when files are merged.
-
-## Verification
-
-1. **Build:** `docker compose build` completes without errors.
-2. **Start:** `docker compose up --build` — container stays running.
-3. **Health:** `curl -s http://localhost:8000/ping` returns `{"status":"ok"}`.
-4. **Docs:** Open http://localhost:8000/docs in a browser.
-5. **Prod overlay:** `docker compose -f compose.yml -f compose.prod.yml config` validates merged config.
-
-## Production notes
-
-- Set `DEBUG=false` in `.env`.
-- Use a process manager or orchestrator for multi-instance deployments.
-- Add health checks targeting `/ping` in your orchestrator or compose prod file.
-- Pin base image tags in `Dockerfile` for reproducible builds.
+See `template/docs/DOCKER_GUIDE.md` for full usage, configuration, and troubleshooting.

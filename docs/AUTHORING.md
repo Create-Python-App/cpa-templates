@@ -112,7 +112,48 @@ Compose is invoked as `docker compose -f compose.yml …` (Compose V2 file namin
 
 Extensions add files on top of a compatible template. They do **not** define `cpa.config.json` or interactive prompts.
 
-**Most common pattern** — a partial `pyproject.toml` with deps to merge:
+### Prefer `template/` so bank README does not overwrite the project
+
+CPA's loader prefers a `template/` subdirectory when present (`get_template_dir_path`). Put **generated-project artifacts** under `template/`, and keep the **bank-facing** `README.md` at the extension root. That matches Create-Node-App: the catalog README must not clobber the scaffolded project README.
+
+```
+extensions/python-docker/
+├── README.md                         # bank only (NOT copied)
+└── template/
+    ├── Dockerfile
+    ├── .dockerignore
+    ├── compose.yml
+    ├── compose.prod.yml
+    └── docs/
+        ├── DOCKER_GUIDE.md           # long guide for the generated project
+        └── README.md.append          # bullet appended into docs/README.md
+```
+
+Example — Postgres:
+
+```
+extensions/python-postgres/
+├── README.md                         # bank only
+└── template/
+    ├── pyproject.toml                # partial — merged into project manifest
+    ├── .env.example.append           # appended to template .env.example
+    ├── docker/postgres/compose.yml
+    ├── docker/postgres/.env.example
+    └── docs/
+        ├── POSTGRES_GUIDE.md
+        └── README.md.append
+```
+
+### Docs convention (parity with cna-templates)
+
+Every extension that teaches the generated project should ship:
+
+| Path (under `template/` when using that pattern) | Role |
+|---|---|
+| `docs/<TOPIC>_GUIDE.md` | Long-form guide: Overview, What it adds, Usage, Configuration, Verification, Troubleshooting, Resources |
+| `docs/README.md.append` | One bullet linking the guide into the project's `docs/README.md` index |
+
+**Most common code pattern** — a partial `pyproject.toml` with deps to merge (under `template/`):
 
 ```toml
 [project]
@@ -121,30 +162,17 @@ dependencies = [
 ]
 ```
 
-Everything else in the extension directory is copied into the project, respecting all file suffix conventions above.
+Everything under the copied root (`template/` or extension root) is copied into the project, respecting all file suffix conventions above.
 
-Example — Docker (mirrors `react-compose` file names):
+### Typed Python is the default
 
-```
-extensions/python-docker/
-├── Dockerfile
-├── .dockerignore
-├── compose.yml
-├── compose.prod.yml
-└── README.md
-```
+New and updated **templates** should treat typed Python as the default quality bar:
 
-Example — Postgres (mirrors `nestjs-drizzle-postgres` path):
+- Annotate public APIs; use Pydantic models at boundaries
+- Document mypy and/or pyright in README / `docs/TYPING.md` / CI
+- Prefer shipping typing tooling in `pyproject.toml` dependency groups when practical
 
-```
-extensions/python-postgres/
-├── pyproject.toml              # partial — merged into project manifest
-├── .env.example.append         # appended to template .env.example
-├── docker/postgres/compose.yml
-├── docker/postgres/.env.example
-└── README.md
-```
-
+Extensions should not undo typing (avoid untyped overlays that fight strict checking).
 ## `pyproject.toml` merge
 
 When scaffolding layers include a `pyproject.toml`, CPA **merges** into the destination file instead of overwriting it.
@@ -263,19 +291,22 @@ Verify generated output: `uv sync`, `uv run ruff check .`, `uv run pytest`, and 
 
 - [ ] `cpa.config.json` co-located with template (if prompts needed)
 - [ ] `pyproject.toml` with valid uv project metadata
+- [ ] Typed Python documented (and tooling configured when ready): mypy / pyright
 - [ ] `.template` files use only defined Jinja variables
 - [ ] Entry added to `templates.json` with correct `type` and `category`
-- [ ] README explains how to run and test the generated project
+- [ ] README + CONTRIBUTING + AGENTS + indexed `docs/` at CNA quality bar
 - [ ] Local scaffold smoke test passes
 
 ## Checklist for new extensions
 
 - [ ] Compatible `type`(s) match target template(s)
+- [ ] Artifacts under `template/`; bank `README.md` outside (does not overwrite project README)
+- [ ] `docs/<TOPIC>_GUIDE.md` + `docs/README.md.append` for generated-project docs
 - [ ] Partial `pyproject.toml` only when adding dependencies
 - [ ] `.append` files target paths that exist in the base template
 - [ ] Compose files follow `compose.yml` / `docker/<engine>/` conventions
 - [ ] `incompatibleWith` defined for mutually exclusive extensions
-- [ ] README covers usage, env vars, compose commands, and verification
+- [ ] Bank README covers when to use, what is copied, and verification pointers
 - [ ] Entry added to `templates.json`
 
 ## Future templates

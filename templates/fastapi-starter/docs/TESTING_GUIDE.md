@@ -14,6 +14,8 @@ Complementary quality checks:
 ```bash
 uv run ruff check .
 uv run ruff format --check .
+uv run mypy app      # when configured — see TYPING.md
+uv run pyright       # when configured — see TYPING.md
 ```
 
 ## Test layout

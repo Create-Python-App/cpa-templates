@@ -90,4 +90,5 @@ before accepting traffic.
 
 - [`API.md`](./API.md) — envelope and health contract
 - [`TESTING_GUIDE.md`](./TESTING_GUIDE.md) — pre-deploy verification
+- [`CONFIGURATION.md`](./CONFIGURATION.md) — env and tooling
 - [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md) — where to place new features

@@ -52,3 +52,14 @@ ID handling consistent across the API.
 `RequestIDMiddleware` reads `X-Request-ID` when provided or creates a UUID. The
 ID is available at `request.state.request_id`, returned in response metadata,
 and echoed in the `x-request-id` response header.
+
+## Typing
+
+Annotate routers, services, and schemas. Prefer concrete return types such as
+`APIResponse[HealthStatus]` over untyped dicts. See [TYPING.md](./TYPING.md).
+
+## Related docs
+
+- [API.md](./API.md) — envelope and endpoints
+- [CONFIGURATION.md](./CONFIGURATION.md) — env and tooling
+- [TESTING_GUIDE.md](./TESTING_GUIDE.md) — pytest patterns
