@@ -1,0 +1,6 @@
+{
+  "id": "cli-default",
+  "description": "CLI tool with GitHub CI + Dev Container",
+  "templateDir": "cli-starter",
+  "addons": ["github-setup", "python-devcontainer"]
+}

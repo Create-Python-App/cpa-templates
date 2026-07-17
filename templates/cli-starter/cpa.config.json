@@ -1,0 +1,11 @@
+{
+  "name": "cli-starter",
+  "customOptions": [
+    {
+      "key": "commandName",
+      "type": "string",
+      "message": "Console script name (e.g. my-cli)",
+      "default": "my-cli"
+    }
+  ]
+}

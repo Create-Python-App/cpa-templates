@@ -15,6 +15,8 @@ PROFILES_DIR = REPO_ROOT / "ci" / "profiles"
 # Canonical template directory per extension `type`.
 CANONICAL_TEMPLATE_BY_TYPE: dict[str, str] = {
     "fastapi-backend": "fastapi-starter",
+    "cli-app": "cli-starter",
+    "celery-worker": "celery-worker",
 }
 
 

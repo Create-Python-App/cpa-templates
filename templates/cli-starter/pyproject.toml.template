@@ -1,0 +1,36 @@
+[project]
+name = "cli-starter"
+version = "0.1.0"
+description = "Typer CLI starter scaffolded with create-awesome-python-app"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "rich>=13.9.0",
+  "typer>=0.15.0",
+]
+
+[project.scripts]
+{{ commandName }} = "cli_app.cli:app"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0.0",
+  "ruff>=0.8.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["cli_app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

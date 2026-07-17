@@ -1,0 +1,17 @@
+{
+  "name": "celery-worker",
+  "customOptions": [
+    {
+      "key": "brokerUrl",
+      "type": "string",
+      "message": "Celery broker URL",
+      "default": "redis://localhost:6379/0"
+    },
+    {
+      "key": "resultBackend",
+      "type": "string",
+      "message": "Celery result backend URL",
+      "default": "redis://localhost:6379/1"
+    }
+  ]
+}

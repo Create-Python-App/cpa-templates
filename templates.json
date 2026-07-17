@@ -54,6 +54,17 @@
         "DevContainer",
         "VS Code"
       ]
+    },
+    {
+      "slug": "cli-applications",
+      "name": "CLI Applications",
+      "description": "Command-line tools and console scripts.",
+      "details": "Use for Typer/Click CLIs and internal utilities shipped as entry points.",
+      "labels": [
+        "CLI",
+        "Python",
+        "Typer"
+      ]
     }
   ],
   "templates": [
@@ -74,6 +85,35 @@
         "mypy",
         "pyright"
       ]
+    },
+    {
+      "name": "CLI Starter",
+      "slug": "cli-starter",
+      "description": "Typer CLI with uv, Ruff, pytest, and a console script entry point",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/cli-starter",
+      "type": "cli-app",
+      "category": "cli-applications",
+      "labels": [
+        "CLI",
+        "Typer",
+        "Python",
+        "uv"
+      ]
+    },
+    {
+      "name": "Celery Worker",
+      "slug": "celery-worker",
+      "description": "Celery worker with Redis defaults, pydantic-settings, and eager-mode tests",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/celery-worker",
+      "type": "celery-worker",
+      "category": "backend-applications",
+      "labels": [
+        "Celery",
+        "Worker",
+        "Redis",
+        "Python",
+        "uv"
+      ]
     }
   ],
   "extensions": [
@@ -83,7 +123,9 @@
       "description": "GitHub Actions CI, MegaLinter, Danger PR review, todo-to-issue, Dependabot, and issue/PR templates",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/github-setup",
       "type": [
-        "fastapi-backend"
+        "fastapi-backend",
+        "cli-app",
+        "celery-worker"
       ],
       "category": "ci",
       "labels": [
@@ -100,7 +142,9 @@
       "description": "Dockerfile, compose.yml, and compose.prod.yml for local and containerized runs",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-docker",
       "type": [
-        "fastapi-backend"
+        "fastapi-backend",
+        "cli-app",
+        "celery-worker"
       ],
       "category": "containers",
       "labels": [
@@ -115,7 +159,8 @@
       "description": "PostgreSQL service under docker/postgres/compose.yml plus env examples",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-postgres",
       "type": [
-        "fastapi-backend"
+        "fastapi-backend",
+        "celery-worker"
       ],
       "category": "database",
       "labels": [
@@ -130,7 +175,9 @@
       "description": "VS Code Dev Container with Python 3.12 and uv",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-devcontainer",
       "type": [
-        "fastapi-backend"
+        "fastapi-backend",
+        "cli-app",
+        "celery-worker"
       ],
       "category": "editor",
       "labels": [
