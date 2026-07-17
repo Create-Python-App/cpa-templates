@@ -1,0 +1,6 @@
+{
+  "id": "uv-workspace-devcontainer",
+  "description": "uv workspace monorepo with GitHub CI and VS Code Dev Container",
+  "templateDir": "uv-workspace-starter",
+  "addons": ["github-setup", "python-devcontainer"]
+}

@@ -1,0 +1,56 @@
+# uv Workspace Monorepo
+
+Multi-package Python monorepo powered by [uv workspaces](https://docs.astral.sh/uv/concepts/projects/workspaces/).
+One lockfile, one virtual environment, shared tooling — with libraries under
+`packages/` and deployable apps under `apps/`.
+
+> Scaffolded with [create-awesome-python-app](https://github.com/Create-Python-App/create-python-app).
+> Don't use this repo as-is — generate your own and pick your options.
+
+## Quickstart
+
+You need [uv](https://docs.astral.sh/uv/) and Python 3.12+.
+
+```bash
+uv sync                     # install every workspace member into one .venv
+uv run {{ commandName }} hello        # run the CLI app (apps/cli)
+uv run pytest               # test all members
+```
+
+## What's inside
+
+- **Workspace root** — virtual root `pyproject.toml` with `[tool.uv.workspace]`,
+  a shared `dev` dependency group, and shared Ruff / Pyright / pytest config.
+- **`packages/core`** — a shared library (`src/` layout) with tests.
+- **`apps/cli`** — a [Typer](https://typer.tiangolo.com/) CLI that consumes
+  `core` through the workspace source (`{ workspace = true }`).
+- **`Makefile`** — `make sync | lint | format | typecheck | test | check | build`.
+
+## Common tasks
+
+| Command | Description |
+| ------- | ----------- |
+| `uv sync` | Install all members into a single `.venv` |
+| `uv run {{ commandName }} hello [NAME]` | Run the CLI app |
+| `uv run pytest` | Run the whole test suite |
+| `uv run ruff check .` | Lint every member |
+| `uv run ruff format .` | Format the workspace |
+| `uv run pyright` | Type-check every member |
+| `uv build --all-packages` | Build wheels/sdists for every member |
+
+## Add a member
+
+- **Library** → create `packages/<name>/` with a `pyproject.toml` and
+  `src/<module>/`. It is picked up automatically by `packages/*`.
+- **App** → create `apps/<name>/` the same way; it is picked up by `apps/*`.
+- **Depend on a local library** → add its distribution name to the consumer's
+  `dependencies` and mark it as a workspace source:
+
+  ```toml
+  [tool.uv.sources]
+  "{{ packagePrefix }}-core" = { workspace = true }
+  ```
+
+See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md),
+[`docs/DEVELOPMENT_WORKFLOW.md`](docs/DEVELOPMENT_WORKFLOW.md), and
+[`docs/RELEASING.md`](docs/RELEASING.md) for details.

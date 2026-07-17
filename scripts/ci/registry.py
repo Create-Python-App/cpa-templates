@@ -18,6 +18,7 @@ CANONICAL_TEMPLATE_BY_TYPE: dict[str, str] = {
     "django-backend": "django-api",
     "cli-app": "cli-starter",
     "celery-worker": "celery-worker",
+    "uv-workspace": "uv-workspace-starter",
 }
 
 

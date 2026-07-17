@@ -87,6 +87,18 @@
         "JWT",
         "Security"
       ]
+    },
+    {
+      "slug": "monorepo",
+      "name": "Monorepo",
+      "description": "Multi-package workspaces with shared tooling and one lockfile.",
+      "details": "Use when you need multiple libraries and apps in one repo \u2014 uv workspaces link members locally with a single virtual environment.",
+      "labels": [
+        "Monorepo",
+        "uv",
+        "Workspace",
+        "Python"
+      ]
     }
   ],
   "templates": [
@@ -151,6 +163,21 @@
         "Python",
         "uv"
       ]
+    },
+    {
+      "name": "uv Workspace Starter",
+      "slug": "uv-workspace-starter",
+      "description": "Python monorepo using uv workspaces: shared packages/ libraries and apps/ deployables with one lockfile, Ruff, Pyright, and pytest",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/uv-workspace-starter",
+      "type": "uv-workspace",
+      "category": "monorepo",
+      "labels": [
+        "Monorepo",
+        "uv",
+        "Workspace",
+        "Python",
+        "Typer"
+      ]
     }
   ],
   "extensions": [
@@ -163,7 +190,8 @@
         "celery-worker",
         "cli-app",
         "django-backend",
-        "fastapi-backend"
+        "fastapi-backend",
+        "uv-workspace"
       ],
       "category": "ci",
       "labels": [
@@ -217,7 +245,8 @@
         "celery-worker",
         "cli-app",
         "django-backend",
-        "fastapi-backend"
+        "fastapi-backend",
+        "uv-workspace"
       ],
       "category": "editor",
       "labels": [

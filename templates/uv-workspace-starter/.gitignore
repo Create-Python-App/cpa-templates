@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+**/dist/
+
+# uv / virtualenvs
+.venv/
+# Note: uv.lock is committed (single lockfile for the whole workspace).
+
+# Testing / typing / linting caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environments
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

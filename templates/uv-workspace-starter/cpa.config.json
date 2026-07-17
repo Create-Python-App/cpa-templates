@@ -1,0 +1,17 @@
+{
+  "name": "uv-workspace-starter",
+  "customOptions": [
+    {
+      "key": "packagePrefix",
+      "type": "string",
+      "message": "Distribution name prefix for workspace members (e.g. acme -> acme-core)",
+      "default": "app"
+    },
+    {
+      "key": "commandName",
+      "type": "string",
+      "message": "Console command exposed by apps/cli",
+      "default": "app"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+# Virtual workspace root — not a publishable package.
+# uv workspaces: https://docs.astral.sh/uv/concepts/projects/workspaces/
+#
+# Members live under packages/* (libraries) and apps/* (deployables).
+# Every member pins requires-python >=3.12 and shares the tooling below.
+
+[tool.uv.workspace]
+members = ["packages/*", "apps/*"]
+
+[tool.uv]
+# Prefer the interpreter pinned in .python-version when creating the venv.
+python-preference = "managed"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.0",
+    "pyright>=1.1.400",
+    "pytest>=8.0.0",
+    "pre-commit>=4.0.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = ["packages", "apps"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+# Typer declares option/argument defaults via function calls.
+"**/cli.py" = ["B008"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["core", "cli_app"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pyright]
+include = ["packages", "apps"]
+extraPaths = ["packages/core/src", "apps/cli/src"]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["packages", "apps"]
+pythonpath = ["packages/core/src", "apps/cli/src"]
