@@ -14,6 +14,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+  "mypy>=1.12.0",
+  "pyright>=1.1.390",
   "pytest>=8.0.0",
   "ruff>=0.8.0",
 ]
@@ -34,3 +36,15 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+[tool.pyright]
+include = ["cli_app", "tests"]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"
+reportMissingImports = false
+
+[tool.mypy]
+python_version = "3.12"
+files = ["cli_app", "tests"]
+warn_return_any = true
+warn_unused_configs = true
