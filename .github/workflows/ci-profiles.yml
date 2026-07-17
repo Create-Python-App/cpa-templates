@@ -72,8 +72,7 @@ jobs:
           EXTRA=()
           while IFS= read -r line; do
             [ -n "$line" ] && EXTRA+=(--set "$line")
-          done < <(python -c 'import json,os; s=json.loads(os.environ.get("PROFILE_SETS") or "{}");
-[print(f"{k}={v}") for k,v in s.items()]')
+          done < <(python -c 'import json,os; s=json.loads(os.environ.get("PROFILE_SETS") or "{}"); [print(f"{k}={v}") for k,v in s.items()]')
 
           ADDON_ARGS=()
           for url in ${{ join(matrix.cell.addons, ' ') }}; do
