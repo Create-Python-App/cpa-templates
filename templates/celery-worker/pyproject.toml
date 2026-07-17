@@ -40,9 +40,14 @@ include = ["worker", "tests"]
 pythonVersion = "3.12"
 typeCheckingMode = "basic"
 reportMissingImports = false
+reportMissingTypeStubs = false
 
 [tool.mypy]
 python_version = "3.12"
 files = ["worker", "tests"]
 warn_return_any = true
 warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["celery", "celery.*", "kombu", "kombu.*"]
+ignore_missing_imports = true
