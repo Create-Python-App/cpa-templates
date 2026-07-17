@@ -65,6 +65,28 @@
         "Python",
         "Typer"
       ]
+    },
+    {
+      "slug": "observability",
+      "name": "Observability",
+      "description": "Error tracking, metrics, and tracing integrations.",
+      "details": "Add when you need production diagnostics such as Sentry.",
+      "labels": [
+        "Observability",
+        "Sentry",
+        "Monitoring"
+      ]
+    },
+    {
+      "slug": "security",
+      "name": "Security",
+      "description": "Authentication and authorization scaffolds.",
+      "details": "JWT/session auth skeletons and related security helpers.",
+      "labels": [
+        "Auth",
+        "JWT",
+        "Security"
+      ]
     }
   ],
   "templates": [
@@ -123,9 +145,9 @@
       "description": "GitHub Actions CI, MegaLinter, Danger PR review, todo-to-issue, Dependabot, and issue/PR templates",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/github-setup",
       "type": [
-        "fastapi-backend",
+        "celery-worker",
         "cli-app",
-        "celery-worker"
+        "fastapi-backend"
       ],
       "category": "ci",
       "labels": [
@@ -142,9 +164,9 @@
       "description": "Dockerfile, compose.yml, and compose.prod.yml for local and containerized runs",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-docker",
       "type": [
-        "fastapi-backend",
+        "celery-worker",
         "cli-app",
-        "celery-worker"
+        "fastapi-backend"
       ],
       "category": "containers",
       "labels": [
@@ -159,8 +181,8 @@
       "description": "PostgreSQL service under docker/postgres/compose.yml plus env examples",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-postgres",
       "type": [
-        "fastapi-backend",
-        "celery-worker"
+        "celery-worker",
+        "fastapi-backend"
       ],
       "category": "database",
       "labels": [
@@ -175,15 +197,76 @@
       "description": "VS Code Dev Container with Python 3.12 and uv",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-devcontainer",
       "type": [
-        "fastapi-backend",
+        "celery-worker",
         "cli-app",
-        "celery-worker"
+        "fastapi-backend"
       ],
       "category": "editor",
       "labels": [
         "DevContainer",
         "VS Code",
         "uv"
+      ]
+    },
+    {
+      "name": "Python SQLAlchemy",
+      "slug": "python-sqlalchemy",
+      "description": "SQLAlchemy 2.x session helpers and Alembic migrations for FastAPI",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-sqlalchemy",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "database",
+      "labels": [
+        "SQLAlchemy",
+        "Alembic",
+        "ORM",
+        "Database"
+      ]
+    },
+    {
+      "name": "Python Redis",
+      "slug": "python-redis",
+      "description": "Redis client helper and local Compose service",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-redis",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "database",
+      "labels": [
+        "Redis",
+        "Cache",
+        "Queue"
+      ]
+    },
+    {
+      "name": "Python Sentry",
+      "slug": "python-sentry",
+      "description": "Sentry SDK for FastAPI with env-driven init helper",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-sentry",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "observability",
+      "labels": [
+        "Sentry",
+        "Observability",
+        "Errors"
+      ]
+    },
+    {
+      "name": "Python Auth JWT",
+      "slug": "python-auth-jwt",
+      "description": "JWT auth feature skeleton with password hashing helpers",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/python-auth-jwt",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "security",
+      "labels": [
+        "Auth",
+        "JWT",
+        "Security"
       ]
     }
   ]
