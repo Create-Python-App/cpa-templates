@@ -14,7 +14,7 @@ work with them.
 | `ci.yml` | push + PR to `main` | Installs uv, runs `ruff check`, runs `mypy`/`pyright` (only when configured in `pyproject.toml`), then `pytest`. |
 | `mega-linter.yml` | PR to `main` | Runs [MegaLinter](https://megalinter.io) (Python flavor) as a secondary quality pass. Fixes are **not** auto-applied. |
 | `pr-review.yml` | PR to `main` | Runs [Danger JS](https://danger.systems/js/) against the PR description and diff. |
-| `todo.yml` | push to `main` | Converts `# TODO:` comments into GitHub issues with [todo-to-issue](https://github.com/alstr/todo-to-issue-action). |
+| `todo.yml` | push to `main` | Converts `# TODO:` comments into GitHub issues; opens a bot PR for inserted issue links (does **not** push directly to `main`). |
 
 ### Configuration
 
@@ -109,10 +109,11 @@ Python linters that would duplicate Ruff or the CI type checks.
 
 ## TODO to issue (`todo.yml`)
 
-On push to `main`, `# TODO:` comments become tracked GitHub issues, and issues
-are closed when their TODO is removed. See the
-[action docs](https://github.com/alstr/todo-to-issue-action) for the comment
-format.
+On push to `main`, `# TODO:` comments become tracked GitHub issues (and issues
+are closed when their TODO is removed). Inserted issue-URL edits are proposed
+via a bot pull request (`chore/todo-issue-links`) instead of a direct push to
+`main`. See the [action docs](https://github.com/alstr/todo-to-issue-action)
+for the comment format.
 
 ## Recommended branch protection
 
