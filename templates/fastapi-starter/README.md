@@ -102,3 +102,29 @@ Scaffold-time options (`cpa.config.json`):
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for the local contribution workflow (bootstrap, architecture, commits, PR checklist). For overarching template issues or improvements, open issues / PRs in the upstream monorepo: [Create-Python-App/cpa-templates](https://github.com/Create-Python-App/cpa-templates).
+
+
+## Health probes
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /ping` | Minimal load-balancer probe |
+| `GET {apiPrefix}/healthz` | App readiness probe (tested in `tests/test_health.py`) |
+
+## Compatible extensions
+
+Use catalog slugs (not informal names like `docker` / `vscode`):
+
+| Slug | Adds |
+|------|------|
+| `python-docker` | Dockerfile + Compose |
+| `python-postgres` | Postgres Compose + driver |
+| `python-devcontainer` | VS Code Dev Container |
+| `github-setup` | CI / Dependabot / issue templates |
+
+Migrations are not bundled in the base starter. Add `python-sqlalchemy` (and usually
+`python-postgres`) when you need Alembic/`DATABASE_URL` workflows.
+
+## Quality bar
+
+See [`QUALITY.md`](QUALITY.md) for the M1 maturity checklist.

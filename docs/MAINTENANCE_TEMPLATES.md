@@ -270,3 +270,7 @@ If any step fails, fix the template or extension, then regenerate from scratch. 
 - [ ] `.template` files use available scaffold variables.
 - [ ] Local validation passes.
 - [ ] Risky changes are covered by L2 isolation + relevant L3 profile(s), not an all-extensions stack.
+
+## Quality checklist
+
+See [TEMPLATE_QUALITY_M1.md](./TEMPLATE_QUALITY_M1.md) for the FastAPI M1 bar and per-template `QUALITY.md` files.
