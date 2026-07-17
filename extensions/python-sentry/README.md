@@ -1,26 +1,33 @@
-# Sentry
+# Sentry (extension bank)
 
-Adds `sentry-sdk[fastapi]` and a small `init_sentry()` helper.
+Maintainer-facing notes for the **python-sentry** extension in `cpa-templates`.
 
-## What it adds
+Copied into generated projects (via `template/`):
 
 | Path | Purpose |
 |------|---------|
-| `pyproject.toml` | Merges `sentry-sdk[fastapi]` |
-| `app/core/sentry.py` | No-op unless `SENTRY_DSN` is set |
+| `pyproject.toml` | Merges `sentry-sdk[fastapi]` into project dependencies |
+| `app/core/sentry.py` | `init_sentry()` helper (no-op without `SENTRY_DSN`) |
 | `.env.example.append` | `SENTRY_DSN`, sample rate, environment |
+| `docs/SENTRY_GUIDE.md` | Long-form guide for the generated project |
+| `docs/README.md.append` | Index bullet for `docs/README.md` |
 
-## Wire-up
+The bank `README.md` (this file) stays **outside** `template/` so it does not overwrite the project README.
 
-Call once during app startup (for example in `app/main.py`):
+## Apply
 
-```python
-from app.core.sentry import init_sentry
-
-init_sentry()
+```sh
+uvx create-awesome-python-app my-api \
+  --template fastapi-starter \
+  --addons python-sentry \
+  --yes
 ```
 
-## Verification
+## Verify after scaffold
 
-1. With empty `SENTRY_DSN`, `init_sentry()` is a no-op.
-2. `uv run python -c "from app.core.sentry import init_sentry; init_sentry()"`
+```sh
+uv sync
+uv run python -c "from app.core.sentry import init_sentry; init_sentry()"
+```
+
+See `template/docs/SENTRY_GUIDE.md` for full usage, configuration, and troubleshooting.

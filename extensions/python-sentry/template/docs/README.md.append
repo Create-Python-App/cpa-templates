@@ -1,0 +1,1 @@
+- [Sentry Guide](./SENTRY_GUIDE.md) — Error tracking setup, DSN env vars, and init_sentry()
