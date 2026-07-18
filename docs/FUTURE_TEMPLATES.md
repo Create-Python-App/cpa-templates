@@ -1,31 +1,26 @@
 # Future Templates
 
-Planned templates and extensions not yet in `templates.json`. These are phased additions — see open issues in [Create-Python-App/cpa-templates](https://github.com/Create-Python-App/cpa-templates/issues).
+Growth backlog for templates and extensions. Prefer opening a tracking issue
+before implementing anything listed under **Candidates**.
 
-## Recently shipped
+## Shipped
 
-| Slug | Type | Description |
-|------|------|-------------|
-| `uv-workspace-starter` | `uv-workspace` | Python monorepo using uv workspaces: shared `packages/` libraries and `apps/` deployables with one lockfile, shared Ruff/Pyright/pytest, and a Typer CLI that consumes a local library. Compatible extensions: `github-setup`, `development-container`. |
+| Slug | Type | Notes |
+|------|------|-------|
+| `fastapi-starter` | `fastapi-backend` | Feature-based FastAPI starter (docs + Jinja options) |
+| `cli-starter` | `cli-app` | Typer CLI with uv, Ruff, pytest, packaging entry points (`#37`) |
+| `celery-worker` | `celery-worker` | Celery worker + beat skeleton (`#37`) |
+| `django-api` | `django-backend` | Django API starter (`#50`) |
+| `uv-workspace-starter` | `uv-workspace` | uv workspaces monorepo (`#55`) |
 
-## Planned templates
+Compatible cross-cutting extensions use the `all-*` taxonomy
+(`github-setup` → `extensions/all-github-setup`, etc.). Stack-specific addons
+live under `fastapi-*`, `django-*`, and `celery-*`.
 
-| Slug | Type (proposed) | Description | Phase |
-|------|-----------------|-------------|-------|
-| `cli-starter` | `cli-app` | Typer or Click CLI with uv, Ruff, pytest, and packaging entry points | 1 |
-| `celery-worker` | `celery-worker` | Celery worker + beat skeleton with Redis/RabbitMQ hooks and Docker compose overlay | 2 |
+## Candidates
 
-### `cli-starter`
-
-- **When:** Command-line tools, internal utilities, or libraries shipped as console scripts.
-- **Stack:** `pyproject.toml` with `[project.scripts]`, Typer (or Click), pytest for CLI invocation tests.
-- **Extensions:** `github-setup`, `development-container`; Docker extension optional for containerized CLI distribution.
-
-### `celery-worker`
-
-- **When:** Background jobs, scheduled tasks, or async processing separate from an HTTP API.
-- **Stack:** Celery app module, worker/beat commands, health probe, example task.
-- **Extensions:** `fastapi-docker`, `postgres` (for result backend or ORM), message-broker compose under `docker/redis/` or similar.
+None currently tracked. Propose new starters via GitHub issues and follow
+[AUTHORING.md](./AUTHORING.md).
 
 ## Contributing
 
@@ -33,4 +28,5 @@ Before implementing a new template:
 
 1. Read [AUTHORING.md](./AUTHORING.md) and scaffold locally with `file://` URLs.
 2. Propose the `type` string and compatible extensions in an issue.
-3. Add the registry entry to `templates.json` only when the template passes CI smoke tests in [TESTING.md](./TESTING.md).
+3. Add the registry entry to `templates.json` only when the template passes CI
+   smoke tests in [TESTING.md](./TESTING.md).
