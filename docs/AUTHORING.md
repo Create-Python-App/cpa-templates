@@ -132,8 +132,12 @@ Examples:
 
 **Never** use a generic `python-*` folder/slug for overlays that write FastAPI `app/` paths or a FastAPI-only `CMD`.
 
-CI enforces this in `scripts/ci/validate-registry.py`: folders must be `all-*`, or
-`{stack}-*` matching the extension's single `type` (see `STACK_PREFIX_BY_TYPE`).
+CI enforces this in `scripts/ci/validate-registry.py`:
+
+- Extension folders must be `all-*`, or `{stack}-*` matching a single `type`
+  (see `STACK_PREFIX_BY_TYPE`); `python-*` is rejected.
+- Every catalog template must ship the quality-bar docs/files listed below
+  (enforced on the maturity tip / after the template uplift PRs land).
 
 ### `incompatibleWith` (path collisions)
 
