@@ -10,6 +10,6 @@ class HealthStatusSerializer(serializers.Serializer):
 
 
 class HealthEnvelopeSerializer(serializers.Serializer):
-    data = HealthStatusSerializer()
+    data = HealthStatusSerializer()  # type: ignore[assignment]
     error = serializers.JSONField(allow_null=True)
     meta = serializers.DictField()
