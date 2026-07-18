@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "api",
+    "drf_spectacular",
+    "apps.health",
 ]
 
 MIDDLEWARE = [
@@ -66,6 +67,9 @@ DATABASES = {
     }
 }
 
+# When using the `postgres` extension, prefer DATABASE_URL / psycopg and replace
+# the sqlite engine above. See docs/CONFIGURATION.md and docs/DEPLOYMENT.md.
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -90,4 +94,11 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Django API",
+    "DESCRIPTION": "API scaffolded with create-awesome-python-app",
+    "VERSION": "0.1.0",
 }

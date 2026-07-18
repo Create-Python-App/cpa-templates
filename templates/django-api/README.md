@@ -1,45 +1,51 @@
-# Django API
+# Django + DRF API
 
-Django + Django REST Framework API starter with [uv](https://docs.astral.sh/uv/), [Ruff](https://docs.astral.sh/ruff/), and [pytest-django](https://pytest-django.readthedocs.io/).
+Production-oriented Django REST Framework starter with a **feature-app** layout,
+uv, Ruff, pytest-django, mypy/pyright stubs, and docs that match the CPA quality bar.
 
-## Quick start
+## Quickstart
 
-```sh
+```bash
 uv sync
 uv run python manage.py migrate
 uv run python manage.py runserver
+curl -s http://127.0.0.1:8000/api/v1/healthz/
+# OpenAPI UI: http://127.0.0.1:8000/api/v1/docs/
 ```
 
-## Commands
+Tests and lint:
 
-| Command | Description |
-|---------|-------------|
-| `uv run python manage.py runserver` | Start dev server |
-| `uv run python manage.py migrate` | Apply migrations |
-| `uv run ruff check .` | Lint |
-| `uv run pytest` | Run tests |
+```bash
+uv run pytest
+uv run ruff check .
+uv run mypy apps config
+```
 
-## Health probes
+## Architecture
 
-| Endpoint | Purpose |
-|----------|---------|
-| `GET /ping/` | Minimal probe |
-| `GET {apiPrefix}/healthz` | API readiness probe |
+Domain code lives under `apps/<feature>/` (serializers, services, views, urls).
+Project wiring lives under `config/`. Copy `docs/examples/feature-app/` when adding a feature.
+
+See [docs/PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md).
+
+## Documentation
+
+| Doc | Topic |
+|-----|-------|
+| [docs/README.md](./docs/README.md) | Index |
+| [docs/API.md](./docs/API.md) | Endpoints, envelope, OpenAPI |
+| [docs/CONFIGURATION.md](./docs/CONFIGURATION.md) | Env and tooling |
+| [docs/TESTING_GUIDE.md](./docs/TESTING_GUIDE.md) | pytest-django |
+| [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) | Containers and prod |
+| [docs/TYPING.md](./docs/TYPING.md) | mypy / pyright |
+| [AGENTS.md](./AGENTS.md) | AI assistant guide |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Human contributor guide |
 
 ## Compatible extensions
 
-| Slug | Notes |
-|------|-------|
-| `github-setup` | CI / Dependabot |
-| `python-devcontainer` | VS Code Dev Container |
-| `python-postgres` | Postgres Compose + driver (wire `DATABASES` manually) |
-
-`python-docker` currently targets FastAPI (`uvicorn app.main:app`) and is not compatible yet.
-
-## Configuration
-
-Copy `.env.example` to `.env`. Scaffold option:
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `apiPrefix` | `/api/v1` | Prefix for API routes including `/healthz` |
+| Slug | Purpose |
+|------|---------|
+| `github-setup` | CI / Dependabot / PR automation |
+| `development-container` | VS Code Dev Container |
+| `django-docker` | Dockerfile + Compose for Django |
+| `postgres` | Postgres Compose service (wire `DATABASES` / URL) |

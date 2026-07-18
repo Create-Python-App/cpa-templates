@@ -1,5 +1,9 @@
-# Django API docs
+# Documentation index
 
-- Prefer DRF `APIView` / viewsets under `api/` as the project grows.
-- Keep health probes unauthenticated.
-- When adding Postgres, update `DATABASES` in `config/settings.py` and prefer env-driven DSN parsing.
+- [Project structure](./PROJECT_STRUCTURE.md)
+- [API](./API.md)
+- [Configuration](./CONFIGURATION.md)
+- [Testing](./TESTING_GUIDE.md)
+- [Deployment](./DEPLOYMENT.md)
+- [Typing](./TYPING.md)
+- [Feature app example](./examples/feature-app/README.md)
