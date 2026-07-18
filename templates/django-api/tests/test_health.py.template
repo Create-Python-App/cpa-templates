@@ -10,13 +10,16 @@ def client() -> APIClient:
 
 
 def test_healthz_returns_healthy(client: APIClient) -> None:
-    response = client.get(f"{API_PREFIX}/healthz")
+    response = client.get(f"{API_PREFIX}/healthz/")
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["status"] == "healthy"
+    assert body["error"] is None
 
 
-def test_ping_returns_ok(client: APIClient) -> None:
-    response = client.get("/ping/")
+def test_openapi_schema_available(client: APIClient) -> None:
+    response = client.get(f"{API_PREFIX}/schema/")
     assert response.status_code == 200
-    assert response.json()["status"] == "ok"
+    body = response.content.decode()
+    assert "openapi" in body
+    assert "healthy" in body or "healthz" in body.lower() or "Healthz" in body
