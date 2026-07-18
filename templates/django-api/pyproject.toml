@@ -38,6 +38,7 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+extend-exclude = ["docs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
@@ -52,6 +53,7 @@ reportMissingTypeStubs = false
 [tool.mypy]
 python_version = "3.12"
 files = ["apps", "config", "tests"]
+exclude = ["docs/"]
 plugins = ["mypy_django_plugin.main"]
 warn_return_any = true
 warn_unused_configs = true
