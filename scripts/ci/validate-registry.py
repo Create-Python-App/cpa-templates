@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""L0 integrity: registry paths on disk + schema shape + extension naming law."""
+"""L0 integrity: registry paths, naming law, and template quality bar."""
 
 from __future__ import annotations
 
@@ -27,6 +27,43 @@ STACK_PREFIX_BY_TYPE: dict[str, str] = {
     "cli-app": "cli",
     "uv-workspace": "uv-workspace",
 }
+
+REQUIRED_TEMPLATE_DOCS = (
+    "docs/README.md",
+    "docs/PROJECT_STRUCTURE.md",
+    "docs/CONFIGURATION.md",
+    "docs/TESTING_GUIDE.md",
+    "docs/DEPLOYMENT.md",
+    "docs/TYPING.md",
+)
+
+HTTP_API_TYPES = frozenset({"fastapi-backend", "django-backend"})
+
+
+def _has_root_readme(path: Path) -> bool:
+    return (path / "README.md").is_file() or (path / "README.md.template").is_file()
+
+
+def _has_env_example(path: Path) -> bool:
+    return (path / ".env.example").is_file() or (path / ".env.example.template").is_file()
+
+
+def _has_agents_contributing(path: Path) -> bool:
+    agents = (path / "AGENTS.md").is_file() or (path / "AGENTS.md.template").is_file()
+    contrib = (path / "CONTRIBUTING.md").is_file() or (path / "CONTRIBUTING.md.template").is_file()
+    return agents and contrib
+
+
+def _has_tests(path: Path) -> bool:
+    tests = path / "tests"
+    if tests.is_dir():
+        return any(tests.rglob("test_*.py")) or any(tests.rglob("test_*.py.template"))
+    return any(
+        p.is_dir()
+        and p.name == "tests"
+        and (any(p.rglob("test_*.py")) or any(p.rglob("test_*.py.template")))
+        for p in path.rglob("tests")
+    )
 
 
 def validate_extension_folder_name(directory: str, types: list[str], slug: str) -> list[str]:
@@ -64,6 +101,27 @@ def validate_extension_folder_name(directory: str, types: list[str], slug: str) 
     return errors
 
 
+def validate_template_quality_bar(slug: str, type_name: str, path: Path) -> list[str]:
+    errors: list[str] = []
+    for relative in REQUIRED_TEMPLATE_DOCS:
+        if not (path / relative).is_file():
+            errors.append(f"template {slug}: missing quality-bar file {relative}")
+
+    if not _has_root_readme(path):
+        errors.append(f"template {slug}: missing README.md or README.md.template")
+    if not _has_agents_contributing(path):
+        errors.append(f"template {slug}: missing AGENTS.md and/or CONTRIBUTING.md")
+    if not _has_env_example(path):
+        errors.append(f"template {slug}: missing .env.example or .env.example.template")
+    if not _has_tests(path):
+        errors.append(f"template {slug}: missing tests (test_*.py under tests/)")
+
+    if type_name in HTTP_API_TYPES and not (path / "docs" / "API.md").is_file():
+        errors.append(f"template {slug}: HTTP API templates require docs/API.md")
+
+    return errors
+
+
 def main() -> None:
     registry = load_registry()
     errors: list[str] = []
@@ -73,7 +131,6 @@ def main() -> None:
 
     schema_path = REPO_ROOT / "templates.schema.json"
     if schema_path.is_file():
-        # Structural presence only; full JSON Schema validation is optional.
         json.loads(schema_path.read_text(encoding="utf-8"))
 
     category_slugs = {c["slug"] for c in registry.get("categories", [])}
@@ -91,6 +148,11 @@ def main() -> None:
         category = template.get("category")
         if category not in category_slugs:
             errors.append(f"template {slug}: unknown category {category}")
+        type_name = template.get("type")
+        if not isinstance(type_name, str) or not type_name:
+            errors.append(f"template {slug}: missing string type")
+        else:
+            errors.extend(validate_template_quality_bar(slug, type_name, path))
 
     for extension in registry.get("extensions", []):
         slug = extension.get("slug", "<unknown>")
@@ -111,7 +173,6 @@ def main() -> None:
         else:
             errors.extend(validate_extension_folder_name(directory, types, slug))
 
-        # Bidirectional incompatibleWith when declared
         for other_slug in extension.get("incompatibleWith") or []:
             other = next(
                 (e for e in registry["extensions"] if e["slug"] == other_slug), None

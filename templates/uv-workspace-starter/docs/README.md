@@ -1,7 +1,7 @@
 # Documentation
 
 Extra documentation for this uv workspace monorepo — project structure,
-day-to-day workflow, and releasing.
+day-to-day workflow, configuration, testing, releasing, and deployment.
 
 ## Resources
 
@@ -9,6 +9,10 @@ day-to-day workflow, and releasing.
   how members reference each other.
 - [DEVELOPMENT_WORKFLOW.md](DEVELOPMENT_WORKFLOW.md) — day-to-day commands, adding
   members, and troubleshooting.
+- [CONFIGURATION.md](CONFIGURATION.md) — shared tooling and per-app env.
+- [TESTING_GUIDE.md](TESTING_GUIDE.md) — workspace-wide pytest / typecheck.
+- [TYPING.md](TYPING.md) — mypy / pyright across members.
+- [DEPLOYMENT.md](DEPLOYMENT.md) — building and shipping members.
 - [RELEASING.md](RELEASING.md) — versioning and publishing individual members.
 
 ## See also

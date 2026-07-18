@@ -10,6 +10,10 @@ This file is for AI assistants. Humans: see `README.md` and `docs/`.
 | Human contribution guide | `CONTRIBUTING.md` (`CONTRIBUTING.md.template`) |
 | Monorepo layout | `docs/PROJECT_STRUCTURE.md` |
 | Day-to-day workflow | `docs/DEVELOPMENT_WORKFLOW.md` |
+| Configuration | `docs/CONFIGURATION.md` |
+| Testing | `docs/TESTING_GUIDE.md` |
+| Typing | `docs/TYPING.md` |
+| Deployment | `docs/DEPLOYMENT.md` |
 | Publishing members | `docs/RELEASING.md` |
 
 ## Key commands (run from the workspace root)

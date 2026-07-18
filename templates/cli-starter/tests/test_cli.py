@@ -12,7 +12,7 @@ def _plain(text: str) -> str:
     return _ANSI.sub("", text)
 
 
-def test_version() -> None:
+def test_version_flag() -> None:
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
     assert "0.1.0" in _plain(result.stdout)
@@ -28,3 +28,9 @@ def test_hello_name() -> None:
     result = runner.invoke(app, ["hello", "CPA"])
     assert result.exit_code == 0
     assert "Hello, CPA!" in _plain(result.stdout)
+
+
+def test_version_command() -> None:
+    result = runner.invoke(app, ["version"])
+    assert result.exit_code == 0
+    assert "0.1.0" in _plain(result.stdout)
