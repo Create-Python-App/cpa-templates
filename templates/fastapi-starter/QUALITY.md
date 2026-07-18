@@ -20,20 +20,20 @@ Use this checklist before calling a FastAPI starter "mature" for CPA.
 
 ## Migrations
 
-This starter does not ship an ORM by default. When using the `python-sqlalchemy`
-and/or `python-postgres` extensions:
+This starter does not ship an ORM by default. When using the `fastapi-sqlalchemy`
+and/or `postgres` extensions:
 
 ```sh
-uv run alembic upgrade head   # after adding python-sqlalchemy
+uv run alembic upgrade head   # after adding fastapi-sqlalchemy
 ```
 
 ## Extension slots (catalog slugs)
 
 | Slug | Role |
 |------|------|
-| `python-docker` | Dockerfile + Compose |
-| `python-postgres` | Postgres Compose + `psycopg` |
-| `python-devcontainer` | VS Code Dev Container |
+| `fastapi-docker` | Dockerfile + Compose |
+| `postgres` | Postgres Compose + `psycopg` |
+| `development-container` | VS Code Dev Container |
 | `github-setup` | GitHub Actions / Dependabot / templates |
 
 Example:
@@ -41,9 +41,9 @@ Example:
 ```sh
 uvx create-awesome-python-app@latest my-api \
   --template fastapi-starter \
-  --addons python-docker \
-  --addons python-postgres \
-  --addons python-devcontainer \
+  --addons fastapi-docker \
+  --addons postgres \
+  --addons development-container \
   --no-interactive
 ```
 

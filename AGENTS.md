@@ -22,7 +22,7 @@ cd my-app && uv sync && uv run pytest
 # Add a local extension
 CI=true uv run create-awesome-python-app my-app \
   --template "file://$PWD?subdir=templates/fastapi-starter" \
-  --addons "file://$PWD?subdir=extensions/github-setup" \
+  --addons "file://$PWD?subdir=extensions/all-github-setup" \
   --no-interactive
 ```
 

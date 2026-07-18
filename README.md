@@ -16,7 +16,7 @@ uvx create-awesome-python-app
 # With template and extensions
 uvx create-awesome-python-app my-api \
   --template fastapi-starter \
-  --addons github-setup python-docker
+  --addons github-setup fastapi-docker
 ```
 
 For local development against this checkout:

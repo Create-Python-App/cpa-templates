@@ -86,7 +86,7 @@ Scripts and notes for shipping:
 | `uv run uvicorn app.main:app --host 0.0.0.0 --port 8000` | Production-style ASGI process |
 | Health probe | `GET {API_PREFIX}/healthz` → `dev_code: HEALTH_OK` |
 
-Full guidance: [Deployment](./docs/DEPLOYMENT.md). Pair with the `python-docker` / `python-postgres` extensions when you need containers or a database.
+Full guidance: [Deployment](./docs/DEPLOYMENT.md). Pair with the `fastapi-docker` / `postgres` extensions when you need containers or a database.
 
 ## Configuration
 
@@ -117,13 +117,13 @@ Use catalog slugs (not informal names like `docker` / `vscode`):
 
 | Slug | Adds |
 |------|------|
-| `python-docker` | Dockerfile + Compose |
-| `python-postgres` | Postgres Compose + driver |
-| `python-devcontainer` | VS Code Dev Container |
+| `fastapi-docker` | Dockerfile + Compose |
+| `postgres` | Postgres Compose + driver |
+| `development-container` | VS Code Dev Container |
 | `github-setup` | CI / Dependabot / issue templates |
 
-Migrations are not bundled in the base starter. Add `python-sqlalchemy` (and usually
-`python-postgres`) when you need Alembic/`DATABASE_URL` workflows.
+Migrations are not bundled in the base starter. Add `fastapi-sqlalchemy` (and usually
+`postgres`) when you need Alembic/`DATABASE_URL` workflows.
 
 ## Quality bar
 

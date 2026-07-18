@@ -1,0 +1,15 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: always
+  worker:
+    build: .
+    env_file:
+      - .env
+    environment:
+      BROKER_URL: redis://redis:6379/0
+      RESULT_BACKEND: redis://redis:6379/1
+    restart: always
+    depends_on:
+      - redis
+    command: uv run celery -A worker.celery_app worker --loglevel=INFO --concurrency=2

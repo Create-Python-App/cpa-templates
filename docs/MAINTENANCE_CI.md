@@ -104,7 +104,7 @@ Curated JSON under `ci/profiles/`. Validator enforces **one extension per catego
 REPO="$PWD"
 python scripts/ci/run-scaffold-check.py \
   --template-url "file://$REPO?subdir=templates/fastapi-starter" \
-  --addon-url "file://$REPO?subdir=extensions/python-docker" \
+  --addon-url "file://$REPO?subdir=extensions/fastapi-docker" \
   --workdir /tmp/cpa-check
 ```
 

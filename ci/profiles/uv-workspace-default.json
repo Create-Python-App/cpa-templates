@@ -2,5 +2,7 @@
   "id": "uv-workspace-default",
   "description": "uv workspace monorepo with GitHub CI",
   "templateDir": "uv-workspace-starter",
-  "addons": ["github-setup"]
+  "addons": [
+    "github-setup"
+  ]
 }

@@ -92,11 +92,11 @@ Key questions:
 ls extensions/
 
 # Read the registry entry
-grep -A 15 '"slug": "python-docker"' templates.json
+grep -A 15 '"slug": "fastapi-docker"' templates.json
 
 # Read partial manifest and files
-cat extensions/python-docker/pyproject.toml
-ls -la extensions/python-docker
+cat extensions/fastapi-docker/pyproject.toml
+ls -la extensions/fastapi-docker
 ```
 
 Key questions:

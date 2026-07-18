@@ -20,7 +20,7 @@ Thanks for your interest in contributing to this project! This document is the h
 
 - Python matching `requires-python` in `pyproject.toml` (3.12+)
 - [uv](https://docs.astral.sh/uv/) installed
-- Optional: Docker if using `python-docker` / `python-postgres` extensions
+- Optional: Docker if using `fastapi-docker` / `postgres` extensions
 
 ## Project Bootstrap
 

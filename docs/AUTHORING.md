@@ -132,6 +132,17 @@ Examples:
 
 **Never** use a generic `python-*` folder/slug for overlays that write FastAPI `app/` paths or a FastAPI-only `CMD`.
 
+CI enforces this in `scripts/ci/validate-registry.py`: folders must be `all-*`, or
+`{stack}-*` matching the extension's single `type` (see `STACK_PREFIX_BY_TYPE`).
+
+### `incompatibleWith` (path collisions)
+
+Use symmetric `incompatibleWith` when two extensions would overwrite the same
+generated paths (for example two Docker overlays that both ship `Dockerfile` /
+`compose.yml` for the **same** template `type`). Today stack Docker extensions
+are isolated by `type`; when a type gains a second packaging strategy, declare
+mutual incompatibility like cna-templates does for Redux saga/thunk.
+
 ### Template quality bar (every catalog template)
 
 Every template registered in `templates.json` must ship at least:

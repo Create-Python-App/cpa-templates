@@ -7,7 +7,7 @@ After entries are registered in `templates.json` and the CLI catalog points to t
 ```sh
 CI=true uvx create-awesome-python-app my-app \
   --template fastapi-starter \
-  --addons github-setup python-docker \
+  --addons github-setup fastapi-docker \
   --no-interactive
 cd my-app && uv sync && uv run ruff check . && uv run pytest
 ```
@@ -29,8 +29,8 @@ CI=true uvx create-awesome-python-app my-app \
 CI=true uvx create-awesome-python-app my-app \
   --template "file://$REPO?subdir=templates/fastapi-starter" \
   --addons \
-    "file://$REPO?subdir=extensions/github-setup" \
-    "file://$REPO?subdir=extensions/python-docker" \
+    "file://$REPO?subdir=extensions/all-github-setup" \
+    "file://$REPO?subdir=extensions/fastapi-docker" \
   --no-interactive
 cd my-app && uv sync && uv run pytest
 ```

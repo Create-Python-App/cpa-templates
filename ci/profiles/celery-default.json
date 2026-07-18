@@ -2,5 +2,8 @@
   "id": "celery-default",
   "description": "Celery worker with GitHub CI + Docker",
   "templateDir": "celery-worker",
-  "addons": ["github-setup", "python-docker"]
+  "addons": [
+    "github-setup",
+    "celery-docker"
+  ]
 }

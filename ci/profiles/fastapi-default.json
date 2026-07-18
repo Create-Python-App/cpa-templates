@@ -2,5 +2,9 @@
   "id": "fastapi-default",
   "description": "Typical FastAPI API: GitHub CI + Docker + Postgres",
   "templateDir": "fastapi-starter",
-  "addons": ["github-setup", "python-docker", "python-postgres"]
+  "addons": [
+    "github-setup",
+    "fastapi-docker",
+    "postgres"
+  ]
 }
