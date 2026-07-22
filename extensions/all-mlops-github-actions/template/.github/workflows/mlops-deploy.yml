@@ -1,0 +1,12 @@
+name: MLOps Deploy Stub
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy placeholder
+        run: echo "Replace with your model deploy steps (CPU artifact publish, etc.)"

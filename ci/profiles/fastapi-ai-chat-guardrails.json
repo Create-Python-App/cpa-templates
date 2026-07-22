@@ -1,0 +1,9 @@
+{
+  "id": "fastapi-ai-chat-guardrails",
+  "description": "FastAPI AI chat + guardrails",
+  "templateDir": "fastapi-starter",
+  "addons": [
+    "fastapi-ai-chat",
+    "fastapi-ai-guardrails"
+  ]
+}

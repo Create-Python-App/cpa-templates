@@ -1,0 +1,9 @@
+{
+  "customOptions": {
+    "packageName": {
+      "type": "text",
+      "label": "Python package name",
+      "default": "mlops_sklearn"
+    }
+  }
+}
