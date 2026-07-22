@@ -25,7 +25,9 @@ class ExperimentConfig(BaseModel):
     random_seed: int = 42
     model: ModelConfig = Field(default_factory=ModelConfig)
     data: DataConfig = Field(default_factory=DataConfig)
-    steps: list[str] = Field(default_factory=lambda: ["load_synthetic", "train_classifier", "evaluate"])
+    steps: list[str] = Field(
+        default_factory=lambda: ["load_synthetic", "train_classifier", "evaluate"]
+    )
 
 
 def load_config(path: Path | str) -> ExperimentConfig:

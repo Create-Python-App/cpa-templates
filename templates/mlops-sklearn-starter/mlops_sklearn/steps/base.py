@@ -13,6 +13,7 @@ class BaseStep(ABC):
 
     def validate(self, context: StepContext) -> None:
         """Optional pre-flight checks."""
+        return None
 
     @abstractmethod
     def run(self, context: StepContext) -> StepContext:
