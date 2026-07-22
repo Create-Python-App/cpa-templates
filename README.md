@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Python Version](https://img.shields.io/badge/python-3.12+-green.svg)
+[![Discord](https://img.shields.io/discord/1527933660764831825?label=Discord&logo=discord&logoColor=white)](https://discord.gg/dwFTsR7fK2)
 
 Official templates and extensions for [create-awesome-python-app](https://github.com/Create-Python-App/create-python-app).
 
