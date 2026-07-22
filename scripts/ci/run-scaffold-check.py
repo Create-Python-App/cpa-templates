@@ -153,9 +153,13 @@ def main() -> None:
 
     project_root = workdir / args.project_name
 
+    # Put project_directory before options. Published CLI 0.2.10's argv expander
+    # treats --template URL values as "saw_positional", so a trailing directory
+    # after --addons is incorrectly kept as another addon (Invalid catalog slug).
     scaffold_cmd = [
         "uvx",
         UVX_SPEC,
+        args.project_name,
         "--template",
         args.template_url,
         "--no-interactive",
@@ -167,7 +171,6 @@ def main() -> None:
         scaffold_cmd.extend(["--addons", addon_url])
     for assignment in args.sets:
         scaffold_cmd.extend(["--set", assignment])
-    scaffold_cmd.append(args.project_name)
 
     run("scaffold", scaffold_cmd, cwd=workdir)
 
