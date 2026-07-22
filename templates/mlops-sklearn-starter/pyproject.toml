@@ -49,6 +49,8 @@ include = ["mlops_sklearn", "tests"]
 pythonVersion = "3.12"
 typeCheckingMode = "basic"
 reportMissingImports = false
+reportMissingTypeStubs = false
+reportPrivateImportUsage = false
 
 [tool.mypy]
 python_version = "3.12"

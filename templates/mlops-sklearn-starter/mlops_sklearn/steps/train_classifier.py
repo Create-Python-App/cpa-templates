@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 
 import mlflow
-import mlflow.sklearn
+import mlflow.sklearn as mlflow_sklearn
 from sklearn.linear_model import LogisticRegression
 
 from mlops_sklearn.config import ExperimentConfig
@@ -32,7 +32,7 @@ class TrainClassifierStep(BaseStep):
             model.fit(context["x_train"], context["y_train"])
             mlflow.log_param("model_type", cfg.model.type)
             mlflow.log_param("max_iter", cfg.model.max_iter)
-            mlflow.sklearn.log_model(model, artifact_path="model")
+            mlflow_sklearn.log_model(model, artifact_path="model")
             context["model"] = model
             context["mlflow_run_id"] = run.info.run_id
         return context
