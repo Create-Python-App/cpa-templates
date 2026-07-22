@@ -7,7 +7,7 @@ import os
 from fastapi import HTTPException, status
 
 from app.features.chat.providers import get_provider
-from app.features.chat.schemas import ChatRequest, ChatResponse, ChatMessage
+from app.features.chat.schemas import ChatRequest, ChatResponse
 
 
 def _max_input_chars() -> int:
