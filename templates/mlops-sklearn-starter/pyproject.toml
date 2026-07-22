@@ -55,3 +55,11 @@ python_version = "3.12"
 files = ["mlops_sklearn", "tests"]
 warn_return_any = true
 warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = [
+  "sklearn.*",
+  "mlflow.*",
+  "mlflow.sklearn",
+]
+ignore_missing_imports = true
