@@ -373,9 +373,3 @@ Verify generated output: `uv sync`, `uv run ruff check .`, `uv run pytest`, and 
 ## Future templates
 
 Planned starters not yet in the registry are listed in [FUTURE_TEMPLATES.md](./FUTURE_TEMPLATES.md).
-
-
-## AI/ML catalog
-
-For AI/ML taxonomy, categories, and template-vs-extension rules see
-[AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md) and [MLOPS_CONTRACT.md](./MLOPS_CONTRACT.md).

@@ -1,8 +1,0 @@
-{
-  "id": "mlops-sklearn-github-actions",
-  "description": "MLOps sklearn with CI/CT/CD workflow stubs",
-  "templateDir": "mlops-sklearn-starter",
-  "addons": [
-    "all-mlops-github-actions"
-  ]
-}

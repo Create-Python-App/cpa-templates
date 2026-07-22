@@ -1,1 +1,0 @@
-"""Serving / batch predict."""

@@ -1,6 +1,0 @@
-{
-  "id": "mlops-sklearn-default",
-  "description": "Bare MLOps sklearn starter (L3 representative)",
-  "templateDir": "mlops-sklearn-starter",
-  "addons": []
-}

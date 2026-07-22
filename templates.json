@@ -99,31 +99,6 @@
         "Workspace",
         "Python"
       ]
-    },
-    {
-      "slug": "ai-ml-applications",
-      "name": "AI/ML Applications",
-      "description": "FastAPI AI capabilities layered on backend starters.",
-      "details": "Chat, RAG, agents, MCP, and guardrails as extensions \u2014 not separate chat templates.",
-      "labels": [
-        "AI",
-        "ML",
-        "FastAPI",
-        "Chat",
-        "RAG"
-      ]
-    },
-    {
-      "slug": "mlops",
-      "name": "MLOps",
-      "description": "MLOps framework starters and training/serving pipelines.",
-      "details": "CPU-first sklearn/pytorch/tensorflow topologies with MLflow-friendly defaults.",
-      "labels": [
-        "MLOps",
-        "sklearn",
-        "MLflow",
-        "Python"
-      ]
     }
   ],
   "templates": [
@@ -202,21 +177,6 @@
         "Workspace",
         "Python",
         "Typer"
-      ]
-    },
-    {
-      "name": "MLOps sklearn Starter",
-      "slug": "mlops-sklearn-starter",
-      "description": "CPU-first sklearn MLOps pipeline with YAML configs, step architecture, local MLflow, and offline tests. Pair with all-mlops-github-actions for CI/CT/CD.",
-      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/mlops-sklearn-starter",
-      "type": "mlops-sklearn",
-      "category": "mlops",
-      "labels": [
-        "MLOps",
-        "sklearn",
-        "MLflow",
-        "Python",
-        "uv"
       ]
     }
   ],
@@ -418,54 +378,6 @@
         "Tracing",
         "Observability",
         "FastAPI"
-      ]
-    },
-    {
-      "name": "FastAPI AI Chat",
-      "slug": "fastapi-ai-chat",
-      "description": "MVP /chat feature with mock LLM provider for FastAPI starters. No external API calls in default tests.",
-      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-ai-chat",
-      "type": [
-        "fastapi-backend"
-      ],
-      "category": "ai-ml-applications",
-      "labels": [
-        "AI",
-        "Chat",
-        "FastAPI"
-      ]
-    },
-    {
-      "name": "FastAPI AI Guardrails",
-      "slug": "fastapi-ai-guardrails",
-      "description": "Code-level input/output AI guardrails (length, blocked patterns, email redaction) without external moderation APIs.",
-      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-ai-guardrails",
-      "type": [
-        "fastapi-backend"
-      ],
-      "category": "security",
-      "labels": [
-        "AI",
-        "Guardrails",
-        "Security",
-        "FastAPI"
-      ]
-    },
-    {
-      "name": "MLOps GitHub Actions",
-      "slug": "all-mlops-github-actions",
-      "description": "CI, continuous training, model quality gate, and deploy workflow stubs for MLOps templates (CPU-first).",
-      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-github-actions",
-      "type": [
-        "mlops-sklearn"
-      ],
-      "category": "ci",
-      "labels": [
-        "MLOps",
-        "GitHub Actions",
-        "CI",
-        "CT",
-        "CD"
       ]
     }
   ]

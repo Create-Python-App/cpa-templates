@@ -1,8 +1,0 @@
-{
-  "id": "fastapi-ai-chat-default",
-  "description": "FastAPI AI chat MVP with mock provider (no network)",
-  "templateDir": "fastapi-starter",
-  "addons": [
-    "fastapi-ai-chat"
-  ]
-}

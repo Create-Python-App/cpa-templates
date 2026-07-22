@@ -26,7 +26,6 @@ STACK_PREFIX_BY_TYPE: dict[str, str] = {
     "celery-worker": "celery",
     "cli-app": "cli",
     "uv-workspace": "uv-workspace",
-    "mlops-sklearn": "mlops-sklearn",
 }
 
 REQUIRED_TEMPLATE_DOCS = (

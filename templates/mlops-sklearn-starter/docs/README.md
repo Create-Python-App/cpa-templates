@@ -1,7 +1,0 @@
-# Documentation index
-
-- [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)
-- [CONFIGURATION.md](./CONFIGURATION.md)
-- [TESTING_GUIDE.md](./TESTING_GUIDE.md)
-- [DEPLOYMENT.md](./DEPLOYMENT.md)
-- [TYPING.md](./TYPING.md)
