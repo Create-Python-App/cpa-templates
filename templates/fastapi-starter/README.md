@@ -38,7 +38,7 @@ Useful guides for structure, API contracts, testing, typing, configuration, and 
 - [Ruff](https://docs.astral.sh/ruff/) — linting and formatting
 - [mypy](https://mypy-lang.org/) / [pyright](https://github.com/microsoft/pyright) — static typing (default)
 - [pytest](https://docs.pytest.org/) — test runner
-- [httpx](https://www.python-httpx.org/) — HTTP client for tests
+- [httpx2](https://pypi.org/project/httpx2/) — HTTP client for FastAPI/Starlette `TestClient`
 
 ## Quickstart
 
