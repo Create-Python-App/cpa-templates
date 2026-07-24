@@ -46,6 +46,12 @@ CI=true uvx create-awesome-python-app my-api \
 | [docs/AUTHORING.md](./docs/AUTHORING.md) | Directory layout, `cpa.config.json`, extensions |
 | [docs/TESTING.md](./docs/TESTING.md) | Local testing and CI workflow |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | How to add templates and extensions |
+| [docs/MAINTENANCE_RUNBOOK.md](./docs/MAINTENANCE_RUNBOOK.md) | Operating runbook: decision trees, checklists, and procedures for maintaining the CLI and templates |
+| [docs/MAINTENANCE_TEMPLATES.md](./docs/MAINTENANCE_TEMPLATES.md) | Guidance for inspecting, fixing, and adding templates and extensions |
+| [docs/MAINTENANCE_DEPENDENCIES.md](./docs/MAINTENANCE_DEPENDENCIES.md) | How to investigate, update, and resolve dependency conflicts |
+| [docs/MAINTENANCE_SECURITY.md](./docs/MAINTENANCE_SECURITY.md) | Procedures for triaging alerts, audits, and fixing CVEs |
+| [docs/MAINTENANCE_CI.md](./docs/MAINTENANCE_CI.md) | How to diagnose, run, and troubleshoot CI workflows and layered matrices |
+| [docs/MAINTENANCE_RELEASE.md](./docs/MAINTENANCE_RELEASE.md) | Release and publishing guidance for PyPI tags, workflows, and verification |
 
 ## Registry
 
