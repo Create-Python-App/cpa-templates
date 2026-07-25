@@ -88,6 +88,4 @@ documents the rule to apply once the first one lands (tracked in
 - [AUTHORING.md](./AUTHORING.md)
 - [TEMPLATE_QUALITY_M1.md](./TEMPLATE_QUALITY_M1.md)
 - [TESTING.md](./TESTING.md)
-- MLOps common contract: tracked separately under
-  [#83](https://github.com/Create-Python-App/cpa-templates/issues/83), not yet
-  written.
+- [MLOPS_CONTRACT.md](./MLOPS_CONTRACT.md)
