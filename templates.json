@@ -379,6 +379,22 @@
         "Observability",
         "FastAPI"
       ]
+    },
+    {
+      "name": "FastAPI MLflow Tracing",
+      "slug": "fastapi-mlflow-tracing",
+      "description": "Generic MLflow tracing infrastructure for FastAPI. Disabled by default; exposes reusable primitives for future extensions.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-mlflow-tracing",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "observability",
+      "labels": [
+        "MLflow",
+        "Tracing",
+        "Observability",
+        "FastAPI"
+      ]
     }
   ]
 }
