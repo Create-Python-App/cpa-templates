@@ -5,11 +5,11 @@ description = "Django API starter scaffolded with create-awesome-python-app"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-  "django>=5.1.0",
-  "djangorestframework>=3.15.0",
-  "drf-spectacular>=0.27.0",
-  "gunicorn>=23.0.0",
-  "python-dotenv>=1.0.0",
+  "django>=6.0.7",
+  "djangorestframework>=3.17.1",
+  "drf-spectacular>=0.30.0",
+  "gunicorn>=26.0.0",
+  "python-dotenv>=1.2.2",
 ]
 
 [dependency-groups]
