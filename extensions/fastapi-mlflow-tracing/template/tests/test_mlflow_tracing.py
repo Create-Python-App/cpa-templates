@@ -116,7 +116,8 @@ class TestEnabled:
         with patch.dict("sys.modules", {"mlflow": MagicMock()}):
             configure_mlflow_tracing(test_app)
             assert len(test_app.user_middleware) == 1
-            assert "MLflowTracingMiddleware" in test_app.user_middleware[0].cls.__name__
+            # mypy complains about .cls not having __name__, so we ignore it
+            assert "MLflowTracingMiddleware" in test_app.user_middleware[0].cls.__name__  # type: ignore[attr-defined]
 
 
 # ---------------------------------------------------------------------------
