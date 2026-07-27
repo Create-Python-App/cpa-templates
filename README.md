@@ -32,7 +32,11 @@ CI=true uvx create-awesome-python-app my-api \
 
 | Template | Type | Use case |
 |----------|------|----------|
-| [fastapi-starter](./templates/fastapi-starter) | `fastapi-backend` | HTTP APIs with FastAPI, uv, ruff, pytest, mypy, and pyright |
+| [fastapi-starter](./templates/fastapi-starter) | `fastapi-backend` | Production-ready FastAPI API with feature-based layout, uv, Ruff, pytest, mypy, and pyright |
+| [cli-starter](./templates/cli-starter) | `cli-app` | Typer CLI with multi-command layout, uv, Ruff, pytest, and a console script entry point |
+| [celery-worker](./templates/celery-worker) | `celery-worker` | Celery worker with modular tasks, Redis defaults, pydantic-settings, and eager-mode tests |
+| [django-api](./templates/django-api) | `django-backend` | Django + DRF API with feature apps, OpenAPI-friendly health probes, uv, and Ruff |
+| [uv-workspace-starter](./templates/uv-workspace-starter) | `uv-workspace` | Python monorepo using uv workspaces: shared packages and apps with one lockfile, Ruff, and Pyright |
 
 ## Documentation
 
@@ -42,6 +46,12 @@ CI=true uvx create-awesome-python-app my-api \
 | [docs/AUTHORING.md](./docs/AUTHORING.md) | Directory layout, `cpa.config.json`, extensions |
 | [docs/TESTING.md](./docs/TESTING.md) | Local testing and CI workflow |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | How to add templates and extensions |
+| [docs/MAINTENANCE_RUNBOOK.md](./docs/MAINTENANCE_RUNBOOK.md) | Operating runbook: decision trees, checklists, and procedures for maintaining the CLI and templates |
+| [docs/MAINTENANCE_TEMPLATES.md](./docs/MAINTENANCE_TEMPLATES.md) | Guidance for inspecting, fixing, and adding templates and extensions |
+| [docs/MAINTENANCE_DEPENDENCIES.md](./docs/MAINTENANCE_DEPENDENCIES.md) | How to investigate, update, and resolve dependency conflicts |
+| [docs/MAINTENANCE_SECURITY.md](./docs/MAINTENANCE_SECURITY.md) | Procedures for triaging alerts, audits, and fixing CVEs |
+| [docs/MAINTENANCE_CI.md](./docs/MAINTENANCE_CI.md) | How to diagnose, run, and troubleshoot CI workflows and layered matrices |
+| [docs/MAINTENANCE_RELEASE.md](./docs/MAINTENANCE_RELEASE.md) | Release and publishing guidance for PyPI tags, workflows, and verification |
 
 ## Registry
 

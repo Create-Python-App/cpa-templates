@@ -1,0 +1,33 @@
+version: 2
+updates:
+  # Extension templates ship Python deps via pyproject.toml.
+  # Scan all extension template directories and top-level templates.
+  - package-ecosystem: pip
+    directories:
+      - /extensions/*/template
+      - /templates/*
+    schedule:
+      interval: weekly
+    groups:
+      devDependencies:
+        dependency-type: development
+      productionDependencies:
+        dependency-type: production
+
+  # Danger JS tooling used in PR automation.
+  - package-ecosystem: npm
+    directory: /extensions/all-github-setup/template/tools/danger
+    schedule:
+      interval: weekly
+    groups:
+      devDependencies:
+        dependency-type: development
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
