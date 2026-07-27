@@ -242,6 +242,70 @@ documented as an optional path in `docs/DEPLOYMENT.md`, never required.
 | `docs/TYPING.md` | pydantic v2 + mypy/pyright, matching CPA's typed-Python default |
 | `docs/MLOPS_PIPELINE.md` | **Non-negotiable**: the `BaseStep` contract, `STEP_REGISTRY`, how to add a step, the registration-vs-promotion split, and dataset/preprocessing lineage |
 
+## Observability policy (span cohabitation: MLflow vs OpenTelemetry)
+
+MLOps templates reach observability through two surfaces that **must not
+double-instrument the same request**: MLflow (training-run tracking, owned
+by `tracking/` per the policy above) and OpenTelemetry (HTTP/request tracing,
+owned by the `fastapi-opentelemetry` extension). This section keeps both
+composable when a serving FastAPI endpoint (`serving/app.py`) coexists with
+the tracing extension stack.
+
+### Ownership split
+
+| Concern | Owner | Enabled by |
+|---|---|---|
+| Training run, params, metrics, datasets, model registry | `tracking/` (this contract) | `MLFLOW_TRACKING_URI` (local/offline default) |
+| HTTP request spans + framework instrumentation | `fastapi-opentelemetry` extension | `OTEL_ENABLED` |
+| LLM inference / tool / retrieval / guardrail spans | FastAPI AI extensions under #73, using #81's primitives | `MLFLOW_ENABLED` + the span-kind API from #112 |
+
+### Coexistence rule (non-negotiable)
+
+1. **MLflow autolog for FastAPI is OFF by default** in `fastapi-mlflow-tracing`
+   (#81). The extension instruments only the spans it explicitly starts via
+   `_maybe_start_span(kind, name)` — it never globally patches FastAPI, uvicorn,
+   or `requests` like `otelsdk` does.
+2. **OpenTelemetry wins on HTTP.** When both `fastapi-opentelemetry` and
+   `fastapi-mlflow-tracing` are applied to the same `fastapi-backend` project:
+   - HTTP request spans (kind `SERVER`, route, status, latency) belong to OTel.
+   - MLflow emits only its **child spans** (`llm_inference`, `tool_call`,
+     `retrieval`, `guardrail_check` per #112) — explicitly opened by the AI
+     extension code, never auto-spanned from the request middleware.
+   - This avoids span trees with duplicate `SERVER` entries and avoids
+     double-recording request latency.
+3. **No silent no-op cascade.** If both `OTEL_ENABLED` and `MLFLOW_ENABLED` are
+   unset, both layers become no-op. The generated `app/main.py` wire-up (one
+   line per extension, per `AUTHORING.md` parity) must not assume an order:
+   `init_sentry()` → `configure_telemetry(app)` → `configure_mlflow_tracing(app)`
+   is the documented order, but each helper must tolerate being called alone
+   or after a no-op sibling.
+4. **Attribute namespace.** OTel uses OpenTelemetry semconv attributes
+   (`http.request.method`, `http.response.status_code`, ...). MLflow-traced AI
+   spans use the `llm.*` / `tool.*` / `retrieval.*` namespace defined by #112.
+   No extension writes attributes outside its namespace.
+5. **`incompatibleWith` declaration.** Any future extension that would patch
+   FastAPI globally (e.g. an alternate MLflow autolog) must declare
+   `incompatibleWith: ["fastapi-opentelemetry"]` in `templates.json`. The
+   current `fastapi-mlflow-tracing` design (#81) does **not** patch globally,
+   so it stays compatible by default — but #91 owns the matrix that enforces
+   this for every new entry.
+
+### Privacy (applies to both layers)
+
+- Default is **no payload logging**. Raw HTTP bodies, raw prompts, raw
+  completions, credentials, and sensitive headers are never recorded unless
+  an explicit opt-in env var is set (`LLM_TRACE_PAYLOAD=true` for AI spans,
+  `OTEL_EXPORTER_OTLP_HEADERS` for OTel — both off in CI by default).
+- PII redaction surface stays in `fastapi-ai-guardrails` (#82), not in the
+  tracing layers.
+
+### Cross-references
+
+- #81 — primitive API owner (`_maybe_start_span`, `set_attribute`).
+- #91 — `incompatibleWith` matrix owner.
+- #112 — AI span primitive contract (attribute schema for `llm_inference`,
+  `tool_call`, `retrieval`, `guardrail_check`).
+
 ## CI/CD boundary
 
 This contract governs the template's runtime code and tests only. GitHub
