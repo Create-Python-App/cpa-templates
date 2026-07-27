@@ -27,10 +27,11 @@ def _to_langchain_message(message: ChatMessage) -> BaseMessage:
 
 def chat_completion(body: ChatRequest) -> ChatResponse:
     total = sum(len(m.content) for m in body.messages)
-    if total > _max_input_chars():
+    limit = _max_input_chars()
+    if total > limit:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"input exceeds AI_CHAT_MAX_INPUT_CHARS ({_max_input_chars()})",
+            detail=f"input exceeds AI_CHAT_MAX_INPUT_CHARS ({limit})",
         )
 
     provider_name = os.environ.get("AI_CHAT_PROVIDER", "mock")

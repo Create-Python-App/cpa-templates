@@ -18,7 +18,7 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 
 @router.post("", response_model=APIResponse[ChatResponse])
-async def create_chat(body: ChatRequest, request: Request) -> APIResponse[ChatResponse]:
+def create_chat(body: ChatRequest, request: Request) -> APIResponse[ChatResponse]:
     result = chat_completion(body)
     return make_item_response(
         data=result,

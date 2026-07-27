@@ -53,13 +53,16 @@ def client() -> TestClient:
     return TestClient(test_app)
 
 
-def test_chat_mock_roundtrip(client: TestClient) -> None:
+def test_chat_mock_roundtrip(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("AI_CHAT_PROVIDER", "mock")
     response = client.post(
         "/api/v1/chat",
         json={"messages": [{"role": "user", "content": "hello"}]},
     )
     assert response.status_code == 200
     body = response.json()
+    assert body["success"] is True
+    assert body["dev_code"] == "CHAT_COMPLETED"
     message = body["data"]["message"]
     assert message["role"] == "assistant"
     assert message["content"]
