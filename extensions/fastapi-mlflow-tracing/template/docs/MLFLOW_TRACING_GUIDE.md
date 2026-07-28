@@ -11,13 +11,13 @@ This extension provides foundational primitives. It does **not** include AI, Lan
 | Path | Purpose |
 |------|---------|
 | `pyproject.toml` | Merges `mlflow>=2.15.0` |
-| `app/core/mlflow_tracing.py` | `MLflowTracingSettings`, `configure_mlflow_tracing(app)`, `maybe_start_span`, `set_attribute` |
+| `app/core/mlflow_tracing.py` | `MLflowTracingSettings`, `configure_mlflow_tracing()`, `maybe_start_span`, `set_attribute` |
 | `.env.example` entries | Documents `MLFLOW_*` variables |
 | `tests/test_mlflow_tracing.py` | Offline unit tests |
 
 ## Wire it up
 
-In `app/main.py`, pass the FastAPI `app` instance to configure tracking and automatically register the middleware:
+In `app/main.py`, call `configure_mlflow_tracing()` during startup to set the tracking URI and active experiment (no-op when `MLFLOW_ENABLED=false`):
 
 ```python
 from app.core.mlflow_tracing import configure_mlflow_tracing
@@ -25,8 +25,8 @@ from app.core.mlflow_tracing import configure_mlflow_tracing
 # Create app...
 app = FastAPI()
 
-# Configure MLflow and add tracing middleware
-configure_mlflow_tracing(app)
+# Configure MLflow tracking URI and experiment
+configure_mlflow_tracing()
 ```
 
 ## Local development — run the MLflow UI

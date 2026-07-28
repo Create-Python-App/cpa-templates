@@ -15,7 +15,7 @@ Copied into generated projects (via `template/`):
 
 The bank `README.md` (this file) stays **outside** `template/` so it does not overwrite the project README.
 
-Like `fastapi-sentry` and `fastapi-opentelemetry`, this extension exposes a generic `configure_mlflow_tracing(app)` helper and safe generic primitives for future AI extensions to use.
+Like `fastapi-sentry` and `fastapi-opentelemetry`, this extension exposes a generic `configure_mlflow_tracing()` helper and safe generic primitives for future AI extensions to use.
 
 ## Apply
 
