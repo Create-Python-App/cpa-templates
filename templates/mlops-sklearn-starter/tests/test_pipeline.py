@@ -1,4 +1,4 @@
-"""Data and training stage step tests."""
+"""Data, training, and evaluation stage step tests, plus the full pipeline smoke test."""
 
 from __future__ import annotations
 
@@ -40,34 +40,15 @@ def test_features_step_defaults_to_passthrough() -> None:
     assert context["feature_transformer"] == "passthrough"
 
 
-def test_training_smoke_without_evaluate(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Exercises run_pipeline() through training, before evaluate exists (Task 4).
-
-    Uses a temporary config with a truncated steps list, since the real
-    default config's steps: list includes "evaluate", which isn't
-    registered until Task 4.
-    """
+def test_full_pipeline_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     db = tmp_path / "mlflow.db"
     monkeypatch.setenv("MLFLOW_TRACKING_URI", f"sqlite:///{db}")
 
-    config_path = tmp_path / "no_evaluate.yaml"
-    config_path.write_text(
-        "experiment_name: mlops-sklearn-test\n"
-        "random_seed: 42\n"
-        "steps: [loading, preprocessing, features, model, training]\n"
-        "loading:\n  n_samples: 200\n  n_features: 8\n  test_size: 0.25\n"
-        "preprocessing:\n  scale: true\n"
-        "features:\n  polynomial_degree: 1\n"
-        "model:\n  type: logistic_regression\n  max_iter: 200\n"
-        "training:\n  cv_folds: 1\n"
-        'serving:\n  model_uri: "models:/mlops-sklearn-test@production"\n',
-        encoding="utf-8",
-    )
+    result = run_pipeline(Path("configs/default.yaml"))
 
-    result = run_pipeline(config_path)
-
+    assert "metrics" in result
+    assert result["metrics"]["accuracy"] >= 0.0
     assert "model_version" in result
-    # Confirms the scaler-bundling fix: the pipeline was actually fit
-    # (fitted attributes present), not just assembled unfitted.
     fitted_scaler = result["model"].named_steps["scaler"]
     assert hasattr(fitted_scaler, "mean_")
+    assert Path("reports/metrics.json").exists()
