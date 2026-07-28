@@ -393,6 +393,22 @@
       ]
     },
     {
+      "name": "FastAPI MLflow Tracing",
+      "slug": "fastapi-mlflow-tracing",
+      "description": "Generic MLflow tracing infrastructure for FastAPI. Disabled by default; exposes reusable primitives for future extensions.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-mlflow-tracing",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "observability",
+      "labels": [
+        "MLflow",
+        "Tracing",
+        "Observability",
+        "FastAPI"
+      ]
+    },
+    {
       "name": "FastAPI AI Chat",
       "slug": "fastapi-ai-chat",
       "description": "Minimal /chat endpoint backed by LangChain's BaseChatModel. Mock provider by default — drop in a real provider via init_chat_model() with no interface change.",
