@@ -25,7 +25,7 @@ feature extensions clobbering each other's `app/api/router.py`).
 uvx create-awesome-python-app my-api \
   --template fastapi-starter \
   --addons fastapi-ai-chat \
-  --yes
+  --no-interactive
 ```
 
 ## Verify after scaffold

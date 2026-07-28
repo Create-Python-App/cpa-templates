@@ -5,7 +5,7 @@
       "slug": "backend-applications",
       "name": "Backend Applications",
       "description": "API and service starters for FastAPI and similar Python backends.",
-      "details": "Use when the deliverable is an HTTP API or background worker \u2014 FastAPI for async APIs with OpenAPI docs.",
+      "details": "Use when the deliverable is an HTTP API or background worker — FastAPI for async APIs with OpenAPI docs.",
       "labels": [
         "Backend",
         "API",
@@ -92,12 +92,24 @@
       "slug": "monorepo",
       "name": "Monorepo",
       "description": "Multi-package workspaces with shared tooling and one lockfile.",
-      "details": "Use when you need multiple libraries and apps in one repo \u2014 uv workspaces link members locally with a single virtual environment.",
+      "details": "Use when you need multiple libraries and apps in one repo — uv workspaces link members locally with a single virtual environment.",
       "labels": [
         "Monorepo",
         "uv",
         "Workspace",
         "Python"
+      ]
+    },
+    {
+      "slug": "ai-ml-applications",
+      "name": "AI/ML Applications",
+      "description": "FastAPI AI and ML capability extensions.",
+      "details": "Add when you need LLM-backed chat, retrieval, or agent endpoints on a FastAPI starter.",
+      "labels": [
+        "AI",
+        "ML",
+        "LangChain",
+        "FastAPI"
       ]
     }
   ],
@@ -224,7 +236,7 @@
     {
       "name": "Postgres",
       "slug": "postgres",
-      "description": "PostgreSQL 16 Compose service under docker/postgres/ plus env examples. Infra-only \u2014 does not write application ORM code.",
+      "description": "PostgreSQL 16 Compose service under docker/postgres/ plus env examples. Infra-only — does not write application ORM code.",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-postgres",
       "type": [
         "celery-worker",
@@ -377,6 +389,22 @@
         "OpenTelemetry",
         "Tracing",
         "Observability",
+        "FastAPI"
+      ]
+    },
+    {
+      "name": "FastAPI AI Chat",
+      "slug": "fastapi-ai-chat",
+      "description": "Minimal /chat endpoint backed by LangChain's BaseChatModel. Mock provider by default — drop in a real provider via init_chat_model() with no interface change.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-ai-chat",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "ai-ml-applications",
+      "labels": [
+        "LangChain",
+        "AI",
+        "Chat",
         "FastAPI"
       ]
     }
