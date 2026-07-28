@@ -17,16 +17,13 @@ This extension provides foundational primitives. It does **not** include AI, Lan
 
 ## Wire it up
 
-In `app/main.py`, pass the FastAPI `app` instance to configure tracking and automatically register the middleware:
+1. Import and call `configure_mlflow_tracing()` near the top of your `app/main.py`.
 
 ```python
 from app.core.mlflow_tracing import configure_mlflow_tracing
 
-# Create app...
-app = FastAPI()
-
-# Configure MLflow and add tracing middleware
-configure_mlflow_tracing(app)
+# Configure MLflow tracking URI and experiment
+configure_mlflow_tracing()
 ```
 
 ## Local development — run the MLflow UI
@@ -77,15 +74,29 @@ with maybe_start_span("database-query", table="users") as span:
 
 **AI-specific spans are intentionally out of scope for this extension.**
 
-This extension is designed to be consumed by other extensions (e.g. `fastapi-ai-chat`). If you are building an AI extension, you can use the provided primitives safely without worrying if tracing is actually enabled:
+This extension does not implement AI logic directly. Instead, it exposes `maybe_start_span` and `set_attribute` so future AI extensions (e.g., chat APIs) can cleanly record LLM spans. 
+
+Per the repository's span schema ([Issue #112](https://github.com/Create-Python-App/cpa-templates/issues/112)), AI spans should use the `llm_inference` name and standard `llm.*` attributes.
 
 ```python
 from app.core.mlflow_tracing import maybe_start_span
 
 def generate_chat_response(messages: list[dict]) -> str:
     # Safely creates an MLflow span if MLFLOW_ENABLED=true
-    with maybe_start_span("chat-generation", provider="openai"):
-        return call_llm(messages)
+    with maybe_start_span(
+        "llm_inference", 
+        **{
+            "llm.provider": "openai",
+            "llm.model": "gpt-4",
+            "llm.stream": False,
+        }
+    ) as span:
+        response = call_llm(messages)
+        
+        # Only log raw prompts/completions if the user opts in via an LLM_TRACE_PAYLOAD flag
+        # (This protects user privacy by default)
+        
+        return response
 ```
 
 ## Security considerations

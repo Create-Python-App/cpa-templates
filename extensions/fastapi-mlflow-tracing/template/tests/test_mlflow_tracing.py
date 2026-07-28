@@ -12,10 +12,8 @@ import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
-from fastapi import FastAPI
-
 import app.core.mlflow_tracing
+import pytest
 from app.core.mlflow_tracing import (
     MLflowTracingSettings,
     configure_mlflow_tracing,
@@ -46,17 +44,11 @@ class TestDisabled:
         app.core.mlflow_tracing._global_settings = MLflowTracingSettings(
             mlflow_enabled=False
         )
-        test_app = FastAPI()
-
         with patch.dict("sys.modules", {"mlflow": MagicMock()}):
             mock_mlflow = sys.modules["mlflow"]
-            configure_mlflow_tracing(test_app)
+            configure_mlflow_tracing()
             mock_mlflow.set_tracking_uri.assert_not_called()
             mock_mlflow.set_experiment.assert_not_called()
-
-        # Check no middleware was added
-        # (FastAPI adds 2 middlewares by default: ServerErrorMiddleware, ExceptionMiddleware)
-        assert len(test_app.user_middleware) == 0
 
     def test_maybe_start_span_yields_without_import(self) -> None:
         """maybe_start_span() must yield without importing mlflow when disabled."""
@@ -107,17 +99,7 @@ class TestEnabled:
         configure_mlflow_tracing()
         assert mlflow.get_tracking_uri() == tmp_path.as_uri()
 
-    def test_middleware_added_when_enabled(self, tmp_path: Path) -> None:
-        app.core.mlflow_tracing._global_settings = MLflowTracingSettings(
-            mlflow_enabled=True,
-            mlflow_tracking_uri=tmp_path.as_uri(),
-        )
-        test_app = FastAPI()
-        with patch.dict("sys.modules", {"mlflow": MagicMock()}):
-            configure_mlflow_tracing(test_app)
-            assert len(test_app.user_middleware) == 1
-            # mypy complains about .cls not having __name__, so we ignore it
-            assert "MLflowTracingMiddleware" in test_app.user_middleware[0].cls.__name__  # type: ignore[attr-defined]
+
 
 
 # ---------------------------------------------------------------------------

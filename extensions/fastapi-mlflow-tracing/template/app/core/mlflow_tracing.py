@@ -9,14 +9,9 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-if TYPE_CHECKING:
-    from fastapi import FastAPI
-    from starlette.requests import Request
-    from starlette.responses import Response
 
 
 class MLflowTracingSettings(BaseSettings):
@@ -50,11 +45,10 @@ def _get_settings() -> MLflowTracingSettings:
     return _global_settings
 
 
-def configure_mlflow_tracing(app: FastAPI | None = None) -> None:
+def configure_mlflow_tracing() -> None:
     """Enable MLflow tracing when MLFLOW_ENABLED is truthy.
 
-    Sets the tracking URI and active experiment. If ``app`` is provided,
-    also adds the MLflowTracingMiddleware to trace HTTP requests.
+    Sets the tracking URI and active experiment.
     
     No-op when MLFLOW_ENABLED is false.
     """
@@ -67,26 +61,11 @@ def configure_mlflow_tracing(app: FastAPI | None = None) -> None:
     mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
     mlflow.set_experiment(settings.mlflow_experiment_name)
 
-    if app is not None:
-        from starlette.middleware.base import BaseHTTPMiddleware
-
-        class _MLflowTracingMiddleware(BaseHTTPMiddleware):
-            async def dispatch(self, request: Request, call_next: Any) -> Response:
-                span_name = f"{request.method} {request.url.path}"
-                with mlflow.start_span(span_name) as span:
-                    span.set_attribute("http.method", request.method)
-                    span.set_attribute("http.path", request.url.path)
-                    response: Response = await call_next(request)
-                    span.set_attribute("http.status_code", response.status_code)
-                return response
-
-        app.add_middleware(_MLflowTracingMiddleware)
-
 
 @contextmanager
 def maybe_start_span(
     name: str,
-    **attributes: str | int | float | bool,
+    **attributes: str | float | bool,
 ) -> Generator[Any, None, None]:
     """Context manager that wraps a block of code in an MLflow span.
 
@@ -111,7 +90,7 @@ def maybe_start_span(
         yield span
 
 
-def set_attribute(key: str, value: str | int | float | bool) -> None:
+def set_attribute(key: str, value: str | float | bool) -> None:
     """Set an attribute on the currently active MLflow span.
     
     No-op when tracing is disabled.
