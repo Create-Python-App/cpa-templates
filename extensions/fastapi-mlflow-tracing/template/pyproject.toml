@@ -1,0 +1,4 @@
+[project]
+dependencies = [
+  "mlflow>=2.15.0",
+]
