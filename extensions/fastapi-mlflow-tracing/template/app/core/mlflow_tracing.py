@@ -65,7 +65,7 @@ def configure_mlflow_tracing() -> None:
 @contextmanager
 def maybe_start_span(
     name: str,
-    **attributes: str | float | bool,
+    **attributes: str | int | float | bool,
 ) -> Generator[Any, None, None]:
     """Context manager that wraps a block of code in an MLflow span.
 
@@ -90,7 +90,7 @@ def maybe_start_span(
         yield span
 
 
-def set_attribute(key: str, value: str | float | bool) -> None:
+def set_attribute(key: str, value: str | int | float | bool) -> None:
     """Set an attribute on the currently active MLflow span.
     
     No-op when tracing is disabled.

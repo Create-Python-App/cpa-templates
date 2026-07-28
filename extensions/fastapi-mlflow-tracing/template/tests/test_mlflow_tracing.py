@@ -12,8 +12,9 @@ import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import app.core.mlflow_tracing
 import pytest
+
+import app.core.mlflow_tracing
 from app.core.mlflow_tracing import (
     MLflowTracingSettings,
     configure_mlflow_tracing,
@@ -98,8 +99,6 @@ class TestEnabled:
         )
         configure_mlflow_tracing()
         assert mlflow.get_tracking_uri() == tmp_path.as_uri()
-
-
 
 
 # ---------------------------------------------------------------------------

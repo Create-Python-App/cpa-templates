@@ -17,13 +17,16 @@ This extension provides foundational primitives. It does **not** include AI, Lan
 
 ## Wire it up
 
-1. Import and call `configure_mlflow_tracing()` near the top of your `app/main.py`.
+In `app/main.py`, pass the FastAPI `app` instance to configure tracking and automatically register the middleware:
 
 ```python
 from app.core.mlflow_tracing import configure_mlflow_tracing
 
-# Configure MLflow tracking URI and experiment
-configure_mlflow_tracing()
+# Create app...
+app = FastAPI()
+
+# Configure MLflow and add tracing middleware
+configure_mlflow_tracing(app)
 ```
 
 ## Local development — run the MLflow UI
@@ -52,15 +55,18 @@ MLFLOW_TRACKING_URI=file:///absolute/path/to/mlruns
 
 ## Tracing individual code blocks
 
-Use `maybe_start_span` to instrument specific sections safely:
+Future AI extensions can consume `maybe_start_span` and `set_attribute` directly:
 
 ```python
-from app.core.mlflow_tracing import maybe_start_span, set_attribute
+from app.core.mlflow_tracing import maybe_start_span
 
-with maybe_start_span("database-query", table="users") as span:
-    results = fetch_data()
-    set_attribute("result_count", len(results))
+def generate_chat_response(messages: list[dict]) -> str:
+    with maybe_start_span("llm_inference", **{"llm.provider": "openai"}) as span:
+        response = call_openai_api(messages)
+        return response
 ```
+
+**Privacy Boundary:** By default, do not record raw prompts, completions, or raw payload data. AI-specific span schemas should adhere to standard structures (like those discussed in [Issue #112](https://github.com/Create-Python-App/cpa-templates/issues/112)). Only log payload tracing if hidden behind an explicit opt-in configuration flag.
 
 ## Configuration
 
@@ -74,34 +80,12 @@ with maybe_start_span("database-query", table="users") as span:
 
 **AI-specific spans are intentionally out of scope for this extension.**
 
-This extension does not implement AI logic directly. Instead, it exposes `maybe_start_span` and `set_attribute` so future AI extensions (e.g., chat APIs) can cleanly record LLM spans. 
+This extension is designed to be consumed by other extensions. If you are building an AI extension, you can use the provided primitives safely without worrying if tracing is actually enabled. `configure_mlflow_tracing()` is called during startup, setting up the active experiment and tracking server.
 
-Per the repository's span schema ([Issue #112](https://github.com/Create-Python-App/cpa-templates/issues/112)), AI spans should use the `llm_inference` name and standard `llm.*` attributes.
-
-```python
-from app.core.mlflow_tracing import maybe_start_span
-
-def generate_chat_response(messages: list[dict]) -> str:
-    # Safely creates an MLflow span if MLFLOW_ENABLED=true
-    with maybe_start_span(
-        "llm_inference", 
-        **{
-            "llm.provider": "openai",
-            "llm.model": "gpt-4",
-            "llm.stream": False,
-        }
-    ) as span:
-        response = call_llm(messages)
-        
-        # Only log raw prompts/completions if the user opts in via an LLM_TRACE_PAYLOAD flag
-        # (This protects user privacy by default)
-        
-        return response
-```
+*Note: HTTP request spans are intentionally not captured by this extension. OpenTelemetry (`fastapi-opentelemetry`) owns the HTTP request layer.*
 
 ## Security considerations
 
-- Only `http.method`, `http.path`, and `http.status_code` are recorded as span attributes by the middleware.
 - **Never** include authentication headers, API keys, request bodies, or passwords in span attributes.
 - Set `MLFLOW_TRACKING_URI` to a `file://` path in CI and development to avoid sending data to a remote server.
 - Do not commit `.env` to source control.
