@@ -18,7 +18,11 @@ def register_model_version(model: Any, name: str, run_id: str) -> str:
     """
     mlflow.sklearn.log_model(model, artifact_path="model", registered_model_name=name)
     client = MlflowClient()
-    versions = client.search_model_versions(f"name='{name}'")
+    # Scope the lookup to this run specifically — searching by name alone
+    # would return the highest version across ALL runs ever registered
+    # under this name, which could pick up a different run's version under
+    # concurrent training jobs.
+    versions = client.search_model_versions(f"name='{name}' and run_id='{run_id}'")
     latest = max(versions, key=lambda v: int(v.version))
     return latest.version
 
