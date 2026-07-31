@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 import mlflow.sklearn
 from mlflow import MlflowClient
@@ -28,4 +28,4 @@ def register_model_version(model: Any, name: str, run_id: str) -> str:
 
 
 def load_model(model_uri: str) -> Pipeline:
-    return mlflow.sklearn.load_model(model_uri)
+    return cast(Pipeline, mlflow.sklearn.load_model(model_uri))

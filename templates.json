@@ -111,6 +111,18 @@
         "LangChain",
         "FastAPI"
       ]
+    },
+    {
+      "slug": "mlops",
+      "name": "MLOps",
+      "description": "MLOps framework starters and training/serving pipelines.",
+      "details": "CPU-first sklearn/pytorch/tensorflow topologies with MLflow-friendly defaults.",
+      "labels": [
+        "MLOps",
+        "sklearn",
+        "MLflow",
+        "Python"
+      ]
     }
   ],
   "templates": [
@@ -189,6 +201,21 @@
         "Workspace",
         "Python",
         "Typer"
+      ]
+    },
+    {
+      "name": "MLOps sklearn Starter",
+      "slug": "mlops-sklearn-starter",
+      "description": "CPU-first sklearn MLOps pipeline with YAML configs, step architecture, local MLflow, and batch/FastAPI serving.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/mlops-sklearn-starter",
+      "type": "mlops-sklearn",
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "sklearn",
+        "MLflow",
+        "Python",
+        "uv"
       ]
     }
   ],

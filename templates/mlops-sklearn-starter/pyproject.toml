@@ -2,6 +2,7 @@
 name = "mlops-sklearn-starter"
 version = "0.1.0"
 description = "CPU-first sklearn MLOps starter scaffolded with create-awesome-python-app"
+readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
   "fastapi>=0.115.0",

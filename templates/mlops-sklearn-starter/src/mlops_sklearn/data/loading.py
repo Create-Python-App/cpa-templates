@@ -6,7 +6,8 @@ later preprocessing/feature fitting must only ever see the train split.
 
 from __future__ import annotations
 
-import mlflow.data
+import numpy as np
+from mlflow.data.numpy_dataset import from_numpy
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 
@@ -37,9 +38,9 @@ class LoadingStep(BaseStep):
         # points at the calling code. Passing an arbitrary tag string here
         # (e.g. "synthetic:make_classification") raises MlflowException under
         # mlflow>=2.15, since registered resolvers expect a real URI/path.
-        dataset = mlflow.data.from_numpy(
-            x_train,
-            targets=y_train,
+        dataset = from_numpy(
+            np.asarray(x_train),
+            targets=np.asarray(y_train),
             name=cfg.experiment_name,
         )
         context.update(

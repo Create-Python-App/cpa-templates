@@ -12,4 +12,5 @@ matplotlib.use("Agg")  # headless-safe: no GUI backend required in CI or contain
 
 def plot_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray) -> Figure:
     display = ConfusionMatrixDisplay.from_predictions(y_true, y_pred)
-    return display.figure_
+    figure: Figure = display.figure_
+    return figure
