@@ -11,6 +11,7 @@ from mlops_sklearn.config import load_config
 from mlops_sklearn.data.features import FeaturesStep
 from mlops_sklearn.data.loading import LoadingStep
 from mlops_sklearn.data.preprocessing import PreprocessingStep
+from mlops_sklearn.models.build import build_model
 from mlops_sklearn.pipeline.run import run_pipeline
 
 
@@ -38,6 +39,13 @@ def test_preprocessing_step_stashes_unfitted_scaler() -> None:
 def test_features_step_defaults_to_passthrough() -> None:
     context = FeaturesStep().run(_base_context())
     assert context["feature_transformer"] == "passthrough"
+
+
+def test_build_model_rejects_unsupported_model_type() -> None:
+    cfg = load_config(Path("configs/default.yaml"))
+    cfg.model.type = "random_forest"
+    with pytest.raises(ValueError, match="unsupported model.type"):
+        build_model(cfg, "passthrough", "passthrough")
 
 
 def test_full_pipeline_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

@@ -7,7 +7,12 @@ import mlflow
 from mlops_sklearn.config import ExperimentConfig
 from mlops_sklearn.data.preprocessing import PREPROCESSING_VERSION
 from mlops_sklearn.pipeline.base import BaseStep, StepContext
-from mlops_sklearn.tracking.client import configure_tracking, log_dataset, log_params
+from mlops_sklearn.tracking.client import (
+    configure_tracking,
+    flatten_params,
+    log_dataset,
+    log_params,
+)
 from mlops_sklearn.tracking.model_registry import register_model_version
 
 
@@ -24,14 +29,10 @@ class TrainStep(BaseStep):
         configure_tracking(cfg.experiment_name)
 
         with mlflow.start_run(run_name="train") as run:
-            log_params(
-                {
-                    "model.type": cfg.model.type,
-                    "model.max_iter": cfg.model.max_iter,
-                    "preprocessing.scale": cfg.preprocessing.scale,
-                    "features.polynomial_degree": cfg.features.polynomial_degree,
-                }
-            )
+            # Log the full config (minus `steps`, not a hyperparameter) so a
+            # run's lineage is fully reconstructable from its logged params
+            # alone, per docs/MLOPS_CONTRACT.md.
+            log_params(flatten_params(cfg.model_dump(exclude={"steps"})))
             mlflow.set_tag("preprocessing_version", PREPROCESSING_VERSION)
             log_dataset(context["dataset"], context="training")
 

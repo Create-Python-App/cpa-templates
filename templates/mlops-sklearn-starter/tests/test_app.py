@@ -47,3 +47,14 @@ def test_predict_endpoint_missing_model_returns_404(
         json={"features": [[0.1] * 8]},
     )
     assert response.status_code == 404
+
+
+def test_predict_endpoint_wrong_column_count_returns_422(client: TestClient) -> None:
+    # A valid, loadable model but a malformed request (wrong number of
+    # feature columns) must be reported as a client error, not conflated
+    # with "model not found".
+    response = client.post(
+        "/predict",
+        json={"features": [[0.1] * 3]},
+    )
+    assert response.status_code == 422

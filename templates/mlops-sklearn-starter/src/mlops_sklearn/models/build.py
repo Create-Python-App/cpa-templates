@@ -9,12 +9,18 @@ from sklearn.pipeline import Pipeline
 from mlops_sklearn.config import ExperimentConfig
 from mlops_sklearn.pipeline.base import BaseStep, StepContext
 
+_SUPPORTED_MODEL_TYPES = ("logistic_regression",)
+
 
 def build_model(
     cfg: ExperimentConfig,
     preprocessor: BaseEstimator | str,
     feature_transformer: BaseEstimator | str,
 ) -> Pipeline:
+    if cfg.model.type not in _SUPPORTED_MODEL_TYPES:
+        raise ValueError(
+            f"unsupported model.type {cfg.model.type!r}; supported: {_SUPPORTED_MODEL_TYPES}"
+        )
     classifier = LogisticRegression(max_iter=cfg.model.max_iter, random_state=cfg.random_seed)
     return Pipeline(
         [
