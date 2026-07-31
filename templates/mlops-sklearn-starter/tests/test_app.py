@@ -35,9 +35,15 @@ def test_predict_endpoint_roundtrip(client: TestClient) -> None:
     assert set(body["predictions"]) <= {0, 1}
 
 
-def test_predict_endpoint_missing_model_returns_404(client: TestClient) -> None:
+def test_predict_endpoint_missing_model_returns_404(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # model_uri is server-configured, not caller-supplied (see app.py) — to
+    # exercise the missing-model path, reconfigure the server's MODEL_URI
+    # env var, not the request body.
+    monkeypatch.setenv("MODEL_URI", "models:/does-not-exist@production")
     response = client.post(
         "/predict",
-        json={"features": [[0.1] * 8], "model_uri": "models:/does-not-exist@production"},
+        json={"features": [[0.1] * 8]},
     )
     assert response.status_code == 404
