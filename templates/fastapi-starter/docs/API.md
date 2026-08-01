@@ -101,13 +101,6 @@ Validation error example (`422`):
 3. Echoes it as the `x-request-id` response header.
 4. Includes it in `metadata.request_id` for enveloped responses.
 
-## CORS
-
-When scaffold option `enableCors` is `true` (default), `app/main.py` registers
-FastAPI `CORSMiddleware` with permissive local-dev defaults. Disable it at
-scaffold time with `--set enableCors=false`, or tighten origins in settings for
-production.
-
 ## Adding endpoints
 
 1. Create or extend a feature under `app/features/<name>/`.

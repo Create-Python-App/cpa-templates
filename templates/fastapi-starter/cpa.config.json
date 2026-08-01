@@ -6,12 +6,6 @@
       "type": "string",
       "message": "API URL prefix (e.g. /api/v1)",
       "default": "/api/v1"
-    },
-    {
-      "key": "enableCors",
-      "type": "boolean",
-      "message": "Enable CORS middleware",
-      "default": true
     }
   ]
 }

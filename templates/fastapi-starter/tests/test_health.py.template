@@ -2,11 +2,7 @@
 
 from fastapi.testclient import TestClient
 
-from app.core.config import settings
-from app.main import app
-
 API_PREFIX = "{{ apiPrefix }}"
-
 
 def test_healthz_returns_healthy(client: TestClient) -> None:
     response = client.get(f"{API_PREFIX}/healthz")
@@ -34,11 +30,3 @@ def test_ping_returns_ok(client: TestClient) -> None:
     response = client.get("/ping")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
-
-
-def test_cors_middleware_matches_scaffold_option() -> None:
-    middleware_names = [
-        getattr(middleware.cls, "__name__", type(middleware.cls).__name__)
-        for middleware in app.user_middleware
-    ]
-    assert ("CORSMiddleware" in middleware_names) is settings.enable_cors
