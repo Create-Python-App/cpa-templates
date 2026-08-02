@@ -431,7 +431,7 @@
       "labels": [
         "OpenTelemetry",
         "Tracing",
-        "Observability",
+        "Observability"
       ]
     },
     {
@@ -447,9 +447,6 @@
         "Rate Limit",
         "Security",
         "FastAPI"
-      ],
-      "incompatibleWith": [
-        "gateway-rate-limiter"
       ]
     },
     {
