@@ -54,3 +54,19 @@ The rate limiter identifies clients by their IP address (`request.client.host`).
 
 ## 4. Disabling the Limiter
 You can completely bypass the rate limiter during local testing or CI by setting `RATE_LIMIT_ENABLED=false` in your `.env`.
+
+## 5. Why this extension uses an in-memory limiter by default
+
+This extension intentionally defaults to an in-memory backend to keep the generated
+project lightweight and dependency-free.
+
+For production deployments using multiple workers or multiple instances,
+memory-based rate limiting is no longer globally consistent because each process
+maintains its own counters.
+
+In those environments, use a shared backend such as Redis or move rate limiting
+to an API Gateway.
+
+This extension intentionally does not bundle Redis because CPA keeps extensions
+modular. If Redis is required, compose this extension with the appropriate Redis
+support rather than increasing the dependency footprint for every project.
