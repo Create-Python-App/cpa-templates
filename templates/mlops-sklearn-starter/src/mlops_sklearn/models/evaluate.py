@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import mlflow
 
 from mlops_sklearn.models.metrics import compute_metrics
@@ -31,8 +33,9 @@ class EvaluateStep(BaseStep):
                 mlflow.log_metrics(metrics)
                 figure = plot_confusion_matrix(context["y_test"], y_pred)
                 mlflow.log_figure(figure, "confusion_matrix.png")
+                plt.close(figure)
 
-        reports_dir = Path("reports")
+        reports_dir = Path(os.environ.get("MLOPS_REPORTS_DIR", "reports"))
         reports_dir.mkdir(exist_ok=True)
         (reports_dir / "metrics.json").write_text(
             json.dumps(metrics, indent=2), encoding="utf-8"

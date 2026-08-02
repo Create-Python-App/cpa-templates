@@ -41,8 +41,9 @@ version currently aliased `production` before promoting it. See
 
 ## Dataset and preprocessing lineage
 
-Every training run logs: the full `ExperimentConfig` as params, an
-`mlflow.data.Dataset` built from the exact training split (`data/loading.py`),
+Every training run logs: the full `ExperimentConfig` as flattened params
+(excluding `steps`, which is pipeline orchestration, not a hyperparameter),
+an `mlflow.data.Dataset` built from the exact training split (`data/loading.py`),
 and a `preprocessing_version` tag (`data/preprocessing.py`'s
 `PREPROCESSING_VERSION`, bumped by hand when cleaning/feature logic changes).
 Together these fully reconstruct what data, what preprocessing, and what

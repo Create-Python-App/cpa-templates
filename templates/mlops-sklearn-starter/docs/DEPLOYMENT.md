@@ -19,9 +19,13 @@ oversight (see [MLOPS_PIPELINE.md](./MLOPS_PIPELINE.md)). Promote manually
 once you're satisfied with a version's metrics in `reports/metrics.json`:
 
 ```python
+import os
 from mlflow import MlflowClient
 
-MlflowClient().set_registered_model_alias("mlops-sklearn-local", "production", "1")
+tracking_uri = os.environ.get("MLFLOW_TRACKING_URI", "sqlite:///./mlflow.db")
+MlflowClient(tracking_uri=tracking_uri).set_registered_model_alias(
+    "mlops-sklearn-local", "production", "<version>"  # replace <version> with the actual number
+)
 ```
 
 CI/CD (automated training, quality gates, and deployment) is the
