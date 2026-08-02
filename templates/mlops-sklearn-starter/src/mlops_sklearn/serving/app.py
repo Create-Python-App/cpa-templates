@@ -1,8 +1,9 @@
 """Minimal FastAPI serving endpoint — plain responses, no APIResponse envelope.
 
-Does not implement HTTP/request tracing itself; see docs/MLOPS_CONTRACT.md's
+Does not implement HTTP/request tracing itself; see MLOPS_CONTRACT.md's
 Observability policy for why (fastapi-opentelemetry/fastapi-mlflow-tracing
-are not yet compatible with this template's `mlops-sklearn` type).
+are not yet compatible with this template's `mlops-sklearn` type):
+https://github.com/Create-Python-App/cpa-templates/blob/main/docs/MLOPS_CONTRACT.md
 """
 
 from __future__ import annotations

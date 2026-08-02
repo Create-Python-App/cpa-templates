@@ -10,7 +10,7 @@ module:
 | `features` | `data/features.py` — `polynomial_degree` |
 | `model` | `models/build.py` — `type`, `max_iter` |
 | `training` | `models/train.py` — `cv_folds` |
-| `serving` | `serving/predict.py` / `serving/app.py` — `model_uri` |
+| `serving` | `serving/predict.py` (batch) and `serving/app.py` (API) — both read `model_uri` |
 
 `MLFLOW_TRACKING_URI` (`.env`) defaults to `sqlite:///./mlflow.db` — local,
 offline tracking. Point it at a remote server only via env override.

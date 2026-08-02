@@ -21,7 +21,7 @@ once you're satisfied with a version's metrics in `reports/metrics.json`:
 ```python
 from mlflow import MlflowClient
 
-MlflowClient().set_registered_model_alias("mlops-sklearn-local", "production", "1")
+MlflowClient().set_registered_model_alias("mlops-sklearn-local", "production", "<version>")
 ```
 
 CI/CD (automated training, quality gates, and deployment) is the
