@@ -437,7 +437,7 @@
     {
       "name": "FastAPI Rate Limit",
       "slug": "fastapi-rate-limit",
-      "description": "Rate limiting via slowapi with optional Redis backing and CPA APIResponse envelopes.",
+      "description": "Rate limiting helper using slowapi (in-memory by default, Redis-ready).",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-rate-limit",
       "type": [
         "fastapi-backend"
@@ -446,8 +446,7 @@
       "labels": [
         "Rate Limit",
         "Security",
-        "FastAPI",
-        "slowapi"
+        "FastAPI"
       ],
       "incompatibleWith": [
         "gateway-rate-limiter"
