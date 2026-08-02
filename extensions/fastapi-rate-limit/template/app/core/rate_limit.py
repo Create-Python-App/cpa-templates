@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Callable
 
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
@@ -23,7 +24,7 @@ def _get_limiter() -> Limiter:
     enabled = enabled_str in ("1", "true", "yes", "on")
 
     default_limits = os.getenv("RATE_LIMIT_DEFAULT", "").strip()
-    limits = [default_limits] if default_limits else []
+    limits: list[str | Callable[..., str]] = [default_limits] if default_limits else []
 
     return Limiter(
         key_func=get_remote_address,
@@ -61,4 +62,6 @@ def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> JS
 def setup_rate_limit(app: FastAPI) -> None:
     """Register rate limiter state and exception handler on the FastAPI app."""
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    # Starlette's add_exception_handler types handlers as Exception-wide; FastAPI
+    # still dispatches the concrete exception type at runtime.
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
