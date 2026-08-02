@@ -4,6 +4,11 @@
 ![Python Version](https://img.shields.io/badge/python-3.12+-green.svg)
 [![Discord](https://img.shields.io/discord/1527933660764831825?label=Discord&logo=discord&logoColor=white)](https://discord.gg/bR5VyATgka)
 
+[![CI Integrity (L0)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-integrity.yml/badge.svg?branch=main)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-integrity.yml)
+[![CI Templates (L1)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-templates.yml/badge.svg?branch=main)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-templates.yml)
+[![CI Extensions (L2)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-extensions.yml/badge.svg?branch=main)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-extensions.yml)
+[![CI Profiles (L3)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-profiles.yml/badge.svg?branch=main)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-profiles.yml)
+
 Official templates and extensions for [create-awesome-python-app](https://github.com/Create-Python-App/create-python-app).
 
 ## Quick start
