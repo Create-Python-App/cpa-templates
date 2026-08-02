@@ -16,6 +16,11 @@ def setup_cors(app: FastAPI) -> None:
 
     origins = [origin.strip() for origin in origins_str.split(",") if origin.strip()]
     if origins:
+        if "*" in origins:
+            raise ValueError(
+                "Wildcard origin '*' cannot be used with allow_credentials=True. "
+                "Specify exact origins or set CORS_ORIGINS to a comma-separated list of domains."
+            )
         app.add_middleware(
             CORSMiddleware,
             allow_origins=origins,

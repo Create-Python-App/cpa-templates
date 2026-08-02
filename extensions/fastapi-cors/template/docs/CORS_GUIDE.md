@@ -22,7 +22,9 @@ Because middleware order matters, you must manually initialize CORS in `app/main
 from app.core.cors import setup_cors
 ```
 
-2. Call it immediately after initializing the `FastAPI` app:
+2. Call it **after** all other `add_middleware` calls so that CORS is the
+   outermost layer (FastAPI/Starlette applies middleware in LIFO order — the
+   last one added is the first to handle each request):
 
 ```python
 app = FastAPI(
@@ -30,8 +32,14 @@ app = FastAPI(
     # ...
 )
 
-setup_cors(app)
+app.add_middleware(RequestIDMiddleware)   # existing line
+register_exception_handlers(app)         # existing line
+setup_cors(app)                          # ← add after all middleware
 ```
+
+Placing `setup_cors` before `RequestIDMiddleware` would wrap CORS inside
+RequestID, meaning preflight `OPTIONS` requests would be processed by
+RequestIDMiddleware before CORS could respond to them.
 
 ## Security Warning
 
