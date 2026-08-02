@@ -27,15 +27,13 @@ Copy `.env.example` to the platform secret store (never commit real secrets).
 | Variable | Purpose |
 |----------|---------|
 | `API_PREFIX` | URL prefix for the composed API router (default `/api/v1`) |
-| `ENABLE_CORS` | Toggle CORS middleware when settings read this flag |
 | App-specific settings | Add in `app/core/config.py` and document here as you grow |
 
 Production checklist:
 
-1. Restrict CORS origins (do not ship wildcard origins to the public internet).
-2. Set a stable log level and retain `X-Request-ID` propagation.
-3. Expose `{API_PREFIX}/healthz` as the readiness/liveness probe.
-4. Terminate TLS at the load balancer / ingress.
+1. Set a stable log level and retain `X-Request-ID` propagation.
+2. Expose `{API_PREFIX}/healthz` as the readiness/liveness probe.
+3. Terminate TLS at the load balancer / ingress.
 
 ## Container sketch
 

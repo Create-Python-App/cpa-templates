@@ -251,6 +251,22 @@
       ]
     },
     {
+      "name": "FastAPI CORS",
+      "slug": "fastapi-cors",
+      "description": "CORS middleware helper for FastAPI (no-op without CORS_ORIGINS).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-cors",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "security",
+      "labels": [
+        "CORS",
+        "Security",
+        "FastAPI",
+        "Middleware"
+      ]
+    },
+    {
       "name": "FastAPI Docker",
       "slug": "fastapi-docker",
       "description": "Dockerfile and Compose for FastAPI (uvicorn app.main:app). Reach for it when containerizing the FastAPI starter.",
