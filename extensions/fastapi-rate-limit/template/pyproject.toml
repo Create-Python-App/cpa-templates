@@ -1,5 +1,4 @@
 [project]
 dependencies = [
   "slowapi>=0.1.10",
-  "redis>=5.2.0",
 ]
