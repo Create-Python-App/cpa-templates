@@ -432,7 +432,25 @@
         "OpenTelemetry",
         "Tracing",
         "Observability",
-        "FastAPI"
+      ]
+    },
+    {
+      "name": "FastAPI Rate Limit",
+      "slug": "fastapi-rate-limit",
+      "description": "Rate limiting via slowapi with optional Redis backing and CPA APIResponse envelopes.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-rate-limit",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "security",
+      "labels": [
+        "Rate Limit",
+        "Security",
+        "FastAPI",
+        "slowapi"
+      ],
+      "incompatibleWith": [
+        "gateway-rate-limiter"
       ]
     },
     {
