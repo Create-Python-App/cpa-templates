@@ -1,6 +1,6 @@
 # Project structure
 
-```
+```text
 src/mlops_sklearn/
 ├── config.py          # ExperimentConfig — one BaseModel per pipeline stage
 ├── pipeline/           # orchestration only — no ML logic

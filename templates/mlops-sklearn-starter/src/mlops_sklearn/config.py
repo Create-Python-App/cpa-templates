@@ -6,37 +6,50 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class LoadingConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     n_samples: int = 200
     n_features: int = 8
     test_size: float = 0.25
 
 
 class PreprocessingConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     scale: bool = True
 
 
 class FeaturesConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     polynomial_degree: int = 1
 
 
 class ModelConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     type: str = "logistic_regression"
     max_iter: int = 200
 
 
 class TrainingConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     cv_folds: int = 1
 
 
 class ServingConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     model_uri: str = "models:/mlops-sklearn-local@production"
 
 
 class ExperimentConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     experiment_name: str = "mlops-sklearn-local"
     random_seed: int = 42
     steps: list[str] = Field(
