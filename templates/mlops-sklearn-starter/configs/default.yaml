@@ -1,0 +1,24 @@
+experiment_name: mlops-sklearn-local
+random_seed: 42
+steps: [loading, preprocessing, features, model, training, evaluate]
+
+loading:
+  n_samples: 200
+  n_features: 8
+  test_size: 0.25
+
+preprocessing:
+  scale: true
+
+features:
+  polynomial_degree: 1
+
+model:
+  type: logistic_regression
+  max_iter: 200
+
+training:
+  cv_folds: 1
+
+serving:
+  model_uri: "models:/mlops-sklearn-local@production"
