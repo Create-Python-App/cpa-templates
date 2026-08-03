@@ -1,8 +1,8 @@
 
 # django-spectacular extension — auto-wired by CPA
 INSTALLED_APPS += ["drf_spectacular"]
-REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"  # type: ignore[assignment]
-SPECTACULAR_SETTINGS: dict[str, str] = {
+REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
+SPECTACULAR_SETTINGS = {
     "TITLE": "Django API",
     "DESCRIPTION": "API scaffolded with create-awesome-python-app",
     "VERSION": "0.1.0",
