@@ -2,9 +2,9 @@
 # django-spectacular extension — auto-wired by CPA
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView  # noqa: E402
 
-urlpatterns += [  # type: ignore[assignment]
-    path(f"{api_prefix}/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path(
+urlpatterns += [
+    path(f"{api_prefix}/schema/", SpectacularAPIView.as_view(), name="schema"),  # type: ignore[list-item]
+    path(  # type: ignore[list-item]
         f"{api_prefix}/docs/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
