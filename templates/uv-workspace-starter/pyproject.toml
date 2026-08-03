@@ -13,7 +13,7 @@ python-preference = "managed"
 
 [dependency-groups]
 dev = [
-    "ruff>=0.16.0",
+    "ruff>=0.16.1",
     "pyright>=1.1.411",
     "mypy>=2.3.0",
     "pytest>=9.1.1",
