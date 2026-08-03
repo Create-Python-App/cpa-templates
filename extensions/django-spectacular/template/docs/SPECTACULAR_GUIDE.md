@@ -49,7 +49,37 @@ urlpatterns = [
 ]
 ```
 
-## 3. Verify
+## 3. Documenting Your Endpoints
+
+To generate a detailed and typed OpenAPI schema, you should explicitly document your endpoints. This ensures that the generated Swagger UI accurately reflects the expected request and response shapes, which is crucial for client generation and API exploration.
+
+In your views (e.g., `apps/health/views.py`), import `extend_schema` from `drf_spectacular.utils` and apply it to your endpoint methods. You'll also need to define and import the appropriate serializers.
+
+```python
+from drf_spectacular.utils import extend_schema
+from rest_framework import serializers
+from rest_framework.views import APIView
+from rest_framework.request import Request
+from rest_framework.response import Response
+
+from apps.health.serializers import HealthStatusSerializer
+
+# Define an envelope serializer for the response shape
+class HealthEnvelopeSerializer(serializers.Serializer):
+    data = HealthStatusSerializer()
+    error = serializers.JSONField(allow_null=True)
+    meta = serializers.DictField()
+
+class HealthzView(APIView):
+    # ... existing config ...
+
+    @extend_schema(responses={200: HealthEnvelopeSerializer})
+    def get(self, request: Request) -> Response:
+        # ... existing implementation ...
+        pass
+```
+
+## 4. Verify
 
 Run your local development server:
 
