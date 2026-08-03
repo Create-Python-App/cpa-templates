@@ -301,9 +301,9 @@ urlpatterns += [
 
 ### Checklist additions for auto-wired extensions
 
-- [ ] Provider/router/settings append file targets a path that exists in the base template
-- [ ] The append file contains only the minimal registration call — no duplicate logic already in the helper module
-- [ ] For FastAPI middleware extensions, verify CORS remains last in the addon list in CI profiles that include it
+- [ ] Append file targets a path that exists in the base template
+- [ ] The append file contains only the minimal wiring or configuration — no logic already in the helper module (a `@register` call for FastAPI providers, `router.include_router()` for FastAPI routers, or a `+=` / dict-mutation statement for Django settings/URLs)
+- [ ] For FastAPI middleware extensions that call `app.add_middleware()`, verify the extension is listed last in the addon order in CI profiles (last registered = outermost middleware via FastAPI's LIFO rule)
 
 ## `pyproject.toml` merge
 

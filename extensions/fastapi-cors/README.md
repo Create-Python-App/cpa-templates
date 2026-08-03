@@ -25,7 +25,7 @@ CORS is registered last in the provider chain so it becomes the outermost middle
 ## Apply
 
 ```sh
-uvx create-awesome-python-app my-api \
+CI=true uvx create-awesome-python-app my-api \
   --template fastapi-starter \
   --addons fastapi-cors \
   --no-interactive
@@ -35,13 +35,7 @@ uvx create-awesome-python-app my-api \
 
 ```sh
 uv sync
-CORS_ORIGINS="http://localhost:3000" uv run python -c "
-from fastapi import FastAPI
-from app.core.providers import setup_app
-app = FastAPI()
-setup_app(app)
-print('CORS wired OK')
-"
+uv run pytest
 ```
 
 See `template/docs/CORS_GUIDE.md` for full configuration and troubleshooting.

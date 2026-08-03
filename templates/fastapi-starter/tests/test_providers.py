@@ -58,3 +58,29 @@ def test_setup_app_empty_registry_is_noop() -> None:
         setup_app(_make_app())  # must not raise
     finally:
         _providers.extend(saved)
+
+
+def test_last_registered_provider_runs_last() -> None:
+    """The final entry in _providers is applied last by setup_app.
+
+    Middleware extensions that must be outermost (e.g. CORS) should be
+    registered last — they call app.add_middleware() last, which makes them
+    the first layer to execute on incoming requests under FastAPI's LIFO order.
+    """
+    app = _make_app()
+    applied: list[str] = []
+
+    def early(a: FastAPI) -> None:
+        applied.append("early")
+
+    def final(a: FastAPI) -> None:
+        applied.append("final")
+
+    _providers.extend([early, final])
+    try:
+        setup_app(app)
+    finally:
+        _providers.remove(early)
+        _providers.remove(final)
+
+    assert applied[-1] == "final", "last-registered provider must run last"

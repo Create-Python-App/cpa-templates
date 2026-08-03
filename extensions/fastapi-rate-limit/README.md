@@ -27,7 +27,7 @@ The extension provides the `@limiter.limit("5/minute")` decorator for granular p
 ## Apply
 
 ```sh
-uvx create-awesome-python-app my-api \
+CI=true uvx create-awesome-python-app my-api \
   --template fastapi-starter \
   --addons fastapi-rate-limit \
   --no-interactive
@@ -37,7 +37,7 @@ uvx create-awesome-python-app my-api \
 
 ```sh
 uv sync
-uv run pytest tests/test_rate_limit.py -v
+uv run pytest
 ```
 
 See `template/docs/RATE_LIMIT_GUIDE.md` for full configuration and `@limiter.limit` usage.

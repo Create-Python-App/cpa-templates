@@ -352,8 +352,8 @@ urlpatterns += [
 ### Adiciones al checklist para extensiones con auto-wiring
 
 - [ ] El archivo de append apunta a una ruta que existe en el template base
-- [ ] El archivo de append contiene solo la llamada mínima de registro, sin duplicar lógica ya presente en el módulo helper
-- [ ] Para extensiones de middleware FastAPI, verificar que CORS siga siendo la última en la lista de addons en los perfiles CI que la incluyen
+- [ ] El archivo de append contiene solo el cable mínimo de configuración, sin duplicar lógica del módulo helper (un decorador `@register` para providers FastAPI, `router.include_router()` para routers FastAPI, o una sentencia `+=` / mutación de dict para settings/URLs de Django)
+- [ ] Para extensiones de middleware FastAPI que llamen a `app.add_middleware()`, verificar que la extensión sea la última en la lista de addons en los perfiles CI (última registrada = capa más externa, por la regla LIFO de FastAPI)
 
 ---
 
