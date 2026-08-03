@@ -4,6 +4,10 @@
 
 The **fastapi-sentry** extension adds `sentry-sdk[fastapi]` and a small `init_sentry()` helper. Initialization is a **no-op** when `SENTRY_DSN` is empty, so local development stays quiet until you opt in.
 
+## How it works
+
+Sentry is initialized automatically at scaffold time — no edits to `app/main.py` are needed. The extension registers `init_sentry` in `app/core/providers.py` via the CPA auto-wiring mechanism; `app/main.py` calls `setup_app(app)` which runs all registered providers at startup.
+
 ## What it adds
 
 | Path | Purpose |
@@ -12,19 +16,7 @@ The **fastapi-sentry** extension adds `sentry-sdk[fastapi]` and a small `init_se
 | `app/core/sentry.py` | `init_sentry()` with FastAPI and Starlette integrations |
 | `.env.example.append` | `SENTRY_DSN`, traces sample rate, environment |
 
-## Usage
-
-Call once during app startup (for example in `app/main.py`):
-
-```python
-from app.core.sentry import init_sentry
-
-init_sentry()
-```
-
-Then create the FastAPI app as usual. With an empty DSN, nothing is sent to Sentry.
-
-### Enable in a real environment
+## Enable in a real environment
 
 1. Create a Sentry project and copy the DSN.
 2. Set `SENTRY_DSN` in `.env` (never commit secrets).
@@ -32,8 +24,6 @@ Then create the FastAPI app as usual. With an empty DSN, nothing is sent to Sent
 4. Restart the API and trigger an error or transaction.
 
 ## Configuration
-
-Root `.env.example` gains these keys from `.env.example.append`:
 
 | Variable | Default | Notes |
 |----------|---------|-------|
@@ -53,7 +43,6 @@ Root `.env.example` gains these keys from `.env.example.append`:
 |---------|--------------|-----|
 | No events in Sentry | Empty/wrong DSN | Set `SENTRY_DSN`; restart the process |
 | Too much noise locally | DSN set in `.env` | Clear `SENTRY_DSN` for local work |
-| Missing FastAPI transactions | `init_sentry()` never called | Call it before serving requests |
 | High quota usage | Sample rate too high | Lower `SENTRY_TRACES_SAMPLE_RATE` |
 
 ## Resources
