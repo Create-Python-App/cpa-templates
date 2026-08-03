@@ -1,12 +1,4 @@
-"""Chat HTTP routes.
-
-Not mounted automatically — include it from your app/api/router.py:
-
-    from app.features.chat.router import router as chat_router
-    router.include_router(chat_router)
-
-See docs/AI_CHAT_GUIDE.md.
-"""
+"""Chat HTTP routes."""
 
 from fastapi import APIRouter, Request
 

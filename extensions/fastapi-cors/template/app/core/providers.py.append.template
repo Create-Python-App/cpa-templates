@@ -1,0 +1,6 @@
+
+
+@register
+def _cors(app: FastAPI) -> None:  # registered last — CORS wraps all other middleware (FastAPI LIFO)
+    from app.core.cors import setup_cors
+    setup_cors(app)

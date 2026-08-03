@@ -8,15 +8,14 @@ Copied into generated projects (via `template/`):
 |------|---------|
 | `pyproject.toml` | Adds OpenTelemetry packages for tracing, logging instrumentation, and OTLP/HTTP export |
 | `app/core/telemetry.py` | `configure_telemetry(app)` bootstrap (no-op unless `OTEL_ENABLED`) |
+| `app/core/providers.py.append.template` | Auto-registers `configure_telemetry` in the app provider registry |
 | `.env.example.append` | Documents `OTEL_ENABLED`, `OTEL_SERVICE_NAME`, and `OTEL_EXPORTER_OTLP_ENDPOINT` |
 | `docs/OTEL_GUIDE.md` | Usage and verification instructions |
 | `docs/README.md.append` | Index bullet for `docs/README.md` |
 
 The bank `README.md` (this file) stays **outside** `template/` so it does not overwrite the project README.
 
-Like `fastapi-sentry`, this extension does **not** overwrite `app/main.py` /
-`app/core/config.py` — callers add a one-line wire-up so other addons stay
-composable.
+`configure_telemetry` is registered automatically in `app/core/providers.py` via the `.append.template` mechanism — no changes to `app/main.py` are needed.
 
 ## Apply
 

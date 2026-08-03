@@ -1,6 +1,6 @@
 # Creación y mantenimiento de plantillas y extensiones
 
-Guía para colaboradores que quieran añadir o actualizar plantillas y extensiones en `cpa-templates`. Referencia de compatibilidad: `cna-templates AUTHORING.md`.
+Guía para colaboradores que quieran añadir o actualizar plantillas y extensiones en `cpa-templates`. Esta guía sigue la misma estructura que [cna-templates AUTHORING.md](https://github.com/Create-Node-App/cna-templates/blob/main/docs/AUTHORING.md) y se mantiene en paridad con ella.
 
 ## Estructura del directorio de plantillas
 
@@ -279,6 +279,81 @@ Las plantillas nuevas y actualizadas deben considerar Python tipado como el est�
 - Documenta `mypy` y/o `pyright` en `README.md`, `docs/TYPING.md` o CI.
 - Siempre que sea práctico, incluye las herramientas de tipado dentro de los grupos de dependencias de `pyproject.toml`.
 - Las extensiones no deben eliminar el tipado existente (evita overlays sin tipado que entren en conflicto con comprobaciones estrictas).
+
+---
+
+## Conexión automática de extensiones (auto-wiring)
+
+Las extensiones que aportan comportamiento en tiempo de ejecución (middleware, rutas, instrumentación) utilizan el mecanismo `.append` / `.append.template` para conectarse al proyecto generado de forma automática. No se requieren ediciones manuales en los archivos del template base.
+
+Existen dos patrones según el stack.
+
+### FastAPI — registro de providers
+
+El template base `fastapi-starter` incluye `app/core/providers.py` con un registro ligero:
+
+```python
+# app/core/providers.py (generado)
+AppProvider = Callable[[FastAPI], None]
+_providers: list[AppProvider] = []
+
+def register(fn: AppProvider) -> AppProvider: ...
+def setup_app(app: FastAPI) -> None: ...
+```
+
+`app/main.py` llama a `setup_app(app)` una vez, después de configurar el middleware base.
+
+Las extensiones registran su función de configuración añadiendo `template/app/core/providers.py.append.template`. Se usa el decorador `@register` con un import diferido para evitar ruff E402 (import fuera del bloque inicial):
+
+```python
+# extensions/fastapi-cors/template/app/core/providers.py.append.template
+
+@register
+def _cors(app: FastAPI) -> None:  # registrado al final — CORS envuelve todo el middleware (LIFO)
+    from app.core.cors import setup_cors
+    setup_cors(app)
+```
+
+**Orden:** los providers se llaman en el orden en que se añaden (orden de addons en el scaffold). Dado que `add_middleware` en FastAPI es LIFO, el middleware añadido en último lugar se convierte en la capa más externa. `fastapi-cors` debe ser siempre la última extensión en la lista de addons cuando el orden importa.
+
+### FastAPI — registro de rutas de funcionalidades
+
+Las extensiones de funcionalidades (auth, chat, …) añaden `template/app/api/router.py.append`:
+
+```python
+# extensions/fastapi-auth-jwt/template/app/api/router.py.append
+from app.features.auth.router import router as auth_router
+router.include_router(auth_router)
+```
+
+`router` ya está definido en `app/api/router.py` antes de que se ejecute el contenido añadido.
+
+### Django — append en settings y URLs
+
+Django carga `settings.py` como un módulo Python, por lo que la concatenación de listas y la mutación de dicts son válidas en el ámbito del módulo. Las extensiones añaden contenido a `config/settings.py` y `config/urls.py`:
+
+```python
+# extensions/django-spectacular/template/config/settings.py.append
+INSTALLED_APPS += ["drf_spectacular"]
+REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
+```
+
+```python
+# extensions/django-spectacular/template/config/urls.py.append
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+urlpatterns += [
+    path(f"{api_prefix}/schema/", SpectacularAPIView.as_view(), name="schema"),
+    ...
+]
+```
+
+`urlpatterns` y `api_prefix` ya están definidos en el `urls.py` base.
+
+### Adiciones al checklist para extensiones con auto-wiring
+
+- [ ] El archivo de append apunta a una ruta que existe en el template base
+- [ ] El archivo de append contiene solo el cable mínimo de configuración, sin duplicar lógica del módulo helper (un decorador `@register` para providers FastAPI, `router.include_router()` para routers FastAPI, o una sentencia `+=` / mutación de dict para settings/URLs de Django)
+- [ ] Para extensiones de middleware FastAPI que llamen a `app.add_middleware()`, verificar que la extensión sea la última en la lista de addons en los perfiles CI (última registrada = capa más externa, por la regla LIFO de FastAPI)
 
 ---
 

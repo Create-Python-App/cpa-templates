@@ -8,16 +8,15 @@ Copied into generated projects (via `template/`):
 |------|---------|
 | `pyproject.toml` | Merges `langchain-core` |
 | `app/features/chat/` | Schemas, langchain-core provider abstraction (mock only), `/chat` router |
+| `app/api/router.py.append` | Auto-mounts the chat router in `app/api/router.py` |
 | `tests/test_chat.py` | Offline tests against an isolated router-only test app |
 | `.env.example.append` | Provider/model/API key placeholders |
-| `docs/AI_CHAT_GUIDE.md` | Long-form guide for the generated project, including manual router wiring |
+| `docs/AI_CHAT_GUIDE.md` | Long-form guide for the generated project |
 
 The bank `README.md` (this file) stays **outside** `template/` so it does not
 overwrite the project README.
 
-The router is not auto-mounted — see `template/docs/AI_CHAT_GUIDE.md` for the
-one-line wiring step (matches `fastapi-auth-jwt`'s pattern; avoids two
-feature extensions clobbering each other's `app/api/router.py`).
+The chat router is mounted automatically via the `.append` mechanism — no changes to `app/api/router.py` are needed.
 
 ## Apply
 

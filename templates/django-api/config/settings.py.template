@@ -86,7 +86,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 API_PREFIX = "{{ apiPrefix }}".rstrip("/")
 
-REST_FRAMEWORK = {
+REST_FRAMEWORK: dict[str, object] = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],

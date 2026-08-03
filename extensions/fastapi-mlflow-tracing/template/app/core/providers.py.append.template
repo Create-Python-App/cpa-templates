@@ -1,0 +1,6 @@
+
+
+@register
+def _mlflow_tracing(app: FastAPI) -> None:
+    from app.core.mlflow_tracing import configure_mlflow_tracing
+    configure_mlflow_tracing()

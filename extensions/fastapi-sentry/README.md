@@ -8,6 +8,7 @@ Copied into generated projects (via `template/`):
 |------|---------|
 | `pyproject.toml` | Merges `sentry-sdk[fastapi]` into project dependencies |
 | `app/core/sentry.py` | `init_sentry()` helper (no-op without `SENTRY_DSN`) |
+| `app/core/providers.py.append.template` | Auto-registers `init_sentry` in the app provider registry |
 | `.env.example.append` | `SENTRY_DSN`, sample rate, environment |
 | `docs/SENTRY_GUIDE.md` | Long-form guide for the generated project |
 | `docs/README.md.append` | Index bullet for `docs/README.md` |
