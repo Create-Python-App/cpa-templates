@@ -16,21 +16,13 @@ Replace the demo user and secret before any production use.
 | `app/features/auth/router.py` | Demo `POST /auth/login` and `GET /auth/me` |
 | `.env.example.append` | `JWT_SECRET`, `JWT_ALGORITHM`, `JWT_EXPIRE_MINUTES` |
 
-## Usage
+## How it works
 
-### Mount the router
+The auth router is mounted automatically at scaffold time via the CPA auto-wiring mechanism — no edits to `app/api/router.py` are needed.
 
-Include the router from `app/api/router.py` (or equivalent):
+## Demo credentials
 
-```python
-from app.features.auth.router import router as auth_router
-
-api_router.include_router(auth_router)
-```
-
-### Demo credentials
-
-The scaffolded router uses:
+The scaffolded router uses an in-memory demo user:
 
 - Email: `demo@example.com`
 - Password: `password123`
@@ -43,7 +35,7 @@ curl -s -X POST http://localhost:8000/api/v1/auth/login \
   -d '{"email":"demo@example.com","password":"password123"}'
 ```
 
-### Service helpers
+## Service helpers
 
 ```python
 from app.features.auth.service import (
@@ -56,8 +48,6 @@ from app.features.auth.service import (
 
 ## Configuration
 
-Root `.env.example` gains these keys from `.env.example.append`:
-
 | Variable | Default | Notes |
 |----------|---------|-------|
 | `JWT_SECRET` | `change-me` | **Must** change for any shared/deployed environment |
@@ -67,16 +57,16 @@ Root `.env.example` gains these keys from `.env.example.append`:
 ## Verification
 
 1. `uv run python -c "from app.features.auth.service import create_access_token; print(create_access_token('a@b.co'))"` prints a JWT.
-2. After mounting the router, `POST /auth/login` with the demo user returns `access_token`.
+2. `POST /api/v1/auth/login` with demo credentials returns `access_token`.
 3. Invalid credentials return HTTP 401.
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `401 Invalid credentials` | Wrong demo email/password | Use `demo@example.com` / `password123` or replace the store |
+| `401 Invalid credentials` | Wrong demo email/password | Use `demo@example.com` / `password123` or replace the in-memory store |
 | Token decode fails | Secret/algorithm mismatch | Align `JWT_SECRET` and `JWT_ALGORITHM` across encode/decode |
-| Router 404 | Not included in API router | `include_router(auth_router)` under your API prefix |
+| Router `404` | Scaffold didn't apply the router append | Re-scaffold or verify `app/api/router.py` includes the auth router |
 | Weak secret in production | Left default `change-me` | Generate a long random secret; store in a secret manager |
 
 ## Resources
