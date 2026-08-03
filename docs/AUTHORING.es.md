@@ -419,17 +419,19 @@ Consulta `ARCHITECTURE.md` para conocer la descripción completa del sistema.
 
 ---
 
-# Pruebas locales
+## Pruebas locales
 
 Apunta la CLI a un checkout local:
 
 ```bash
 export CPA_TEMPLATES_URL="file:///path/to/cpa-templates"
 
-uvx create-awesome-python-app my-app \
+CI=true uvx create-awesome-python-app my-app \
   --template fastapi-starter \
   --addons github-setup fastapi-docker \
-  --yes
+  --no-interactive
+
+cd my-app
 ```
 
 Verifica el resultado generado:
@@ -441,7 +443,6 @@ uv run pytest
 ```
 
 También ejecuta cualquier comprobación específica de extensiones documentada en el README de cada extensión.
-
 ---
 
 # Lista de comprobación para nuevas plantillas
