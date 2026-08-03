@@ -48,9 +48,12 @@ def _get_settings() -> MLflowTracingSettings:
 def configure_mlflow_tracing() -> None:
     """Enable MLflow tracing when MLFLOW_ENABLED is truthy.
 
-    Sets the tracking URI and active experiment.
-    
-    No-op when MLFLOW_ENABLED is false.
+    Configures the tracking URI. No-op when MLFLOW_ENABLED is false.
+
+    Experiment selection is intentionally deferred to call sites — calling
+    ``mlflow.set_experiment()`` at startup would eagerly create the experiment
+    in the tracking store (a network call in MLflow 3.x), which is inappropriate
+    for an app startup hook. Set the experiment name before starting each run.
     """
     settings = _get_settings()
     if not settings.mlflow_enabled:
@@ -59,7 +62,6 @@ def configure_mlflow_tracing() -> None:
     import mlflow
 
     mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
-    mlflow.set_experiment(settings.mlflow_experiment_name)
 
 
 @contextmanager
