@@ -6,28 +6,32 @@ The **fastapi-mlflow-tracing** extension adds generic [MLflow](https://mlflow.or
 
 This extension provides foundational primitives. It does **not** include AI, LangChain, or model-specific wrappers.
 
+## How it works
+
+MLflow is configured automatically at scaffold time — no edits to `app/main.py` are needed. The extension registers `configure_mlflow_tracing` in `app/core/providers.py` via the CPA auto-wiring mechanism.
+
+`configure_mlflow_tracing()` sets the **tracking URI** at app startup. Experiment selection (`mlflow.set_experiment()`) is deferred to call sites — calling it at startup would eagerly create the experiment in the tracking store (a network call in MLflow 3.x), which is inappropriate for an app startup hook. Set the experiment before starting each run:
+
+```python
+import mlflow
+
+def record_inference(prompt: str) -> str:
+    mlflow.set_experiment("my-feature")  # select or create experiment here
+    with mlflow.start_run():
+        result = call_model(prompt)
+        mlflow.log_metric("latency_ms", ...)
+        return result
+```
+
 ## What it adds
 
 | Path | Purpose |
 |------|---------|
-| `pyproject.toml` | Merges `mlflow>=2.15.0` |
+| `pyproject.toml` | Merges `mlflow>=3.15.0` |
 | `app/core/mlflow_tracing.py` | `MLflowTracingSettings`, `configure_mlflow_tracing()`, `maybe_start_span`, `set_attribute` |
-| `.env.example` entries | Documents `MLFLOW_*` variables |
+| `app/core/providers.py.append.template` | Auto-registers `configure_mlflow_tracing` in the app provider registry |
+| `.env.example.append` | Documents `MLFLOW_*` variables |
 | `tests/test_mlflow_tracing.py` | Offline unit tests |
-
-## Wire it up
-
-In `app/main.py`, call `configure_mlflow_tracing()` during startup to set the tracking URI and active experiment (no-op when `MLFLOW_ENABLED=false`):
-
-```python
-from app.core.mlflow_tracing import configure_mlflow_tracing
-
-# Create app...
-app = FastAPI()
-
-# Configure MLflow tracking URI and experiment
-configure_mlflow_tracing()
-```
 
 ## Local development — run the MLflow UI
 
@@ -38,7 +42,6 @@ uv run mlflow server --host 127.0.0.1 --port 5000
 # 2. Set env vars (or add to .env)
 export MLFLOW_ENABLED=true
 export MLFLOW_TRACKING_URI=http://localhost:5000
-export MLFLOW_EXPERIMENT_NAME=my-api-dev
 
 # 3. Start your FastAPI app
 uv run uvicorn app.main:app --reload
@@ -55,7 +58,7 @@ MLFLOW_TRACKING_URI=file:///absolute/path/to/mlruns
 
 ## Tracing individual code blocks
 
-Future AI extensions can consume `maybe_start_span` and `set_attribute` directly:
+Use `maybe_start_span` and `set_attribute` in any feature:
 
 ```python
 from app.core.mlflow_tracing import maybe_start_span
@@ -66,7 +69,7 @@ def generate_chat_response(messages: list[dict]) -> str:
         return response
 ```
 
-**Privacy Boundary:** By default, do not record raw prompts, completions, or raw payload data. AI-specific span schemas should adhere to standard structures (like those discussed in [Issue #112](https://github.com/Create-Python-App/cpa-templates/issues/112)). Only log payload tracing if hidden behind an explicit opt-in configuration flag.
+**Privacy Boundary:** Do not record raw prompts, completions, or payload data by default. Only log them behind an explicit opt-in configuration flag.
 
 ## Configuration
 
@@ -74,15 +77,7 @@ def generate_chat_response(messages: list[dict]) -> str:
 |----------|---------|-------|
 | `MLFLOW_ENABLED` | `false` | Set to `true` to enable |
 | `MLFLOW_TRACKING_URI` | `http://localhost:5000` | Remote server or `file:///path` |
-| `MLFLOW_EXPERIMENT_NAME` | `fastapi-app` | Groups related traces |
-
-## Using this from an AI extension
-
-**AI-specific spans are intentionally out of scope for this extension.**
-
-This extension is designed to be consumed by other extensions. If you are building an AI extension, you can use the provided primitives safely without worrying if tracing is actually enabled. `configure_mlflow_tracing()` is called during startup, setting up the active experiment and tracking server.
-
-*Note: HTTP request spans are intentionally not captured by this extension. OpenTelemetry (`fastapi-opentelemetry`) owns the HTTP request layer.*
+| `MLFLOW_EXPERIMENT_NAME` | `fastapi-app` | Used as a suggested experiment name for your runs |
 
 ## Security considerations
 
@@ -91,8 +86,6 @@ This extension is designed to be consumed by other extensions. If you are buildi
 - Do not commit `.env` to source control.
 
 ## Production configuration
-
-For production, point at a secured MLflow Tracking Server:
 
 ```env
 MLFLOW_ENABLED=true

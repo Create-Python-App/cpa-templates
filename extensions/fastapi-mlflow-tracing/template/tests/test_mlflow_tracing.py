@@ -88,9 +88,12 @@ class TestEnabled:
             mock_mlflow = sys.modules["mlflow"]
             configure_mlflow_tracing()
             mock_mlflow.set_tracking_uri.assert_called_once_with(tmp_path.as_uri())
+            # set_experiment is NOT called at startup — experiment selection is
+            # deferred to call sites to avoid eager network calls in MLflow 3.x.
+            mock_mlflow.set_experiment.assert_not_called()
 
-    def test_local_file_backend_no_error(self, tmp_path: Path) -> None:
-        """Enabled tracing against a real local file:// URI must not raise."""
+    def test_local_file_backend_sets_uri(self, tmp_path: Path) -> None:
+        """Enabled tracing against a real local file:// URI must set the URI without error."""
         import mlflow
         app.core.mlflow_tracing._global_settings = MLflowTracingSettings(
             mlflow_enabled=True,
