@@ -14,12 +14,12 @@ dependencies = [
 [dependency-groups]
 dev = [
   "django-stubs>=6.0.7",
-  "djangorestframework-stubs>=3.17.0",
+  "djangorestframework-stubs>=3.17.1",
   "mypy>=2.3.0",
   "pyright>=1.1.411",
   "pytest>=9.1.1",
   "pytest-django>=4.12.0",
-  "ruff>=0.16.0",
+  "ruff>=0.16.1",
 ]
 
 [build-system]
