@@ -1,0 +1,4 @@
+
+from app.core.mlflow_tracing import configure_mlflow_tracing
+
+register(lambda app: configure_mlflow_tracing())

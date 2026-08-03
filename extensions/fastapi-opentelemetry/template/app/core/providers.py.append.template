@@ -1,0 +1,4 @@
+
+from app.core.telemetry import configure_telemetry
+
+register(configure_telemetry)

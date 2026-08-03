@@ -1,0 +1,4 @@
+
+from app.core.sentry import init_sentry
+
+register(lambda app: init_sentry())

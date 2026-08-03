@@ -1,0 +1,4 @@
+
+from app.core.rate_limit import setup_rate_limit
+
+register(setup_rate_limit)

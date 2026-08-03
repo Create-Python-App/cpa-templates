@@ -8,6 +8,7 @@ Copied into generated projects (via `template/`):
 |------|---------|
 | `pyproject.toml` | Merges `mlflow>=2.15.0` into project dependencies |
 | `app/core/mlflow_tracing.py` | `MLflowTracingSettings`, `configure_mlflow_tracing()`, `maybe_start_span`, `set_attribute` |
+| `app/core/providers.py.append.template` | Auto-registers `configure_mlflow_tracing` in the app provider registry |
 | `.env.example.append` | `MLFLOW_ENABLED`, tracking URI, experiment name |
 | `tests/test_mlflow_tracing.py` | Offline unit tests using a local `file://` tracking directory |
 | `docs/MLFLOW_TRACING_GUIDE.md` | Long-form guide for the generated project |
@@ -15,7 +16,7 @@ Copied into generated projects (via `template/`):
 
 The bank `README.md` (this file) stays **outside** `template/` so it does not overwrite the project README.
 
-Like `fastapi-sentry` and `fastapi-opentelemetry`, this extension exposes a generic `configure_mlflow_tracing()` helper and safe generic primitives for future AI extensions to use.
+`configure_mlflow_tracing` is registered automatically in `app/core/providers.py` via the `.append.template` mechanism — no changes to `app/main.py` are needed. The helper exposes `maybe_start_span` and `set_attribute` for use by AI extensions.
 
 ## Apply
 

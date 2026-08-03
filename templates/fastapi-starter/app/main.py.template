@@ -8,6 +8,7 @@ from app.core.config import settings
 from app.core.exception_handlers import register_exception_handlers
 from app.core.logging_config import configure_logging
 from app.core.middleware import RequestIDMiddleware
+from app.core.providers import setup_app
 
 configure_logging()
 
@@ -21,6 +22,7 @@ app = FastAPI(
 
 app.add_middleware(RequestIDMiddleware)
 register_exception_handlers(app)
+setup_app(app)
 
 app.include_router(api_router, prefix=settings.api_prefix)
 

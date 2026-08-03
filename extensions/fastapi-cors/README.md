@@ -1,11 +1,16 @@
 # FastAPI CORS Extension
 
-Adds CORS (Cross-Origin Resource Sharing) middleware configuration to a FastAPI project. 
+Adds CORS (Cross-Origin Resource Sharing) middleware to a FastAPI project.
 
 ## What this adds
 
-- `app/core/cors.py` | `setup_cors()` helper that reads `CORS_ORIGINS` from the environment.
-- `docs/CORS_GUIDE.md` | Guide on how to configure and use CORS.
+| Path | Purpose |
+|------|---------|
+| `app/core/cors.py` | `setup_cors()` — registers `CORSMiddleware` when `CORS_ORIGINS` is set |
+| `app/core/providers.py.append.template` | Auto-registers `setup_cors` in the app provider registry |
+| `.env.example.append` | `CORS_ORIGINS` placeholder |
+| `docs/CORS_GUIDE.md` | Configuration guide for the generated project |
+| `docs/README.md.append` | Index bullet for `docs/README.md` |
 
 ## Compatibility
 
@@ -13,4 +18,30 @@ Adds CORS (Cross-Origin Resource Sharing) middleware configuration to a FastAPI 
 
 ## How it works
 
-This extension does not automatically inject middleware into `main.py` to ensure deterministic ordering. Instead, it provides the helper and instructions to wire it up manually in two lines of code, following the `fastapi-sentry` pattern.
+`setup_cors` is registered automatically in `app/core/providers.py` via the `.append.template` mechanism. No changes to `app/main.py` are needed.
+
+CORS is registered last in the provider chain so it becomes the outermost middleware layer — consistent with FastAPI's LIFO `add_middleware` execution order and correct preflight handling.
+
+## Apply
+
+```sh
+uvx create-awesome-python-app my-api \
+  --template fastapi-starter \
+  --addons fastapi-cors \
+  --no-interactive
+```
+
+## Verify after scaffold
+
+```sh
+uv sync
+CORS_ORIGINS="http://localhost:3000" uv run python -c "
+from fastapi import FastAPI
+from app.core.providers import setup_app
+app = FastAPI()
+setup_app(app)
+print('CORS wired OK')
+"
+```
+
+See `template/docs/CORS_GUIDE.md` for full configuration and troubleshooting.

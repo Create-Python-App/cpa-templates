@@ -232,6 +232,76 @@ New and updated **templates** should treat typed Python as the default quality b
 - Prefer shipping typing tooling in `pyproject.toml` dependency groups when practical
 
 Extensions should not undo typing (avoid untyped overlays that fight strict checking).
+## Extension auto-wiring
+
+Extensions that contribute runtime behaviour (middleware, routers, instrumentation) use the existing `.append` / `.append.template` mechanism to wire themselves into the generated project automatically. No manual edits to the base template files are needed.
+
+Two patterns cover all current use cases.
+
+### FastAPI — provider registry
+
+The `fastapi-starter` base template ships `app/core/providers.py` with a lightweight registry:
+
+```python
+# app/core/providers.py (generated)
+AppProvider = Callable[[FastAPI], None]
+_providers: list[AppProvider] = []
+
+def register(fn: AppProvider) -> AppProvider: ...
+def setup_app(app: FastAPI) -> None: ...
+```
+
+`app/main.py` calls `setup_app(app)` once, after base middleware is configured.
+
+Extensions register their setup function by adding `template/app/core/providers.py.append.template`:
+
+```python
+# extensions/fastapi-cors/template/app/core/providers.py.append.template
+from app.core.cors import setup_cors
+register(setup_cors)
+```
+
+**Ordering:** providers are called in the order they are appended (scaffold addon order). Because FastAPI's `add_middleware` is LIFO, middleware added last becomes the outermost wrapper — `fastapi-cors` must be the last extension in the addon list when ordering matters.
+
+### FastAPI — feature router registration
+
+Feature extensions (auth, chat, …) add `template/app/api/router.py.append`:
+
+```python
+# extensions/fastapi-auth-jwt/template/app/api/router.py.append
+from app.features.auth.router import router as auth_router
+router.include_router(auth_router)
+```
+
+`router` is already defined in `app/api/router.py` before the appended content runs.
+
+### Django — settings and URL append
+
+Django loads `settings.py` as a Python module, so list concatenation and dict mutation are valid at module scope. Extensions append to `config/settings.py` and `config/urls.py`:
+
+```python
+# extensions/django-spectacular/template/config/settings.py.append
+INSTALLED_APPS += ["drf_spectacular"]
+REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
+```
+
+```python
+# extensions/django-spectacular/template/config/urls.py.append
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+urlpatterns += [
+    path(f"{api_prefix}/schema/", SpectacularAPIView.as_view(), name="schema"),
+    ...
+]
+```
+
+`urlpatterns` and `api_prefix` are already defined in the base `urls.py`.
+
+### Checklist additions for auto-wired extensions
+
+- [ ] Provider/router/settings append file targets a path that exists in the base template
+- [ ] The append file contains only the minimal registration call — no duplicate logic already in the helper module
+- [ ] For FastAPI middleware extensions, verify CORS remains last in the addon list in CI profiles that include it
+
 ## `pyproject.toml` merge
 
 When scaffolding layers include a `pyproject.toml`, CPA **merges** into the destination file instead of overwriting it.
@@ -364,7 +434,7 @@ Verify generated output: `uv sync`, `uv run ruff check .`, `uv run pytest`, and 
 - [ ] Artifacts under `template/`; bank `README.md` outside (does not overwrite project README)
 - [ ] `docs/<TOPIC>_GUIDE.md` + `docs/README.md.append` for generated-project docs
 - [ ] Partial `pyproject.toml` only when adding dependencies
-- [ ] `.append` files target paths that exist in the base template
+- [ ] `.append` / `.append.template` files target paths that exist in the base template (use provider registry or router append for runtime wiring — see [Extension auto-wiring](#extension-auto-wiring))
 - [ ] Compose files follow `compose.yml` / `docker/<engine>/` conventions
 - [ ] `incompatibleWith` defined for mutually exclusive extensions
 - [ ] Bank README covers when to use, what is copied, and verification pointers

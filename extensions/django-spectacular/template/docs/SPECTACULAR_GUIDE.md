@@ -2,25 +2,15 @@
 
 This extension adds `drf-spectacular` for OpenAPI 3 schema generation and Swagger UI to your Django API.
 
-Because `create-awesome-python-app` avoids automatically modifying your Python code, you must manually wire the configuration into your `settings.py` and `urls.py`.
+**No manual wiring required.** When you scaffold with `django-spectacular`, CPA automatically appends the necessary configuration to `config/settings.py` and the schema endpoints to `config/urls.py`.
 
-## 1. Configure Settings
+## What gets wired in automatically
 
-In `config/settings.py`, add `drf_spectacular` to your `INSTALLED_APPS` and configure the Django REST Framework to use the spectacular schema class.
+**`config/settings.py`** receives:
 
 ```python
-INSTALLED_APPS = [
-    # ... existing apps ...
-    "rest_framework",
-    "drf_spectacular",
-    "apps.health",
-]
-
-REST_FRAMEWORK = {
-    # ... existing config ...
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-}
-
+INSTALLED_APPS += ["drf_spectacular"]
+REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
 SPECTACULAR_SETTINGS = {
     "TITLE": "Django API",
     "DESCRIPTION": "API scaffolded with create-awesome-python-app",
@@ -28,63 +18,60 @@ SPECTACULAR_SETTINGS = {
 }
 ```
 
-## 2. Expose the Schema & Swagger UI
-
-In `config/urls.py`, import the spectacular views and add them to your `urlpatterns`. Ensure that `api_prefix` matches the prefix used in your project.
+**`config/urls.py`** receives:
 
 ```python
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-
-# ... existing imports and api_prefix ...
-
-urlpatterns = [
-    path("admin/", admin.site.urls),
+urlpatterns += [
     path(f"{api_prefix}/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path(
-        f"{api_prefix}/docs/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui",
-    ),
-    path(f"{api_prefix}/", include("apps.health.urls")),
+    path(f"{api_prefix}/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
 ]
 ```
 
-## 3. Documenting Your Endpoints
+## Verify
 
-To generate a detailed and typed OpenAPI schema, you should explicitly document your endpoints. This ensures that the generated Swagger UI accurately reflects the expected request and response shapes, which is crucial for client generation and API exploration.
+Start the development server:
 
-In your views (e.g., `apps/health/views.py`), import `extend_schema` from `drf_spectacular.utils` and apply it to your endpoint methods. You'll also need to define and import the appropriate serializers.
+```sh
+uv run python manage.py runserver
+```
+
+Then open:
+
+- **Swagger UI**: `http://localhost:8000/api/v1/docs/`
+- **Raw OpenAPI schema**: `http://localhost:8000/api/v1/schema/`
+
+## Documenting your endpoints with `@extend_schema`
+
+`drf-spectacular` infers response schemas from your serializers automatically. For richer docs, use the `@extend_schema` decorator from `drf_spectacular.utils`:
 
 ```python
-from drf_spectacular.utils import extend_schema
-from rest_framework import serializers
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from apps.health.serializers import HealthStatusSerializer
 
-# Define an envelope serializer for the response shape
-class HealthEnvelopeSerializer(serializers.Serializer):
-    data = HealthStatusSerializer()
-    error = serializers.JSONField(allow_null=True)
-    meta = serializers.DictField()
 
 class HealthzView(APIView):
-    # ... existing config ...
-
-    @extend_schema(responses={200: HealthEnvelopeSerializer})
+    @extend_schema(
+        responses={200: HealthStatusSerializer},
+        summary="Health check",
+        description="Returns the current service health status.",
+    )
     def get(self, request: Request) -> Response:
-        # ... existing implementation ...
-        pass
+        ...
 ```
 
-## 4. Verify
+See the [drf-spectacular docs](https://drf-spectacular.readthedocs.io/) for the full decorator API including request body, parameters, and tags.
 
-Run your local development server:
+## Customising `SPECTACULAR_SETTINGS`
 
-```sh
-uv run python manage.py runserver
+Override any key in `config/settings.py` after the auto-wired block:
+
+```python
+SPECTACULAR_SETTINGS["TITLE"] = "My Project API"
+SPECTACULAR_SETTINGS["VERSION"] = "2.0.0"
 ```
 
-Navigate to `http://localhost:8000/api/v1/docs/` (or your configured `apiPrefix`) to view the interactive Swagger UI!
+Full list of available settings: [drf-spectacular configuration reference](https://drf-spectacular.readthedocs.io/en/latest/settings.html).
