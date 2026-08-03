@@ -480,6 +480,22 @@
         "Chat",
         "FastAPI"
       ]
+    },
+    {
+      "name": "Django Spectacular",
+      "slug": "django-spectacular",
+      "description": "OpenAPI 3 schema generation and Swagger UI for Django REST Framework.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/django-spectacular",
+      "type": [
+        "django-backend"
+      ],
+      "category": "observability",
+      "labels": [
+        "Django",
+        "OpenAPI",
+        "Swagger",
+        "DRF"
+      ]
     }
   ]
 }
