@@ -1,12 +1,11 @@
 {
   "id": "fastapi-full",
-  "description": "FastAPI with auto-wired middleware, auth, and chat extensions",
+  "description": "FastAPI with auto-wired middleware and feature extensions (sentry, rate-limit, cors, auth, chat)",
   "templateDir": "fastapi-starter",
   "addons": [
     "github-setup",
     "fastapi-docker",
     "postgres",
-    "fastapi-sqlalchemy",
     "fastapi-sentry",
     "fastapi-rate-limit",
     "fastapi-auth-jwt",

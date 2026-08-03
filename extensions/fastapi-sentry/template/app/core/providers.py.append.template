@@ -1,4 +1,6 @@
 
-from app.core.sentry import init_sentry
 
-register(lambda app: init_sentry())
+@register
+def _sentry(app: FastAPI) -> None:
+    from app.core.sentry import init_sentry
+    init_sentry()

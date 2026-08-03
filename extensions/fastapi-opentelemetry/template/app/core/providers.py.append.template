@@ -1,4 +1,6 @@
 
-from app.core.telemetry import configure_telemetry
 
-register(configure_telemetry)
+@register
+def _opentelemetry(app: FastAPI) -> None:
+    from app.core.telemetry import configure_telemetry
+    configure_telemetry(app)

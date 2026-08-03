@@ -303,12 +303,15 @@ def setup_app(app: FastAPI) -> None: ...
 
 `app/main.py` llama a `setup_app(app)` una vez, después de configurar el middleware base.
 
-Las extensiones registran su función de configuración añadiendo `template/app/core/providers.py.append.template`:
+Las extensiones registran su función de configuración añadiendo `template/app/core/providers.py.append.template`. Se usa el decorador `@register` con un import diferido para evitar ruff E402 (import fuera del bloque inicial):
 
 ```python
 # extensions/fastapi-cors/template/app/core/providers.py.append.template
-from app.core.cors import setup_cors
-register(setup_cors)
+
+@register
+def _cors(app: FastAPI) -> None:  # registrado al final — CORS envuelve todo el middleware (LIFO)
+    from app.core.cors import setup_cors
+    setup_cors(app)
 ```
 
 **Orden:** los providers se llaman en el orden en que se añaden (orden de addons en el scaffold). Dado que `add_middleware` en FastAPI es LIFO, el middleware añadido en último lugar se convierte en la capa más externa. `fastapi-cors` debe ser siempre la última extensión en la lista de addons cuando el orden importa.

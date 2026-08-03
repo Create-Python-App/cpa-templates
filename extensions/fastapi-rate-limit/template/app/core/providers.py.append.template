@@ -1,4 +1,6 @@
 
-from app.core.rate_limit import setup_rate_limit
 
-register(setup_rate_limit)
+@register
+def _rate_limit(app: FastAPI) -> None:
+    from app.core.rate_limit import setup_rate_limit
+    setup_rate_limit(app)

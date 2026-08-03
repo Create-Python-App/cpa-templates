@@ -1,4 +1,4 @@
 
-from app.features.auth.router import router as auth_router
+from app.features.auth.router import router as auth_router  # noqa: E402
 
 router.include_router(auth_router)

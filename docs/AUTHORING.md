@@ -253,12 +253,15 @@ def setup_app(app: FastAPI) -> None: ...
 
 `app/main.py` calls `setup_app(app)` once, after base middleware is configured.
 
-Extensions register their setup function by adding `template/app/core/providers.py.append.template`:
+Extensions register their setup function by adding `template/app/core/providers.py.append.template`. Use the `@register` decorator with a lazy import to avoid ruff E402 (import-not-at-top):
 
 ```python
 # extensions/fastapi-cors/template/app/core/providers.py.append.template
-from app.core.cors import setup_cors
-register(setup_cors)
+
+@register
+def _cors(app: FastAPI) -> None:  # registered last — CORS wraps all others
+    from app.core.cors import setup_cors
+    setup_cors(app)
 ```
 
 **Ordering:** providers are called in the order they are appended (scaffold addon order). Because FastAPI's `add_middleware` is LIFO, middleware added last becomes the outermost wrapper — `fastapi-cors` must be the last extension in the addon list when ordering matters.
