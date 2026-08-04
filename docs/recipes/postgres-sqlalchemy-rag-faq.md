@@ -1,10 +1,10 @@
 # FAQ: Composing PostgreSQL, SQLAlchemy, and AI Extensions
 
-This FAQ explains how PostgreSQL, `fastapi-sqlalchemy`, and AI extensions such as RAG fit together in CPA templates.
+This FAQ explains how PostgreSQL, `fastapi-sqlalchemy`, and AI extensions such as RAG fit together in FastAPI-based CPA templates.
 
 ## When should I use the `postgres` extension?
 
-Use the `postgres` extension whenever your project requires a PostgreSQL database. It provides the database infrastructure and should be the single source of PostgreSQL configuration.
+Use the `postgres` extension when your template should provision a local PostgreSQL service for development. For managed PostgreSQL (RDS, Cloud SQL, etc.), configure your application's connection string directly without adding a local Compose service.
 
 ## When should I use `fastapi-sqlalchemy`?
 
