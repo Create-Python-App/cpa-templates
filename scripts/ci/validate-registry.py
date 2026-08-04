@@ -136,6 +136,12 @@ def main() -> None:
 
     category_slugs = {c["slug"] for c in registry.get("categories", [])}
 
+    template_types = {
+    template["type"]
+    for template in registry.get("templates", [])
+    if isinstance(template.get("type"), str)
+}
+
     for template in registry.get("templates", []):
         slug = template.get("slug", "<unknown>")
         directory = template_dir(template)
@@ -172,6 +178,13 @@ def main() -> None:
         if not types:
             errors.append(f"extension {slug}: empty type")
         else:
+            for type_name in types:
+                if type_name not in template_types:
+                    errors.append(
+                        f'extension {slug}: unknown type "{type_name}". '
+                        f"Supported template types: {', '.join(sorted(template_types))}"
+                    )
+
             errors.extend(validate_extension_folder_name(directory, types, slug))
 
         for other_slug in extension.get("incompatibleWith") or []:
