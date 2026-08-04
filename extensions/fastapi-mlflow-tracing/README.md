@@ -37,3 +37,7 @@ uv run pytest tests/test_mlflow_tracing.py -v
 ```
 
 See `template/docs/MLFLOW_TRACING_GUIDE.md` for full usage, configuration, and troubleshooting.
+
+> **Note**
+>
+> For the MLflow vs OpenTelemetry decision and coexistence rules, see the **Observability policy** in [`docs/MLOPS_CONTRACT.md`](../../docs/MLOPS_CONTRACT.md).
