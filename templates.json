@@ -466,6 +466,23 @@
       ]
     },
     {
+      "name": "FastAPI RAG pgvector",
+      "slug": "fastapi-rag-pgvector",
+      "description": "Foundational RAG data layer using pgvector. Provides agnostic chunking, embedding generation, and vector retrieval services.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-rag-pgvector",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "ai-ml-applications",
+      "labels": [
+        "RAG",
+        "AI",
+        "pgvector",
+        "FastAPI",
+        "PostgreSQL"
+      ]
+    },
+    {
       "name": "FastAPI AI Chat",
       "slug": "fastapi-ai-chat",
       "description": "Minimal /chat endpoint backed by LangChain's BaseChatModel. Mock provider by default — drop in a real provider via init_chat_model() with no interface change.",
