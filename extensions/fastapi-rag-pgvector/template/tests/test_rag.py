@@ -96,7 +96,13 @@ async def test_service_full_workflow(
 
     # Ingest a document
     text = "This is a test document that will be embedded and retrieved."
-    count = await ingest_document(mock_repo, text, metadata={"test": True}, chunk_size=50, chunk_overlap=10)
+    count = await ingest_document(
+        mock_repo,
+        text,
+        metadata={"test": True},
+        chunk_size=50,
+        chunk_overlap=10,
+    )
     assert count > 1
     assert len(mock_repo.store) == count
 
