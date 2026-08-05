@@ -8,7 +8,7 @@ import math
 import os
 
 import psycopg
-from pgvector.psycopg import register_vector
+from pgvector.psycopg import register_vector_async
 
 from app.features.rag.schemas import Document, RetrievedDocument
 
@@ -44,7 +44,7 @@ class PostgresVectorRepository(VectorRepository):
             raise ValueError("Number of documents must match number of embeddings.")
 
         async with await psycopg.AsyncConnection.connect(self.database_url) as conn:
-            await register_vector(conn)
+            await register_vector_async(conn)
             async with conn.cursor() as cur:
                 for doc, emb in zip(documents, embeddings, strict=True):
                     query = (
@@ -59,7 +59,7 @@ class PostgresVectorRepository(VectorRepository):
     ) -> list[RetrievedDocument]:
         results: list[RetrievedDocument] = []
         async with await psycopg.AsyncConnection.connect(self.database_url) as conn:
-            await register_vector(conn)
+            await register_vector_async(conn)
             async with conn.cursor() as cur:
                 # <=> is cosine distance in pgvector
                 await cur.execute(
