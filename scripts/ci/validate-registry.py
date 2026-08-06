@@ -136,11 +136,13 @@ def main() -> None:
 
     category_slugs = {c["slug"] for c in registry.get("categories", [])}
 
-    template_types = {
-    template["type"]
-    for template in registry.get("templates", [])
-    if isinstance(template.get("type"), str)
-}
+    template_types: set[str] = set()
+    for template in registry.get("templates", []):
+        t = template.get("type")
+        if isinstance(t, list):
+            template_types.update([x for x in t if isinstance(x, str) and x])
+        elif isinstance(t, str) and t:
+            template_types.add(t)
 
     for template in registry.get("templates", []):
         slug = template.get("slug", "<unknown>")
