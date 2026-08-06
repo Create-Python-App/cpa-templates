@@ -19,19 +19,45 @@ def test_chunk_text_basic() -> None:
 
 
 def test_chunk_text_invalid_config() -> None:
-    with pytest.raises(ValueError, match="chunk_size must be strictly greater than overlap"):
+    with pytest.raises(ValueError, match="overlap must be non-negative"):
         chunk_text("test", chunk_size=100, overlap=100)
+    with pytest.raises(ValueError, match="chunk_size must be positive"):
+        chunk_text("test", chunk_size=0, overlap=0)
+    with pytest.raises(ValueError, match="overlap must be non-negative"):
+        chunk_text("test", chunk_size=100, overlap=-1)
 
 
 def test_chunk_text_empty() -> None:
     assert chunk_text("   ") == []
 
 
-def test_mock_provider_deterministic() -> None:
-    # Different instances should yield identical results for the same string
-    # We must use asyncio.run or just await it if in an async test, 
-    # but let's test it via the async framework.
-    pass
+@pytest.mark.asyncio
+async def test_mock_provider_deterministic() -> None:
+    provider_a = MockEmbeddingProvider(dimension=8)
+    provider_b = MockEmbeddingProvider(dimension=8)
+    res_a = await provider_a.embed_documents(["hello", "world"])
+    res_b = await provider_b.embed_documents(["hello", "world"])
+    assert res_a == res_b
+    assert len(res_a[0]) == 8
+    assert res_a[0] != res_a[1]
+
+
+@pytest.mark.asyncio
+async def test_mock_provider_retrieval_discriminative() -> None:
+    provider = MockEmbeddingProvider(dimension=32)
+    repo = InMemoryVectorRepository(dimension=32)
+
+    # Embed two distinct documents
+    docs = ["apple fruit", "car engine"]
+    doc_embeddings = await provider.embed_documents(docs)
+    documents = [Document(content=d) for d in docs]
+    await repo.add_documents(documents, doc_embeddings)
+    # Query close to first document should rank it first
+    query_emb = (await provider.embed_documents(["apple fruit"]))[0]
+    results = await repo.similarity_search(query_emb, limit=2)
+    assert len(results) == 2
+    assert results[0].content == "apple fruit"
+    assert results[0].score < results[1].score
 
 
 @pytest.mark.asyncio
@@ -48,13 +74,13 @@ async def test_mock_provider_async() -> None:
 
 @pytest.mark.asyncio
 async def test_in_memory_repository() -> None:
-    repo = InMemoryVectorRepository()
-    
+    repo = InMemoryVectorRepository(dimension=2)
+
     doc1 = Document(content="hello", metadata={"source": "a"})
     doc2 = Document(content="world", metadata={"source": "b"})
-    
+
     await repo.add_documents([doc1, doc2], [[1.0, 0.0], [0.0, 1.0]])
-    
+
     # Query with [1.0, 0.0] should match doc1
     results = await repo.similarity_search([1.0, 0.0], limit=1)
     assert len(results) == 1

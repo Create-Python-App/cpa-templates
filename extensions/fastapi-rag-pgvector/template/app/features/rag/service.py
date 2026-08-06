@@ -16,8 +16,10 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> list[st
     A production application might replace this with a more sophisticated
     semantic or token-based splitter if required.
     """
-    if chunk_size <= overlap:
-        raise ValueError("chunk_size must be strictly greater than overlap")
+    if chunk_size <= 0:
+        raise ValueError("chunk_size must be positive")
+    if overlap < 0 or overlap >= chunk_size:
+        raise ValueError("overlap must be non-negative and smaller than chunk_size")
 
     if not text.strip():
         return []

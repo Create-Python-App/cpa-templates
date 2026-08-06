@@ -19,18 +19,22 @@ class MockEmbeddingProvider(EmbeddingProvider):
     """A deterministic fake embedding provider for tests."""
 
     def __init__(self, dimension: int = 1536):
+        if dimension <= 0:
+            raise ValueError("dimension must be positive")
         self.dimension = dimension
 
     async def embed_documents(self, texts: list[str]) -> list[list[float]]:
         """Return deterministic fake embeddings based on the text hash."""
+        if self.dimension <= 0:
+            raise ValueError("dimension must be positive")
         results = []
         for text in texts:
-            # Generate a stable float between 0 and 1 based on the text
-            seed = int(hashlib.md5(text.encode("utf-8")).hexdigest(), 16)
-            value = (seed % 100) / 100.0
-
-            vec = [0.0] * self.dimension
-            vec[0] = value
+            vec: list[float] = []
+            for i in range(self.dimension):
+                # Deterministic per-dimension value derived from SHA-256
+                digest = hashlib.sha256(f"{text}:{i}".encode("utf-8")).digest()
+                value = int.from_bytes(digest[:4], "big") / (2**32)
+                vec.append(value)
             results.append(vec)
         return results
 

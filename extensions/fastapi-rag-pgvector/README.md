@@ -10,7 +10,7 @@ This extension provides a generic backend service for chunking, embedding, and s
 
 - **Stack:** FastAPI (`fastapi-backend`).
 - **Database:** PostgreSQL with `pgvector` enabled.
-- **ORM Independence:** This extension utilizes `langchain-postgres` and connects via standard database URIs. It is fully compatible with, but does not strictly require, `fastapi-sqlalchemy`.
+- **ORM Independence:** This extension connects directly via `psycopg` and `pgvector.psycopg.register_vector` without an ORM dependency. It is fully compatible with, but does not strictly require, `fastapi-sqlalchemy`.
 - **UI Independence:** This extension does not add a chat UI, endpoints, or LLM generation logic. It strictly provides retrieval services that other features can import.
 
 ## Composition
