@@ -32,7 +32,7 @@ class MockEmbeddingProvider(EmbeddingProvider):
             vec: list[float] = []
             for i in range(self.dimension):
                 # Deterministic per-dimension value derived from SHA-256
-                digest = hashlib.sha256(f"{text}:{i}".encode("utf-8")).digest()
+                digest = hashlib.sha256(f"{text}:{i}".encode()).digest()
                 value = int.from_bytes(digest[:4], "big") / (2**32)
                 vec.append(value)
             results.append(vec)

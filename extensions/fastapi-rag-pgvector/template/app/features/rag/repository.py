@@ -136,7 +136,7 @@ class InMemoryVectorRepository(VectorRepository):
     def _cosine_distance(self, a: list[float], b: list[float]) -> float:
         if not a or not b or len(a) != len(b):
             raise ValueError(
-                f"embedding dimension mismatch: expected {len(a)} == {len(b)}, got {len(a)} vs {len(b)}"
+                f"embedding dimension mismatch: {len(a)} != {len(b)}"
             )
         dot = sum(x * y for x, y in zip(a, b, strict=True))
         norm_a = math.sqrt(sum(x * x for x in a))
