@@ -390,6 +390,35 @@ Declare mutually exclusive extensions in `templates.json`. CPA validates selecte
 
 When two extensions logically conflict (two middleware choices, two container runtimes), add `incompatibleWith` on **both** entries. Use this for logical conflicts; use semver or dependency constraints for softer peer restrictions.
 
+**Example 1 — Route collision (chat endpoints):**
+
+```json
+{
+  "name": "FastAPI AI Chat",
+  "slug": "fastapi-ai-chat",
+  "incompatibleWith": ["fastapi-langgraph-chat"]
+},
+{
+  "name": "FastAPI LangGraph Chat",
+  "slug": "fastapi-langgraph-chat",
+  "incompatibleWith": ["fastapi-ai-chat"]
+}
+```
+
+Both extensions own `/api/v1/chat`. Declare mutual `incompatibleWith` before merging the second one. See [#91](https://github.com/Create-Python-App/cpa-templates/issues/91) and [AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md#incompatiblewith-matrix-91).
+
+**Example 2 — Data path collision (modality packs):**
+
+```json
+{
+  "name": "MLOps Tabular Data",
+  "slug": "all-mlops-tabular-data",
+  "incompatibleWith": ["all-mlops-image-data", "all-mlops-sequence-data"]
+}
+```
+
+Competing modality packs overwrite the same `data/` paths. Only one per generated project.
+
 Schema: `templates.schema.json` → `extensions[].incompatibleWith`.
 
 ## Generation order
