@@ -1,5 +1,45 @@
 # Architecture
 
+## Overview
+
+```mermaid
+flowchart TB
+    subgraph User["User Interaction"]
+        CLI["uvx create-awesome-python-app\n--template &lt;slug&gt; --addons &lt;ext&gt;"]
+    end
+
+    subgraph Registry["Template Registry"]
+        JSON["templates.json\n(categories, templates, extensions)"]
+    end
+
+    subgraph Merge["Merge Process"]
+        Template["Base Template\n(template/type)"]
+        Ext1["Extension 1\n(ext/type)"]
+        Ext2["Extension 2\n(ext/type)"]
+        Merged["Merged Project\nCopy-only semantics"]
+    end
+
+    subgraph Result["Generated Output"]
+        Project["~/my-new-project\n(pyproject.toml, src/, tests/, docs/)"]
+        Git["git init"]
+        Install["uv sync"]
+    end
+
+    CLI --> JSON
+    JSON --> Template
+    Template --> Ext1
+    Ext1 --> Ext2
+    Ext2 --> Merged
+    Merged --> Project
+    Project --> Git
+    Project --> Install
+
+    style CLI fill:#e1f5fe
+    style JSON fill:#f3e5f5
+    style Merged fill:#e8f5e9
+    style Project fill:#fff3e0
+```
+
 ## How the system works
 
 A user runs:
