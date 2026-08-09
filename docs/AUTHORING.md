@@ -147,6 +147,24 @@ generated paths (for example two Docker overlays that both ship `Dockerfile` /
 are isolated by `type`; when a type gains a second packaging strategy, declare
 mutual incompatibility like cna-templates does for Redux saga/thunk.
 
+**Authoring rules:**
+
+1. **Declare on both sides.** If extension `A` is incompatible with `B`, then `A` must list `B` in its `incompatibleWith` array **and** `B` must list `A` in its `incompatibleWith` array. CPA validates this symmetry at registry load time.
+2. **Use slugs, not names.** Reference entries by their `slug` string — not the human-readable `name` — so renames to display names don't silently break validation.
+3. **Scope to the narrowest conflict surface.** Only declare incompatibility when the overlay truly overwrites shared paths (e.g. `Dockerfile`, `compose.yml`, `app/core/providers.py`). For softer constraints — version ranges, optional features, shared optional deps — prefer dependency versioning or optional `cpa.config.json` toggles rather than hard incompatibility.
+4. **Same `type` first.** Most `incompatibleWith` declarations are within a single template `type` (e.g. two FastAPI Docker strategies). Cross-type incompatibility is rare and should be explicitly justified in the PR description.
+5. **Document the rationale.** Add a short comment in `templates.json` next to the `incompatibleWith` entry explaining which paths collide so future maintainers know whether the constraint can be relaxed.
+
+**Checklist for new `incompatibleWith` entries:**
+
+- [ ] Both entries list each other by `slug`
+- [ ] Slugs referenced are valid entries in `templates.json`
+- [ ] The collision path(s) are documented in the PR
+- [ ] An existing `incompatibleWith` wasn't already covering the pair
+- [ ] If a new packaging strategy was introduced, it was discussed in the issue or Discord first
+
+See [Registering in `templates.json`](#registering-in-templatesjson) for the JSON schema and the `templates.schema.json` validation.
+
 ### Template quality bar (every catalog template)
 
 Every template registered in `templates.json` must ship at least:
