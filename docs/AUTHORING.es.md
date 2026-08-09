@@ -2,6 +2,8 @@
 
 Guía para colaboradores que quieran añadir o actualizar plantillas y extensiones en `cpa-templates`. Esta guía sigue la misma estructura que [cna-templates AUTHORING.md](https://github.com/Create-Node-App/cna-templates/blob/main/docs/AUTHORING.md) y se mantiene en paridad con ella.
 
+> **Nota sobre CI:** El repositorio define cuatro niveles de integración continua (CI). CI Integrity (L0) valida la integridad del registro y perfiles curvados; CI Templates (L1) prueba cada plantilla individualmente con `uvx`; CI Extensions (L2) prueba cada extensión con una plantilla canónica; y CI Profiles (L3) ejecuta pilas completas curadas en `ci/profiles/`. Consulta [docs/TESTING.md](./TESTING.md) para más detalles.
+
 ## Estructura del directorio de plantillas
 
 ```text

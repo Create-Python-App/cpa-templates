@@ -2,7 +2,7 @@
 
 Thanks for contributing! This repo powers [create-awesome-python-app](https://github.com/Create-Python-App/create-python-app).
 
-For a full explanation of how templates, extensions, and the file system work, read [docs/AUTHORING.md](./docs/AUTHORING.md).
+For a full explanation of how templates, extensions, and the file system work, read [docs/AUTHORING.md](./docs/AUTHORING.md). A Spanish translation is also available: [docs/AUTHORING.es.md](./docs/AUTHORING.es.md) (English remains canonical).
 
 ## Adding an extension
 
