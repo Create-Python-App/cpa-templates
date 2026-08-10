@@ -450,4 +450,6 @@ Planned starters not yet in the registry are listed in [FUTURE_TEMPLATES.md](./F
 ## AI/ML catalog
 
 For AI/ML taxonomy, categories, and template-vs-extension rules see
-[AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md).
+[AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md). MLOps templates and extensions must
+also follow the shared feature-module, testing, CI-profile, environment, and
+composition contract in [MLOPS_CONTRACT.md](./MLOPS_CONTRACT.md).
