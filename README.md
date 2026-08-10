@@ -49,6 +49,7 @@ CI=true uvx create-awesome-python-app my-api \
 |---|---|
 | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | System overview, type system, generation flow |
 | [docs/AUTHORING.md](./docs/AUTHORING.md) | Directory layout, `cpa.config.json`, extensions |
+| [docs/AUTHORING.es.md](./docs/AUTHORING.es.md) | Spanish translation of AUTHORING.md |
 | [docs/TESTING.md](./docs/TESTING.md) | Local testing and CI workflow |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | How to add templates and extensions |
 | [docs/MAINTENANCE_RUNBOOK.md](./docs/MAINTENANCE_RUNBOOK.md) | Operating runbook: decision trees, checklists, and procedures for maintaining the CLI and templates |
