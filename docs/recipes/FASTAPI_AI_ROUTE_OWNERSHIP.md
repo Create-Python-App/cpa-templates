@@ -24,7 +24,7 @@ A new extension should claim one prefix named after the capability rather than t
 
 `fastapi-rag-pgvector` ships `app/features/rag/` with no `router.py`. It exposes `chunk_text`, `ingest_document` and `retrieve_context` for other features to import, so it composes with `fastapi-ai-chat` rather than competing for a prefix. An extension that wants retrieval over HTTP should add the router and claim `/rag` at the same time.
 
-Do not put RAG endpoints under `/chat`. FastAPI matches routes in registration order, so a second router on an occupied path does not fail at startup; the later route is simply never reached.
+Do not put RAG endpoints under `/chat`. Routes are matched in registration order, so if a second router registers the same path and method as an earlier one, the earlier route handles the request and the later one is never reached. Nothing fails at startup, which makes the clash easy to miss.
 
 ## Middleware and app setup
 
