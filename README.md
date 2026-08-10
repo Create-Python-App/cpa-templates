@@ -51,6 +51,8 @@ CI=true uvx create-awesome-python-app my-api \
 | [docs/AUTHORING.md](./docs/AUTHORING.md) | Directory layout, `cpa.config.json`, extensions |
 | [docs/AUTHORING.es.md](./docs/AUTHORING.es.md) | Spanish translation of AUTHORING.md |
 | [docs/TESTING.md](./docs/TESTING.md) | Local testing and CI workflow |
+| [docs/AI_ML_AUTHORING.md](./docs/AI_ML_AUTHORING.md) | Taxonomy and constraints for AI/ML templates and extensions |
+| [docs/recipes/FASTAPI_AI_ROUTE_OWNERSHIP.md](./docs/recipes/FASTAPI_AI_ROUTE_OWNERSHIP.md) | Prefix ownership, mounting, and middleware hooks for FastAPI AI extensions |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | How to add templates and extensions |
 | [docs/MAINTENANCE_RUNBOOK.md](./docs/MAINTENANCE_RUNBOOK.md) | Operating runbook: decision trees, checklists, and procedures for maintaining the CLI and templates |
 | [docs/MAINTENANCE_TEMPLATES.md](./docs/MAINTENANCE_TEMPLATES.md) | Guidance for inspecting, fixing, and adding templates and extensions |
