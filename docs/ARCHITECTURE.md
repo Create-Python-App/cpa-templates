@@ -21,8 +21,8 @@ flowchart TB
 
     subgraph Result["Generated Output"]
         Project["~/my-new-project\n(pyproject.toml, src/, tests/, docs/)"]
-        Git["git init"]
-        Install["uv sync"]
+        Git["git init\n(skipped if CPA_SKIP_GIT=1)"]
+        Install["uv sync\n(requires pyproject.toml,\n skipped with --no-install)"]
     end
 
     CLI --> JSON
@@ -38,6 +38,8 @@ flowchart TB
     style JSON fill:#f3e5f5
     style Merged fill:#e8f5e9
     style Project fill:#fff3e0
+    style Git fill:#ffe0b2
+    style Install fill:#ffe0b2
 ```
 
 ## How the system works
