@@ -71,9 +71,11 @@ Declare conflicts in `templates.json` before merging conflicting pairs.
 | `fastapi-ai-chat` | `fastapi-langgraph-chat` | Both may own `/chat` — either set `incompatibleWith` or document non-overlapping routes before shipping LangGraph |
 | Competing `all-mlops-*-data` packs that overwrite the same data paths | each other | Prefer one modality pack per profile |
 
-Neither `fastapi-ai-chat` nor `fastapi-langgraph-chat` exists yet — this row
-documents the rule to apply once the first one lands (tracked in
-[#77](https://github.com/Create-Python-App/cpa-templates/issues/77)).
+`fastapi-ai-chat` has landed and owns `/chat`; `fastapi-langgraph-chat` does not
+exist yet (tracked in
+[#77](https://github.com/Create-Python-App/cpa-templates/issues/77)). Prefix
+ownership is recorded in
+[recipes/FASTAPI_AI_ROUTE_OWNERSHIP.md](./recipes/FASTAPI_AI_ROUTE_OWNERSHIP.md).
 
 ## Extension constraints
 
@@ -86,6 +88,7 @@ documents the rule to apply once the first one lands (tracked in
 ## Related docs
 
 - [AUTHORING.md](./AUTHORING.md)
+- [recipes/FASTAPI_AI_ROUTE_OWNERSHIP.md](./recipes/FASTAPI_AI_ROUTE_OWNERSHIP.md)
 - [TEMPLATE_QUALITY_M1.md](./TEMPLATE_QUALITY_M1.md)
 - [TESTING.md](./TESTING.md)
 - [MLOPS_CONTRACT.md](./MLOPS_CONTRACT.md)
