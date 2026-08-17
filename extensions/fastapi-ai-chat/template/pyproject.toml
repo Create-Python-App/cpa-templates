@@ -1,4 +1,4 @@
 [project]
 dependencies = [
-  "langchain-core>=1.5.3",
+  "langchain-core>=1.5.5",
 ]
