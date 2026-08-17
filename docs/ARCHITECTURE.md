@@ -62,7 +62,29 @@ Interactive options live in `cpa.config.json` inside the template directory (not
 
 ## The type system
 
-`type` connects templates to extensions. A template has a single string type. An extension has a string or array of strings. An extension is compatible with a template when the template's type appears in the extension's type list.
+`type` connects templates to extensions.
+
+```mermaid
+flowchart LR
+    subgraph Template["Template Object"]
+        T["fastapi-starter
+type: 'fastapi-backend'"]
+    end
+
+    subgraph Extensions["Extensions Object"]
+        E1["all-github-setup
+type: ['fastapi-backend', 'django-backend']"]
+        E2["celery-docker
+type: 'fastapi-backend'"]
+        E3["other-ext
+type: 'react-frontend'"]
+    end
+
+    T -->|matches type| E1
+    T -->|matches type| E2
+    T -.->|incompatible / ignored| E3
+```
+ A template has a single string type. An extension has a string or array of strings. An extension is compatible with a template when the template's type appears in the extension's type list.
 
 ```
 compatible = [ext.type].flat().includes(template.type)
