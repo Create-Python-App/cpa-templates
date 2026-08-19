@@ -42,6 +42,7 @@ CI=true uvx create-awesome-python-app my-api \
 | [celery-worker](./templates/celery-worker) | `celery-worker` | Celery worker with modular tasks, Redis defaults, pydantic-settings, and eager-mode tests |
 | [django-api](./templates/django-api) | `django-backend` | Django + DRF API with feature apps, OpenAPI-friendly health probes, uv, and Ruff |
 | [uv-workspace-starter](./templates/uv-workspace-starter) | `uv-workspace` | Python monorepo using uv workspaces: shared packages and apps with one lockfile, Ruff, and Pyright |
+| [bank-template](./docs/bank-README.md) | `bank-template` | Maintainer-facing bank template for financial data management |
 
 ## Documentation
 
