@@ -89,3 +89,68 @@ documents the rule to apply once the first one lands (tracked in
 - [TEMPLATE_QUALITY_M1.md](./TEMPLATE_QUALITY_M1.md)
 - [TESTING.md](./TESTING.md)
 - [MLOPS_CONTRACT.md](./MLOPS_CONTRACT.md)
+
+## AI span primitive contract
+
+This section defines the contract that all FastAPI AI extensions must follow when emitting MLflow/observability spans. The contract was landed in #71 and is consumed by #81 (primitives) and #77/#78/#79/#80/#82 (consumers).
+
+### Span kinds
+
+Extensions must use exactly one of the following span kinds when recording AI activity:
+
+| Kind | Description |
+|------|-------------|
+| `llm_inference` | A single LLM model completion (chat, embeddings, text completion). |
+| `tool_call` | An MCP/agent tool invocation (extension #80). |
+| `retrieval` | A RAG fetch operation (extension #78). |
+| `guardrail_check` | An input/output guardrail evaluation (extension #82). |
+
+### `llm_inference` required attributes
+
+Each `llm_inference` span must include the following attributes. These are recorded automatically by the primitives in #81 when using `record_mlflow_span("llm_inference", {...})`.
+
+| Attribute | Type | Semantics |
+|-----------|------|-----------|
+| `llm.provider` | `str` | Provider name: `"openai"` \| `"anthropic"` \| `"ollama"` \| custom provider id |
+| `llm.model` | `str` | Exact model id, e.g. `"gpt-4o-mini"` |
+| `llm.input_tokens` | `int` | Token count in the request |
+| `llm.output_tokens` | `int` | Token count in the response |
+| `llm.latency_ms` | `float` | Wall-clock time from request to last chunk (or end of non-streaming) |
+| `llm.error` | `str \| None` | Exception type if failed, `None` on success |
+| `llm.stream` | `bool` | `true` if streaming response |
+| `llm.temperature` | `float` | Optional — if set, recorded as-is |
+| `llm.tool_name` | `str \| None` | Optional — set when the LLM call resolved to a tool execution |
+
+### Span shape
+
+- Each span opens with `start_span(kind, name="__main__")` from the base helper (primitives in #81) and closes with `.end()`, recording latency automatically.
+- Guardrail rejections set `llm.error = "guardrail_blocked"` and `guardrail.reason` on the **same** `llm_inference` span, not a separate one — the span tree stays linear.
+- When a tool is involved, `tool_call` spans wrap the `llm_inference` span, keeping the tree: `llm_inference` → `tool_call`.
+
+### Privacy
+
+- **Never** log `llm.input_text` / `llm.output_text` / raw messages by default.
+- Add an explicit `LLM_TRACE_PAYLOAD=true` env opt-in (off in CI, documented in `MLFLOW_TRACING_GUIDE.md`).
+- PII redaction surface stays in `fastapi-ai-guardrails` (#82), not here.
+
+### Consumer links
+
+- **#81** owns the primitive API surface (`record_mlflow_span`, `start_span` helpers).
+- **#77** (`fastapi-ai-chat`) must call `record_mlflow_span("llm_inference", {...})` instead of ad-hoc schemas.
+- **#78** (`fastapi-rag-pgvector`) must use `retrieval` kind when emitting RAG fetch spans.
+- **#79** (`fastapi-langgraph-chat`) must emit `tool_call` spans for agent tool invocations.
+- **#80** (`fastapi-mcp-client`) must emit `tool_call` spans for MCP client calls.
+- **#82** (`fastapi-ai-guardrails`) must set `llm.error = "guardrail_blocked"` on the same `llm_inference` span when a guardrail rejects the input.
+
+### Example (illustrative — owned by #81)
+
+```python
+from mlflow.tracking import MlflowClient
+
+def record_mlflow_span(kind: str, attributes: dict):
+    """Helper in #81 — marks span boundaries and records latency."""
+    # ...implementation owned by #81...
+    pass
+```
+
+Once a consumer (e.g. #77) implements against this contract rather than an ad-hoc schema, the acceptance criteria for this section are met.
