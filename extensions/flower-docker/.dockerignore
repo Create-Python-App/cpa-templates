@@ -1,0 +1,43 @@
+# Flower Monitoring Extension
+
+## Adding Flower monitoring to a Celery worker
+
+Flower is a real-time monitoring dashboard for Celery. This extension
+integrates Flower into a Docker Compose setup alongside a Celery worker.
+
+## Files added
+
+- `compose.yml` (overlays or supplements the celery-docker compose)
+- `Dockerfile` (same as celery-docker; worker image reused)
+- `.env.example` (Flower-specific environment variables)
+- `docs/FLOWER_GUIDE.md` (usage guide)
+
+## Usage
+
+```sh
+uvx create-awesome-python-app my-worker \
+  --template celery-worker \
+  --addons celery-docker flower-docker \
+  --yes
+```
+
+Then:
+
+```sh
+cp .env.example .env
+# Edit .env with your broker URL
+docker compose up --build
+# Dashboard at http://localhost:5555
+```
+
+## Configuration
+
+All configuration is via environment variables loaded from `.env`.
+No secrets are hardcoded in any source file.
+
+## Security
+
+- Add `.env` to `.gitignore`
+- Flower can expose task arguments — use `FLOWER_BASIC_PASSWORD` in
+  production-like environments
+- Consider a reverse proxy with TLS for non-local deployments

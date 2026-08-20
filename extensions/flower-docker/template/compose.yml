@@ -1,0 +1,30 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+  worker:
+    build: .
+    env_file:
+      - .env
+    environment:
+      BROKER_URL: redis://redis:6379/0
+      RESULT_BACKEND: redis://redis:6379/1
+      FLOWER_PORT: 5555
+      FLOWER_HOST: 0.0.0.0
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    command: uv run celery -A worker.celery_app worker --loglevel=INFO
+  flower:
+    image: flower:latest
+    ports:
+      - "5555:5555"
+    environment:
+      FLOWER_PORT: 5555
+      FLOWER_HOST: 0.0.0.0
+    depends_on:
+      - worker
+    networks:
+      - celery-network
