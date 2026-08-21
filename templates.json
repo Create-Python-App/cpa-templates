@@ -230,6 +230,7 @@
         "cli-app",
         "django-backend",
         "fastapi-backend",
+        "mlops-sklearn",
         "uv-workspace"
       ],
       "category": "ci",
