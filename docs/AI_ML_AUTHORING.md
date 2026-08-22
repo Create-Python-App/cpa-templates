@@ -69,11 +69,14 @@ Declare conflicts in `templates.json` before merging conflicting pairs.
 | Extension A | Extension B | Reason / resolution |
 |-------------|-------------|---------------------|
 | `fastapi-ai-chat` | `fastapi-langgraph-chat` | Both may own `/chat` — either set `incompatibleWith` or document non-overlapping routes before shipping LangGraph |
+| `fastapi-mlflow-tracing` | `fastapi-opentelemetry` | Both emit `llm_inference` spans on same FastAPI request — declare `incompatibleWith` to avoid double-instrumentation |
 | Competing `all-mlops-*-data` packs that overwrite the same data paths | each other | Prefer one modality pack per profile |
 
 Neither `fastapi-ai-chat` nor `fastapi-langgraph-chat` exists yet — this row
 documents the rule to apply once the first one lands (tracked in
 [#77](https://github.com/Create-Python-App/cpa-templates/issues/77)).
+
+Neither `fastapi-mlflow-tracing` nor `fastapi-opentelemetry` exist as stable releases yet — but this matrix entry documents the rule for when they ship.
 
 ## Extension constraints
 
