@@ -62,6 +62,34 @@ cpa-templates/
 └── docs/                   # Authoring and testing guides
 ```
 
+## Architecture Diagram
+
+```mermaid
+graph TD
+    UVX[UVX CLI] --> TEMPLATE[Template Registry (templates.json)]
+    TEMPLATE --> EXT_FASTAPI[FastAPI Starter]
+    TEMPLATE --> EXT_FAIACHAT[FastAPI AI Chat Extension]
+    EXT_FASTAPI --> GENERATION[Generation Flow]
+    GENERATION --> SYNC[Sync & Install]
+    SYNC --> GIT[Initialize Git Repo]
+    
+    subgraph "Layer Order"
+        BASE[Base Template]
+        ADDON[Extension Layer]
+        OUTPUT[Final Project]
+    end
+    BASE --> ADDON
+    ADDON --> OUTPUT
+    
+    style UVX fill:#f9f,stroke:#333,stroke-width:2px
+    style TEMPLATE fill:#e1f5fe,stroke:#333,stroke-width:2px
+    style EXT_FASTAPI fill:#e8f5e9,stroke:#333,stroke-width:2px
+    style EXT_FAIACHAT fill:#e8f5e9,stroke:#333,stroke-width:2px
+    style GENERATION fill:#fff3e0,stroke:#333,stroke-width:2px
+    style SYNC fill:#ffe0b2,stroke:#333,stroke-width:2px
+    style GIT fill:#f3e5f5,stroke:#333,stroke-width:2px
+```
+
 ## Related repositories
 
 - **create-python-app** — CLI monorepo (`create-awesome-python-app`, `create-python-app-core`)
