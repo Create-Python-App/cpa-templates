@@ -1,4 +1,4 @@
 [project]
 dependencies = [
-  "sentry-sdk[fastapi]>=2.66.1",
+  "sentry-sdk[fastapi]>=2.68.0",
 ]
