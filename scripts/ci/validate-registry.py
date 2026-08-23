@@ -38,6 +38,8 @@ REQUIRED_TEMPLATE_DOCS = (
     "docs/TYPING.md",
 )
 
+# mlops-sklearn (and other non-HTTP types) intentionally do not require docs/API.md.
+# Only HTTP API templates (fastapi-backend, django-backend) serve OpenAPI docs.
 HTTP_API_TYPES = frozenset({"fastapi-backend", "django-backend"})
 
 

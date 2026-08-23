@@ -1,3 +1,5 @@
+# mlops-sklearn is not an HTTP API type (HTTP_API_TYPES = fastapi-backend, django-backend),
+# so docs/API.md is not required — see scripts/ci/validate-registry.py.
 [project]
 name = "mlops-sklearn-starter"
 version = "0.1.0"
@@ -18,10 +20,10 @@ dependencies = [
 [dependency-groups]
 dev = [
   "httpx2>=2.0.0",
-  "mypy>=1.12.0",
-  "pyright>=1.1.390",
-  "pytest>=8.0.0",
-  "ruff>=0.8.0",
+  "mypy>=2.3.0",
+  "pyright>=1.1.411",
+  "pytest>=9.1.1",
+  "ruff>=0.16.2",
   "types-PyYAML>=6.0.0",
 ]
 

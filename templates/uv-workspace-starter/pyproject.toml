@@ -22,6 +22,8 @@ dev = [
 
 [tool.ruff]
 target-version = "py312"
+# Intentional workspace difference: 88 (Black-compatible) + SIM rules,
+# vs single-package templates at 100 without SIM. Keep in sync deliberately.
 line-length = 88
 src = ["packages", "apps"]
 

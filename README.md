@@ -42,6 +42,7 @@ CI=true uvx create-awesome-python-app my-api \
 | [celery-worker](./templates/celery-worker) | `celery-worker` | Celery worker with modular tasks, Redis defaults, pydantic-settings, and eager-mode tests |
 | [django-api](./templates/django-api) | `django-backend` | Django + DRF API with feature apps, OpenAPI-friendly health probes, uv, and Ruff |
 | [uv-workspace-starter](./templates/uv-workspace-starter) | `uv-workspace` | Python monorepo using uv workspaces: shared packages and apps with one lockfile, Ruff, and Pyright |
+| [mlops-sklearn-starter](./templates/mlops-sklearn-starter) | `mlops-sklearn` | CPU-first sklearn MLOps pipeline with YAML configs, step architecture, local MLflow, and batch/FastAPI serving |
 
 ## Documentation
 
