@@ -145,7 +145,11 @@ Use symmetric `incompatibleWith` when two extensions would overwrite the same
 generated paths (for example two Docker overlays that both ship `Dockerfile` /
 `compose.yml` for the **same** template `type`). Today stack Docker extensions
 are isolated by `type`; when a type gains a second packaging strategy, declare
-mutual incompatibility like cna-templates does for Redux saga/thunk.
+mutual incompatibility like cna-templates does for Redux saga/thunk. Example:
+`celery-docker` and the upcoming `flower-docker` (PR #178) both target
+`celery-worker` and ship a Compose stack for the same worker type — they must
+declare `incompatibleWith` on both entries when `flower-docker` lands (validation
+is symmetric; see `scripts/ci/validate-registry.py` and `templates.schema.json`).
 
 **Authoring rules:**
 
