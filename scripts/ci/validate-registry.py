@@ -132,7 +132,31 @@ def main() -> None:
 
     schema_path = REPO_ROOT / "templates.schema.json"
     if schema_path.is_file():
-        json.loads(schema_path.read_text(encoding="utf-8"))
+        try:
+            import jsonschema  # type: ignore
+        except ImportError:
+            errors.append(
+                "jsonschema is required for schema validation "
+                "(pip install jsonschema>=4.20.0)"
+            )
+        else:
+            try:
+                schema = json.loads(schema_path.read_text(encoding="utf-8"))
+                # Strip JSON Schema meta key not part of the domain schema
+                instance = {k: v for k, v in registry.items() if k != "$schema"}
+                jsonschema.validate(instance=instance, schema=schema)
+            except jsonschema.exceptions.ValidationError as exc:
+                path = "/".join(str(p) for p in exc.path) or "<root>"
+                errors.append(
+                    f"templates.json failed JSON Schema validation: "
+                    f"{exc.message} (at {path})"
+                )
+            except jsonschema.exceptions.SchemaError as exc:
+                errors.append(f"templates.schema.json is invalid: {exc}")
+            except json.JSONDecodeError as exc:
+                errors.append(f"templates.schema.json is not valid JSON: {exc}")
+            except Exception as exc:  # pragma: no cover - defensive
+                errors.append(f"templates.json schema validation failed: {exc}")
 
     category_slugs = {c["slug"] for c in registry.get("categories", [])}
 
@@ -201,6 +225,23 @@ def main() -> None:
                 errors.append(
                     f"extension {slug}: incompatibleWith {other_slug} "
                     "is not symmetric"
+                )
+
+        # CPA is type-based, but validate compatibleWith if ever used (CVA parity)
+        for other_slug in extension.get("compatibleWith") or []:
+            other = next(
+                (e for e in registry["extensions"] if e["slug"] == other_slug), None
+            )
+            if other is not None:
+                continue
+            # also check templates as valid target for compatibleWith (CVA semantics)
+            t_other = next(
+                (t for t in registry.get("templates", []) if t.get("slug") == other_slug),
+                None,
+            )
+            if t_other is None:
+                errors.append(
+                    f"extension {slug}: compatibleWith unknown slug {other_slug}"
                 )
 
     if errors:
