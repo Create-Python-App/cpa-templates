@@ -1,0 +1,11 @@
+# CODEOWNERS — cpa-templates
+# All changes require review from the maintainer. Path rules enable
+# more granular review if additional owners are added later.
+
+* @ulises-jeremias
+/templates/** @ulises-jeremias
+/extensions/** @ulises-jeremias
+/scripts/ci/** @ulises-jeremias
+/ci/** @ulises-jeremias
+/.github/** @ulises-jeremias
+/docs/** @ulises-jeremias
