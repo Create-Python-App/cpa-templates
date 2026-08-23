@@ -13,7 +13,7 @@ my-template/
 ├── app/                  # Código de la aplicación
 ├── tests/
 └── README.md
-````
+```
 
 También puedes utilizar un subdirectorio `template/`. CPA copiará los archivos desde `template/` cuando exista:
 
@@ -93,7 +93,7 @@ Ejemplo de `fastapi-starter`:
 
 api_prefix: str = "{{ apiPrefix }}"
 enable_cors: bool = {{ "True" if enableCors | lower in ["1", "true", "yes", "on"] else "False" }}
-````
+```
 
 Utiliza filtros y condicionales de Jinja para valores booleanos y valores derivados.
 
@@ -235,7 +235,7 @@ extensions/fastapi-docker/
     └── docs/
         ├── DOCKER_GUIDE.md           # Guía larga para el proyecto generado
         └── README.md.append          # Añadido a docs/README.md
-````
+```
 
 ## Ejemplo — PostgreSQL universal
 
@@ -379,7 +379,7 @@ Plantilla base:
 [project]
 name = "my-api"
 dependencies = ["fastapi>=0.115"]
-````
+```
 
 Extensión:
 
