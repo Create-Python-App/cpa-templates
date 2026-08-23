@@ -6,7 +6,7 @@ Copied into generated projects (via `template/`):
 
 | Path | Purpose |
 |------|---------|
-| `pyproject.toml` | Merges `mlflow>=2.15.0` into project dependencies |
+| `pyproject.toml` | Merges `mlflow>=3.15.1` into project dependencies |
 | `app/core/mlflow_tracing.py` | `MLflowTracingSettings`, `configure_mlflow_tracing()`, `maybe_start_span`, `set_attribute` |
 | `app/core/providers.py.append.template` | Auto-registers `configure_mlflow_tracing` in the app provider registry |
 | `.env.example.append` | `MLFLOW_ENABLED`, tracking URI, experiment name |
