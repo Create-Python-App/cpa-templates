@@ -17,7 +17,7 @@ Para una explicación completa de cómo funcionan las plantillas, extensiones y 
   "description": "Agrega X a tu proyecto",
   "url": "https://github.com/Create-Python-App/cpa-templates/tree/main/extensions/mi-extension",
   "type": ["fastapi-backend"],
-  "category": "tooling",
+  "category": "backend-applications",
   "labels": ["FastAPI", "Tooling"]
 }
 ```

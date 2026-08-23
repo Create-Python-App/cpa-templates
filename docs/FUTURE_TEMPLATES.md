@@ -12,6 +12,7 @@ before implementing anything listed under **Candidates**.
 | `celery-worker` | `celery-worker` | Celery worker + beat skeleton (`#37`) |
 | `django-api` | `django-backend` | Django API starter (`#50`) |
 | `uv-workspace-starter` | `uv-workspace` | uv workspaces monorepo (`#55`) |
+| `mlops-sklearn-starter` | `mlops-sklearn` | CPU-first sklearn MLOps pipeline with YAML configs, step architecture, local MLflow, and batch/FastAPI serving |
 
 Compatible cross-cutting extensions use the `all-*` taxonomy
 (`github-setup` → `extensions/all-github-setup`, etc.). Stack-specific addons
@@ -19,8 +20,13 @@ live under `fastapi-*`, `django-*`, and `celery-*`.
 
 ## Candidates
 
-None currently tracked. Propose new starters via GitHub issues and follow
-[AUTHORING.md](./AUTHORING.md).
+| Slug | Type | Notes |
+|------|------|-------|
+| `mlops-pytorch-starter` | `mlops-pytorch` | PyTorch MLOps starter (planned, per #71) |
+| `mlops-tensorflow-starter` | `mlops-tensorflow` | TensorFlow MLOps starter (planned, per #71) |
+| `all-mlops-github-actions` | `all-*` (extension) | MLOps GitHub Actions / CI extension (planned, per #71) |
+
+Propose new starters via GitHub issues and follow [AUTHORING.md](./AUTHORING.md). See also [AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md) for the full AI/ML taxonomy (epic #71).
 
 ## Contributing
 

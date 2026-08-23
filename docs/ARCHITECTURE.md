@@ -73,6 +73,11 @@ compatible = [ext.type].flat().includes(template.type)
 | Slug | Type |
 |---|---|
 | `fastapi-starter` | `fastapi-backend` |
+| `cli-starter` | `cli-app` |
+| `celery-worker` | `celery-worker` |
+| `django-api` | `django-backend` |
+| `uv-workspace-starter` | `uv-workspace` |
+| `mlops-sklearn-starter` | `mlops-sklearn` |
 
 ## Generation flow
 
@@ -101,6 +106,9 @@ cpa-templates/
 ├── templates.schema.json   # JSON Schema for templates.json
 ├── templates/              # Base project starters
 ├── extensions/             # Optional layers
+├── scripts/                # CI helpers (validate-registry.py, generate-matrix.py)
+├── ci/                     # Curated L3 profiles
+├── .github/                # Workflows, issue templates, dependabot
 └── docs/                   # Authoring and testing guides
 ```
 
