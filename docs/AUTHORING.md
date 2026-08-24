@@ -397,22 +397,30 @@ Full reference: [create-python-app `docs/PYPROJECT_MERGE.md`](https://github.com
 - An extension has a `type` string **or array** of strings.
 - An extension is compatible when `template.type` appears in `[extension.type].flat()`.
 
-### `incompatibleWith`
+### `incompatibleWith` — when and how
 
-Declare mutually exclusive extensions in `templates.json`. CPA validates selected combinations at scaffold time.
+Use `incompatibleWith` when two extensions would write the same file for the same `type` — e.g. `Dockerfile`, `compose.yml`, `.env.example`, or `pyproject.toml` overlay. Example: `celery-docker` vs `flower-docker` both target `celery-worker` and ship a Compose stack for the same worker (similarly, two FastAPI middleware extensions that both patch `app/core/providers.py`).
+
+- **Symmetric (required):** if `A` lists `B`, then `B` must list `A`. Validated by [`scripts/ci/validate-registry.py`](../scripts/ci/validate-registry.py) (symmetry + existence).
+- **Same `type` only:** both extensions must share the same `type` (e.g. `celery-worker`). Cross-type is rare and needs justification.
+- **Slugs, not names:** reference the `slug` field.
 
 ```json
 {
-  "name": "Example A",
-  "slug": "example-a",
-  "incompatibleWith": ["example-b"],
-  "...": "..."
+  "slug": "flower-docker",
+  "incompatibleWith": ["celery-docker"]
+},
+{
+  "slug": "celery-docker",
+  "incompatibleWith": ["flower-docker"]
 }
 ```
 
-When two extensions logically conflict (two middleware choices, two container runtimes), add `incompatibleWith` on **both** entries. Use this for logical conflicts; use semver or dependency constraints for softer peer restrictions.
+- **Validation:** `python scripts/ci/validate-registry.py` fails on unknown or asymmetric slugs.
+- **Testing:** L2 fails if both extensions are selected together (combination rejected at scaffold time).
+- **Schema:** [`templates.schema.json`](../templates.schema.json) → `extensions[].incompatibleWith`.
 
-Schema: `templates.schema.json` → `extensions[].incompatibleWith`.
+See also the [path-collision rules](#incompatiblewith-path-collisions) above.
 
 ## Generation order
 
