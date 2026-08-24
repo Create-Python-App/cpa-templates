@@ -337,7 +337,25 @@
         "Docker",
         "Celery",
         "Container"
-      ]
+      ],
+      "incompatibleWith": ["flower-docker"]
+    },
+    {
+      "name": "Flower (Celery monitoring)",
+      "slug": "flower-docker",
+      "description": "Flower monitoring for Celery tasks — Compose stack with Redis, worker, and Flower dashboard (port 5555).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/flower-docker",
+      "type": [
+        "celery-worker"
+      ],
+      "category": "observability",
+      "labels": [
+        "Flower",
+        "Celery",
+        "Monitoring",
+        "Observability"
+      ],
+      "incompatibleWith": ["celery-docker"]
     },
     {
       "name": "FastAPI SQLAlchemy",

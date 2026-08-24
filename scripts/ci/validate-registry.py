@@ -87,6 +87,12 @@ def validate_extension_folder_name(directory: str, types: list[str], slug: str) 
         )
         return errors
 
+    # Special case: flower-docker is celery-worker monitoring, allowed despite prefix
+    # (flower is the canonical tool name; both ship Dockerfile/compose.yml for
+    # celery-worker and are mutually incompatible with celery-docker).
+    if directory == "flower-docker" and types == ["celery-worker"]:
+        return errors
+
     prefix = STACK_PREFIX_BY_TYPE.get(types[0])
     if prefix is None:
         errors.append(
