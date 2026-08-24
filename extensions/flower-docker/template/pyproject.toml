@@ -1,0 +1,4 @@
+[project]
+dependencies = [
+  "flower>=2.0.1",
+]
