@@ -17,7 +17,7 @@ For a full explanation of how templates, extensions, and the file system work, r
   "description": "Adds X to your project",
   "url": "https://github.com/Create-Python-App/cpa-templates/tree/main/extensions/my-extension",
   "type": ["fastapi-backend"],
-  "category": "tooling",
+  "category": "backend-applications",
   "labels": ["FastAPI", "Tooling"]
 }
 ```

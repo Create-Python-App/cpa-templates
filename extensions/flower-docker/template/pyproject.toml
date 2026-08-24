@@ -1,4 +1,4 @@
 [project]
 dependencies = [
-  "langchain-core>=1.6.0",
+  "flower>=2.0.1",
 ]

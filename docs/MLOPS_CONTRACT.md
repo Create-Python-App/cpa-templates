@@ -224,6 +224,60 @@ retrains on serve**.
    unit-testable without constructing a `StepContext`, since they're plain
    functions rather than `BaseStep` subclasses.
 
+
+
+## CI profile compatibility
+
+Every registered MLOps template and extension must participate in CPA's layered CI model. MLOps CI stays CPU-first, offline-capable, and free of required external credentials.
+
+| Layer              | MLOps requirement                                                                                                                                                                                                                                  |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **L1 — template**  | Every MLOps template must have a bare scaffold job, even when no compatible extensions exist yet. The generated project must scaffold successfully with its default CPU-safe configuration.                                                        |
+| **L2 — extension** | Every MLOps extension must be tested against its canonical template type. After scaffolding, CI must run the generated project's test command (`pytest` unless the template defines another command), not only dependency installation or linting. |
+| **L3 — profile**   | Maintain a small set of curated, representative MLOps stacks under `ci/profiles/`. Profiles validate realistic extension composition; they must not attempt every compatible extension combination.                                                |
+
+Additional CI requirements:
+
+* Generated-project validation must use synthetic or fixture data and must not require network access.
+* Environment validation must remain enabled in CI. Required values must come from safe defaults, `.env.example`, or test fixtures rather than skipping schema validation.
+* Default CI must not require cloud credentials, API keys, remote experiment trackers, GPUs, CUDA, or distributed-training infrastructure.
+* GPU, cloud, and distributed paths must be mocked, reduced to a CPU fallback, or kept outside the default L1/L2/L3 profiles.
+* Every new MLOps template or extension must identify the CI layer/profile that validates it.
+
+
+## Shared environment variables
+
+MLOps templates and extensions should use a small, consistent set of environment variables for configuration shared across generated projects.
+
+### Common variables
+
+| Variable              | Purpose                                                            | Default / CI expectation                                                                          |
+| --------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| `MODEL_NAME`          | Logical name of the model being trained, evaluated, or registered. | Templates should provide a deterministic local default such as the project or starter model name. |
+| `MLFLOW_TRACKING_URI` | MLflow experiment-tracking and model-registry backend.             | Must default to a local/offline-safe backend such as `sqlite:///./mlflow.db`.                     |
+
+Rules:
+
+* Shared variables must have deterministic, CPU-safe, offline-capable defaults where possible.
+* Templates must not require users to configure cloud services merely to scaffold, import, or test the generated project.
+* `.env.example` should document variables exposed to generated-project users.
+* Environment-variable names must be stable across MLOps templates when they represent the same concept.
+* Extensions should reuse an existing shared variable instead of introducing a template-specific alias for the same setting.
+* Extension-specific configuration may introduce additional variables only when the setting is not already covered by the common contract.
+* Secrets such as API keys, cloud credentials, tokens, and passwords must never have committed real values or insecure production defaults.
+* CI tests must provide safe fixture values for required secrets or mock the integration that consumes them.
+* Configuration validation should remain active in CI rather than being bypassed because credentials or remote services are unavailable.
+
+### Tracker configuration
+
+`MLFLOW_TRACKING_URI` is the canonical experiment-tracker URI for templates using the shared MLflow tracking module. Do not introduce a second generic variable such as `EXPERIMENT_TRACKER_URI` for the same setting.
+
+An extension using a different tracking system may define provider-specific variables when required, but those variables belong to that extension and must not change the meaning of the shared MLflow configuration.
+
+
+
+
+
 ## Dependency policy
 
 CPU-first defaults (plain `torch`/`tensorflow` CPU wheels, no CUDA-only
@@ -241,6 +295,52 @@ documented as an optional path in `docs/DEPLOYMENT.md`, never required.
 | `docs/DEPLOYMENT.md` | Which serving mode this template uses and why; CI/CD is the `all-mlops-github-actions` extension, not this doc |
 | `docs/TYPING.md` | pydantic v2 + mypy/pyright, matching CPA's typed-Python default |
 | `docs/MLOPS_PIPELINE.md` | **Non-negotiable**: the `BaseStep` contract, `STEP_REGISTRY`, how to add a step, the registration-vs-promotion split, and dataset/preprocessing lineage |
+
+
+## Extension composition rules
+
+MLOps extensions must compose without changing the core module boundaries, test guarantees, or CPU-first/offline behavior defined by this contract.
+
+### Compatibility
+
+An MLOps extension is compatible with a template only when:
+
+* the template's `type` is included in the extension's declared `type`;
+* the extension does not overwrite files or feature modules owned by another selected extension;
+* applying the extension does not make the generated project's default install or tests require a GPU, cloud service, network access, or real credentials;
+* shared configuration follows the environment-variable contract above rather than introducing aliases for existing settings.
+
+Extensions should add capability around the common MLOps structure instead of replacing it. For example, an experiment-tracking, serving, data-validation, or CI extension may add implementation around the relevant module boundary, but should not move model training, data loading, or pipeline orchestration into a different project layout.
+
+### Ownership and conflicts
+
+Each extension must have a clear ownership boundary for the files, routes, configuration, and runtime behavior it adds.
+
+Use `incompatibleWith` when two extensions cannot safely coexist, including when they:
+
+* overwrite the same generated file or feature directory;
+* claim the same route or provider slot with mutually exclusive implementations;
+* configure competing runtimes or backends that cannot operate together;
+* make contradictory assumptions about ownership of the same MLOps concern.
+
+`incompatibleWith` declarations must be symmetric. If extension `a` declares extension `b` incompatible, extension `b` must also declare extension `a`.
+
+Do not use `incompatibleWith` for differences that can coexist through namespacing, merged configuration, optional dependencies, or provider-specific environment variables.
+
+Known and future AI/ML conflicts belong in the compatibility matrix defined by `AI_ML_AUTHORING.md` and must be reflected in `templates.json` before the conflicting extensions are considered supported together.
+
+### Composition testing
+
+Compatibility in registry metadata is a promise that representative combinations can generate and test successfully.
+
+* L2 validates an extension against its canonical compatible template.
+* L3 validates selected multi-extension MLOps stacks that represent realistic usage.
+* A new interaction between extensions that changes runtime behavior should be covered by an appropriate L3 profile.
+* L3 profiles remain curated; the catalog does not need CI coverage for the Cartesian product of every nominally compatible extension.
+
+When composition exposes a true structural or runtime conflict, prefer declaring the incompatibility explicitly instead of weakening tests or adding order-dependent behavior merely to make the combination pass.
+
+
 
 ## Observability policy (span cohabitation: MLflow vs OpenTelemetry)
 

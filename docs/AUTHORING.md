@@ -145,7 +145,29 @@ Use symmetric `incompatibleWith` when two extensions would overwrite the same
 generated paths (for example two Docker overlays that both ship `Dockerfile` /
 `compose.yml` for the **same** template `type`). Today stack Docker extensions
 are isolated by `type`; when a type gains a second packaging strategy, declare
-mutual incompatibility like cna-templates does for Redux saga/thunk.
+mutual incompatibility like cna-templates does for Redux saga/thunk. Example:
+`celery-docker` and the upcoming `flower-docker` (PR #178) both target
+`celery-worker` and ship a Compose stack for the same worker type — they must
+declare `incompatibleWith` on both entries when `flower-docker` lands (validation
+is symmetric; see `scripts/ci/validate-registry.py` and `templates.schema.json`).
+
+**Authoring rules:**
+
+1. **Declare on both sides.** If extension `A` is incompatible with `B`, then `A` must list `B` in its `incompatibleWith` array **and** `B` must list `A` in its `incompatibleWith` array. CPA validates this symmetry at registry load time.
+2. **Use slugs, not names.** Reference entries by their `slug` string — not the human-readable `name` — so renames to display names don't silently break validation.
+3. **Scope to the narrowest conflict surface.** Only declare incompatibility when the overlay truly overwrites shared paths (e.g. `Dockerfile`, `compose.yml`, `app/core/providers.py`). For softer constraints — version ranges, optional features, shared optional deps — prefer dependency versioning or optional `cpa.config.json` toggles rather than hard incompatibility.
+4. **Same `type` first.** Most `incompatibleWith` declarations are within a single template `type` (e.g. two FastAPI Docker strategies). Cross-type incompatibility is rare and should be explicitly justified in the PR description.
+5. **Document the rationale.** Add a short comment in `templates.json` next to the `incompatibleWith` entry explaining which paths collide so future maintainers know whether the constraint can be relaxed.
+
+**Checklist for new `incompatibleWith` entries:**
+
+- [ ] Both entries list each other by `slug`
+- [ ] Slugs referenced are valid entries in `templates.json`
+- [ ] The collision path(s) are documented in the PR
+- [ ] An existing `incompatibleWith` wasn't already covering the pair
+- [ ] If a new packaging strategy was introduced, it was discussed in the issue or Discord first
+
+See [Registering in `templates.json`](#registering-in-templatesjson) for the JSON schema and the `templates.schema.json` validation.
 
 **Authoring rules:**
 
@@ -393,22 +415,30 @@ Full reference: [create-python-app `docs/PYPROJECT_MERGE.md`](https://github.com
 - An extension has a `type` string **or array** of strings.
 - An extension is compatible when `template.type` appears in `[extension.type].flat()`.
 
-### `incompatibleWith`
+### `incompatibleWith` — when and how
 
-Declare mutually exclusive extensions in `templates.json`. CPA validates selected combinations at scaffold time.
+Use `incompatibleWith` when two extensions would write the same file for the same `type` — e.g. `Dockerfile`, `compose.yml`, `.env.example`, or `pyproject.toml` overlay. Example: `celery-docker` vs `flower-docker` both target `celery-worker` and ship a Compose stack for the same worker (similarly, two FastAPI middleware extensions that both patch `app/core/providers.py`).
+
+- **Symmetric (required):** if `A` lists `B`, then `B` must list `A`. Validated by [`scripts/ci/validate-registry.py`](../scripts/ci/validate-registry.py) (symmetry + existence).
+- **Same `type` only:** both extensions must share the same `type` (e.g. `celery-worker`). Cross-type is rare and needs justification.
+- **Slugs, not names:** reference the `slug` field.
 
 ```json
 {
-  "name": "Example A",
-  "slug": "example-a",
-  "incompatibleWith": ["example-b"],
-  "...": "..."
+  "slug": "flower-docker",
+  "incompatibleWith": ["celery-docker"]
+},
+{
+  "slug": "celery-docker",
+  "incompatibleWith": ["flower-docker"]
 }
 ```
 
-When two extensions logically conflict (two middleware choices, two container runtimes), add `incompatibleWith` on **both** entries. Use this for logical conflicts; use semver or dependency constraints for softer peer restrictions.
+- **Validation:** `python scripts/ci/validate-registry.py` fails on unknown or asymmetric slugs.
+- **Testing:** L2 fails if both extensions are selected together (combination rejected at scaffold time).
+- **Schema:** [`templates.schema.json`](../templates.schema.json) → `extensions[].incompatibleWith`.
 
-Schema: `templates.schema.json` → `extensions[].incompatibleWith`.
+See also the [path-collision rules](#incompatiblewith-path-collisions) above.
 
 ## Generation order
 
@@ -468,4 +498,6 @@ Planned starters not yet in the registry are listed in [FUTURE_TEMPLATES.md](./F
 ## AI/ML catalog
 
 For AI/ML taxonomy, categories, and template-vs-extension rules see
-[AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md).
+[AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md). MLOps templates and extensions must
+also follow the shared feature-module, testing, CI-profile, environment, and
+composition contract in [MLOPS_CONTRACT.md](./MLOPS_CONTRACT.md).

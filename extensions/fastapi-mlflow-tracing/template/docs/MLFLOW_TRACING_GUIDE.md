@@ -27,7 +27,7 @@ def record_inference(prompt: str) -> str:
 
 | Path | Purpose |
 |------|---------|
-| `pyproject.toml` | Merges `mlflow>=3.15.0` |
+| `pyproject.toml` | Merges `mlflow>=3.15.1` |
 | `app/core/mlflow_tracing.py` | `MLflowTracingSettings`, `configure_mlflow_tracing()`, `maybe_start_span`, `set_attribute` |
 | `app/core/providers.py.append.template` | Auto-registers `configure_mlflow_tracing` in the app provider registry |
 | `.env.example.append` | Documents `MLFLOW_*` variables |

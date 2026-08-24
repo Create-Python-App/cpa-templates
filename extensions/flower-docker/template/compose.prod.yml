@@ -1,8 +1,7 @@
 services:
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
+    restart: always
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -15,12 +14,11 @@ services:
     environment:
       BROKER_URL: redis://redis:6379/0
       RESULT_BACKEND: redis://redis:6379/1
-    volumes:
-      - .:/app
+    restart: always
     depends_on:
       redis:
         condition: service_healthy
-    command: uv run celery -A worker.celery_app worker --loglevel=INFO
+    command: uv run celery -A worker.celery_app worker --loglevel=INFO --concurrency=2
   flower:
     build: .
     env_file:
@@ -30,6 +28,7 @@ services:
       RESULT_BACKEND: redis://redis:6379/1
     ports:
       - "5555:5555"
+    restart: always
     depends_on:
       redis:
         condition: service_healthy
@@ -41,4 +40,4 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 15s
