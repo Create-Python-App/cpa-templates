@@ -1,4 +1,4 @@
 [project]
 dependencies = [
-  "flower>=2.0.1",
+  "flower>=2.1.0",
 ]
