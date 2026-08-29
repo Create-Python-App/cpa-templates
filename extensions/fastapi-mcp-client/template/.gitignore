@@ -1,0 +1,5 @@
+# FastAPI MCP client extension
+.env
+*.pyc
+__pycache__/
+mcp_servers.yaml

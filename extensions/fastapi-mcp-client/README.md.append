@@ -1,0 +1,26 @@
+## MCP Client Extension
+
+This template includes the `fastapi-mcp-client` extension for composing MCP tools.
+
+### Configuration
+
+Configure MCP servers via environment variables or `mcp_servers.yaml`:
+
+```bash
+MCP_SERVERS_FILE=mcp_servers.yaml
+MCP_CLIENT_ENABLED=true
+```
+
+### Usage
+
+```python
+from fastapi import FastAPI
+from fastapi_mcp_client import MCPClient
+
+app = FastAPI()
+mcp = MCPClient.from_env()
+
+@app.get("/tools")
+async def list_tools():
+    return await mcp.list_tools()
+```
