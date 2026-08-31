@@ -2,7 +2,7 @@
   "name": "danger-local",
   "private": true,
   "devDependencies": {
-    "danger": "^13.0.10",
+    "danger": "^14.0.7",
     "ts-node": "^10.9.2",
     "typescript": "^7.0.2"
   }
