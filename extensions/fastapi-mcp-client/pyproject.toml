@@ -1,0 +1,17 @@
+[project]
+name = "fastapi-mcp-client"
+version = "0.1.0"
+description = "FastAPI AI extension with MCP client for composing tools and skills"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[build-system]
+requires = ["setuptools>=65.0"]
+build-backend = "setuptools.build_meta"
