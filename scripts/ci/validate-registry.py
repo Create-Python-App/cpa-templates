@@ -186,6 +186,17 @@ def main() -> None:
         if path is None or not path.is_dir():
             errors.append(f"template {slug}: missing on-disk path {path}")
             continue
+        # 202: regression guard - README/README.template coexistence without overlay
+        # REPO_ROOT is imported from registry; raw_base is the template root
+        if directory:
+            raw_base = REPO_ROOT / "templates" / directory
+            has_bank = (raw_base / "README.md").is_file()
+            has_template = (raw_base / "README.md.template").is_file()
+            has_overlay = (raw_base / "template").is_dir()
+            if has_bank and has_template and not has_overlay:
+                errors.append(
+                    f"template {slug}: README.md and README.md.template coexist at same level without template/ overlay (see #202)"
+                )
         category = template.get("category")
         if category not in category_slugs:
             errors.append(f"template {slug}: unknown category {category}")
