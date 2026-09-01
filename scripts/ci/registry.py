@@ -164,4 +164,9 @@ def on_disk_path_for_entry(kind: str, entry: dict[str, Any]) -> Path | None:
     directory = template_dir(entry) if kind == "template" else extension_dir(entry)
     if not directory:
         return None
-    return REPO_ROOT / ("templates" if kind == "template" else "extensions") / directory
+    base = REPO_ROOT / ("templates" if kind == "template" else "extensions") / directory
+    # Prefer template/ subdirectory when present (mirrors loader's get_template_dir_path)
+    candidate = base / "template"
+    if candidate.is_dir():
+        return candidate
+    return base
