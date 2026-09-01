@@ -1,0 +1,65 @@
+# FastAPI AI Guardrails Extension
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.example
+
+# Distribution
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Documentation
+*.log
+*.log.*
+
+# Data
+*.csv
+*.json
+*.yaml
+*.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Extension-specific
+/app/core/__pycache__/
+/tests/__pycache__/
+/cache/
+/temp/
