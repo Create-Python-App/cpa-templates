@@ -524,38 +524,6 @@
       ]
     },
     {
-      "name": "FastAPI MCP Client",
-      "slug": "fastapi-mcp-client",
-      "description": "Model Context Protocol client for FastAPI AI apps. Typed tool registry with env-driven MCP server configuration.",
-      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-mcp-client",
-      "type": [
-        "fastapi-backend"
-      ],
-      "category": "ai-ml-applications",
-      "labels": [
-        "MCP",
-        "AI",
-        "Tools",
-        "FastAPI"
-      ]
-    },
-    {
-      "name": "FastAPI AI Guardrails",
-      "slug": "fastapi-ai-guardrails",
-      "description": "Typed input/output guardrail hooks for FastAPI AI apps. Required-field, length, and blocked-pattern validation with extensible rules.",
-      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-ai-guardrails",
-      "type": [
-        "fastapi-backend"
-      ],
-      "category": "ai-ml-applications",
-      "labels": [
-        "AI",
-        "Guardrails",
-        "Safety",
-        "FastAPI"
-      ]
-    },
-    {
       "name": "Django Spectacular",
       "slug": "django-spectacular",
       "description": "OpenAPI 3 schema generation and Swagger UI for Django REST Framework.",
