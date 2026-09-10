@@ -1,0 +1,8 @@
+{
+  "id": "mlops-tensorflow-default",
+  "description": "MLOps TensorFlow starter with GitHub CI",
+  "templateDir": "mlops-tensorflow-starter",
+  "addons": [
+    "github-setup"
+  ]
+}
