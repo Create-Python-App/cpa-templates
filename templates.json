@@ -556,6 +556,21 @@
       ]
     },
     {
+      "name": "All MLOps GitHub Actions",
+      "slug": "all-mlops-github-actions",
+      "description": "MLOps CI for MLOps starters: lint, unit tests, and a pipeline train smoke on push and pull requests.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-github-actions",
+      "type": [
+        "mlops-sklearn"
+      ],
+      "category": "ci",
+      "labels": [
+        "MLOps",
+        "CI",
+        "GitHub Actions"
+      ]
+    },
+    {
       "name": "Django Spectacular",
       "slug": "django-spectacular",
       "description": "OpenAPI 3 schema generation and Swagger UI for Django REST Framework.",
