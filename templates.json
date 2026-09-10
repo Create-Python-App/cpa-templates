@@ -577,7 +577,8 @@
       "description": "MLOps CI for MLOps starters: lint, unit tests, and a pipeline train smoke on push and pull requests.",
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-github-actions",
       "type": [
-        "mlops-sklearn"
+        "mlops-sklearn",
+        "mlops-pytorch"
       ],
       "category": "ci",
       "labels": [
