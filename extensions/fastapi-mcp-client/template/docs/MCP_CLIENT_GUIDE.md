@@ -29,7 +29,7 @@ servers:
 
 ```python
 from fastapi import FastAPI
-from fastapi_mcp_client import MCPClient
+from app.core.mcp_client import MCPClient
 
 app = FastAPI()
 

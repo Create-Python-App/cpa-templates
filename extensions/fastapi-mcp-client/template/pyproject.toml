@@ -1,0 +1,4 @@
+[project]
+dependencies = [
+  "pyyaml>=6.0.0",
+]
