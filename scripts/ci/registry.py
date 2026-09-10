@@ -20,6 +20,7 @@ CANONICAL_TEMPLATE_BY_TYPE: dict[str, str] = {
     "celery-worker": "celery-worker",
     "uv-workspace": "uv-workspace-starter",
     "mlops-sklearn": "mlops-sklearn-starter",
+    "mlops-pytorch": "mlops-pytorch-starter",
 }
 
 

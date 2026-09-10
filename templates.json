@@ -217,6 +217,21 @@
         "Python",
         "uv"
       ]
+    },
+    {
+      "name": "MLOps PyTorch Starter",
+      "slug": "mlops-pytorch-starter",
+      "description": "CPU-first PyTorch MLOps pipeline with YAML configs, step architecture, local MLflow, TorchScript export, and batch/FastAPI serving.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/mlops-pytorch-starter",
+      "type": "mlops-pytorch",
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "PyTorch",
+        "MLflow",
+        "Python",
+        "uv"
+      ]
     }
   ],
   "extensions": [
@@ -231,6 +246,7 @@
         "django-backend",
         "fastapi-backend",
         "mlops-sklearn",
+        "mlops-pytorch",
         "uv-workspace"
       ],
       "category": "ci",
