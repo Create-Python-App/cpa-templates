@@ -605,6 +605,60 @@
       ]
     },
     {
+      "name": "All MLOps Tabular Data",
+      "slug": "all-mlops-tabular-data",
+      "description": "Tabular data pack for MLOps starters: synthetic generation, disjoint splitting, train-only standardization, and schema validation (NumPy-only).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-tabular-data",
+      "type": [
+        "mlops-sklearn",
+        "mlops-pytorch",
+        "mlops-tensorflow"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Data",
+        "Tabular",
+        "NumPy"
+      ]
+    },
+    {
+      "name": "All MLOps Sequence Data",
+      "slug": "all-mlops-sequence-data",
+      "description": "Sequence data pack for MLOps starters: synthetic series, sliding windows, temporal splitting, and schema validation (NumPy-only).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-sequence-data",
+      "type": [
+        "mlops-sklearn",
+        "mlops-pytorch",
+        "mlops-tensorflow"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Data",
+        "Sequence",
+        "NumPy"
+      ]
+    },
+    {
+      "name": "All MLOps Image Data",
+      "slug": "all-mlops-image-data",
+      "description": "Image data pack for MLOps starters: synthetic uint8 images, unit-range normalization, and schema validation (NumPy-only).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-image-data",
+      "type": [
+        "mlops-sklearn",
+        "mlops-pytorch",
+        "mlops-tensorflow"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Data",
+        "Image",
+        "NumPy"
+      ]
+    },
+    {
       "name": "MLOps sklearn Distributed",
       "slug": "mlops-sklearn-distributed",
       "description": "Parallel grid search for sklearn starters: sequential/threads/processes backends with deterministic fallback (joblib-only).",
