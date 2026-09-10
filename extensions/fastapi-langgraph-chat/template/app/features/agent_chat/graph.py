@@ -8,10 +8,11 @@ from __future__ import annotations
 
 from typing import Annotated, Any, Literal, TypedDict
 
-from app.features.agent_chat.tools import TOOL_REGISTRY
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
+
+from app.features.agent_chat.tools import TOOL_REGISTRY
 
 
 class AgentChatState(TypedDict, total=False):

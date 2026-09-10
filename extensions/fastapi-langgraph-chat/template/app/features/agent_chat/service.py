@@ -7,14 +7,15 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from typing import Any
 
+from fastapi import HTTPException, status
+from langchain_core.messages import BaseMessage, HumanMessage
+
 from app.features.agent_chat.graph import agent_graph
 from app.features.agent_chat.schemas import (
     AgentChatMessage,
     AgentChatRequest,
     AgentChatResponse,
 )
-from fastapi import HTTPException, status
-from langchain_core.messages import BaseMessage, HumanMessage
 
 try:  # AI span contract (#112): emit LLM spans when tracing is present.
     from app.core.mlflow_tracing import (  # type: ignore[import-untyped]

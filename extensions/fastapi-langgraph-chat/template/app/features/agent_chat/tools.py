@@ -8,12 +8,12 @@ test suite calls every registered tool.
 from __future__ import annotations
 
 from collections.abc import Callable
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 
 def get_current_time() -> str:
     """Current UTC time as an ISO-8601 string."""
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def echo_text(text: str) -> str:

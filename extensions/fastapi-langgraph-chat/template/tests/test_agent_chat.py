@@ -1,13 +1,14 @@
 """Offline agent chat tests. No network calls, no real API keys."""
 
 import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+from pydantic import ValidationError
+
 from app.features.agent_chat.graph import agent_graph, router_node, tool_node
 from app.features.agent_chat.router import router as agent_chat_router
 from app.features.agent_chat.schemas import AgentChatMessage
 from app.features.agent_chat.tools import TOOL_REGISTRY
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from pydantic import ValidationError
 
 
 def test_agent_message_rejects_invalid_role() -> None:
