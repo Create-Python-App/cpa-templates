@@ -3,24 +3,12 @@
 from __future__ import annotations
 
 import os
-from contextlib import contextmanager
-from typing import Any, Generator
 
 from fastapi import HTTPException, status
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 
 from app.features.chat.providers import get_provider
 from app.features.chat.schemas import ChatMessage, ChatRequest, ChatResponse
-
-try:  # AI span contract (#112): emit LLM spans when tracing is present.
-    from app.core.mlflow_tracing import maybe_start_span
-except ImportError:  # fastapi-mlflow-tracing not applied → no-op span.
-
-    @contextmanager
-    def maybe_start_span(
-        name: str, **attributes: Any
-    ) -> Generator[None, None, None]:
-        yield None
 
 _ROLE_TO_MESSAGE: dict[str, type[BaseMessage]] = {
     "user": HumanMessage,
@@ -57,10 +45,7 @@ def chat_completion(body: ChatRequest) -> ChatResponse:
         ) from exc
 
     langchain_messages = [_to_langchain_message(m) for m in body.messages]
-    with maybe_start_span(
-        "chat.completion", provider=provider_name, model=model_name
-    ):
-        ai_message = model.invoke(langchain_messages)
+    ai_message = model.invoke(langchain_messages)
 
     return ChatResponse(
         message=ChatMessage(role="assistant", content=str(ai_message.content)),
