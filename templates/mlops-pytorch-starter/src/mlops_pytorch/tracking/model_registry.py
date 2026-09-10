@@ -5,13 +5,14 @@ from __future__ import annotations
 from typing import cast
 
 import mlflow.pytorch
+import numpy as np
 import torch
 
 from mlops_pytorch.models.build import MLPClassifier, NormalizedMLP
 
 
 def register_model_version(
-    model: torch.nn.Module, name: str, run_id: str, input_example: object = None
+    model: torch.nn.Module, name: str, run_id: str, input_example: np.ndarray | None = None
 ) -> str:
     """Log the trained model under the active run and register a new version.
 
