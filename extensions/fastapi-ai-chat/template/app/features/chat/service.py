@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import os
-from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Any
+from typing import Any, Generator
 
 from fastapi import HTTPException, status
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
@@ -14,9 +13,7 @@ from app.features.chat.providers import get_provider
 from app.features.chat.schemas import ChatMessage, ChatRequest, ChatResponse
 
 try:  # AI span contract (#112): emit LLM spans when tracing is present.
-    from app.core.mlflow_tracing import (  # type: ignore[import-untyped]
-        maybe_start_span,
-    )
+    from app.core.mlflow_tracing import maybe_start_span
 except ImportError:  # fastapi-mlflow-tracing not applied → no-op span.
 
     @contextmanager
