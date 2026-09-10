@@ -1,0 +1,11 @@
+{
+  "name": "mlops-pytorch-starter",
+  "customOptions": [
+    {
+      "key": "experimentName",
+      "type": "string",
+      "message": "MLflow experiment name (e.g. mlops-pytorch-local)",
+      "default": "mlops-pytorch-local"
+    }
+  ]
+}
