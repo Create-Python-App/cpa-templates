@@ -85,3 +85,30 @@ def test_chat_rejects_unknown_provider(client: TestClient, monkeypatch: pytest.M
         json={"messages": [{"role": "user", "content": "hello"}]},
     )
     assert response.status_code == 500
+
+
+def test_chat_emits_ai_span_when_tracing_present(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """AI span contract (#112): chat opens a span via the tracing primitive."""
+    from contextlib import contextmanager
+
+    import app.features.chat.service as chat_service
+    from app.features.chat.schemas import ChatMessage, ChatRequest
+
+    recorded: dict[str, object] = {}
+
+    @contextmanager
+    def fake_span(name: str, **attributes: object):
+        recorded["name"] = name
+        recorded["attributes"] = attributes
+        yield object()
+
+    monkeypatch.setattr(chat_service, "maybe_start_span", fake_span)
+    monkeypatch.setenv("AI_CHAT_PROVIDER", "mock")
+    response = chat_service.chat_completion(
+        ChatRequest(messages=[ChatMessage(role="user", content="hello")])
+    )
+    assert response.provider == "mock"
+    assert recorded["name"] == "chat.completion"
+    assert recorded["attributes"] == {"provider": "mock", "model": "mock-chat"}
