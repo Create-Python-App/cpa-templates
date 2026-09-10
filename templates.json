@@ -232,6 +232,21 @@
         "Python",
         "uv"
       ]
+    },
+    {
+      "name": "MLOps TensorFlow Starter",
+      "slug": "mlops-tensorflow-starter",
+      "description": "CPU-first TensorFlow MLOps pipeline with YAML configs, step architecture, local MLflow, SavedModel export, and batch/FastAPI serving.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/mlops-tensorflow-starter",
+      "type": "mlops-tensorflow",
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "TensorFlow",
+        "MLflow",
+        "Python",
+        "uv"
+      ]
     }
   ],
   "extensions": [
@@ -247,6 +262,7 @@
         "fastapi-backend",
         "mlops-sklearn",
         "mlops-pytorch",
+        "mlops-tensorflow",
         "uv-workspace"
       ],
       "category": "ci",
@@ -578,7 +594,8 @@
       "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-github-actions",
       "type": [
         "mlops-sklearn",
-        "mlops-pytorch"
+        "mlops-pytorch",
+        "mlops-tensorflow"
       ],
       "category": "ci",
       "labels": [
