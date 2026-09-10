@@ -3,19 +3,34 @@ FastAPI AI guardrails extension.
 Provides typed guardrail hooks for input and output validation.
 """
 
-from typing import Any, Callable, List, Optional, Union
+import re
+from typing import Any
 
 
 class GuardrailError(Exception):
     """Raised when input or output violates guardrail rules."""
 
 
+#: Case-insensitive prompt-injection markers blocked from inputs by default.
+DEFAULT_INPUT_BLOCKED_PATTERNS: list[str] = [
+    "ignore previous instructions",
+    "ignore all previous instructions",
+    "disregard previous instructions",
+    "disregard all previous instructions",
+]
+
+#: Email addresses are blocked from outputs by default (PII guard).
+DEFAULT_OUTPUT_BLOCKED_PATTERNS: list[str] = [
+    r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}",
+]
+
+
 def apply_input_guardrails(
     input_data: Any,
     *,
     max_length: int = 1000,
-    blocked_patterns: Optional[List[str]] = None,
-    required_fields: Optional[List[str]] = None,
+    blocked_patterns: list[str] | None = None,
+    required_fields: list[str] | None = None,
 ) -> Any:
     """
     Validate input data against guardrail rules.
@@ -45,13 +60,12 @@ def apply_input_guardrails(
                 f"Input string exceeds maximum length of {max_length}: {len(input_data)}"
             )
 
-    # Check blocked patterns
-    if blocked_patterns:
-        for pattern in blocked_patterns:
-            if pattern in str(input_data):
-                raise GuardrailError(
-                    f"Input contains blocked pattern: {pattern}"
-                )
+    # Check blocked patterns (regex, case-insensitive; secure defaults apply)
+    for pattern in (
+        blocked_patterns if blocked_patterns is not None else DEFAULT_INPUT_BLOCKED_PATTERNS
+    ):
+        if re.search(pattern, str(input_data), re.IGNORECASE):
+            raise GuardrailError(f"Input contains blocked pattern: {pattern}")
 
     return input_data
 
@@ -60,8 +74,8 @@ def apply_output_guardrails(
     output_data: Any,
     *,
     max_length: int = 1000,
-    blocked_patterns: Optional[List[str]] = None,
-    required_fields: Optional[List[str]] = None,
+    blocked_patterns: list[str] | None = None,
+    required_fields: list[str] | None = None,
 ) -> Any:
     """
     Validate output data against guardrail rules.
@@ -91,12 +105,13 @@ def apply_output_guardrails(
                 f"Output string exceeds maximum length of {max_length}: {len(output_data)}"
             )
 
-    # Check blocked patterns
-    if blocked_patterns:
-        for pattern in blocked_patterns:
-            if pattern in str(output_data):
-                raise GuardrailError(
-                    f"Output contains blocked pattern: {pattern}"
-                )
+    # Check blocked patterns (regex, case-insensitive; secure defaults apply)
+    for pattern in (
+        blocked_patterns
+        if blocked_patterns is not None
+        else DEFAULT_OUTPUT_BLOCKED_PATTERNS
+    ):
+        if re.search(pattern, str(output_data), re.IGNORECASE):
+            raise GuardrailError(f"Output contains blocked pattern: {pattern}")
 
     return output_data
