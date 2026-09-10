@@ -1,0 +1,1 @@
+- [DISTRIBUTED_TRAINING_GUIDE.md](./DISTRIBUTED_TRAINING_GUIDE.md) — parallel grid search backends, local execution, Dask/Ray graduation (joblib-only)

@@ -605,6 +605,53 @@
       ]
     },
     {
+      "name": "MLOps sklearn Distributed",
+      "slug": "mlops-sklearn-distributed",
+      "description": "Parallel grid search for sklearn starters: sequential/threads/processes backends with deterministic fallback (joblib-only).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/mlops-sklearn-distributed",
+      "type": [
+        "mlops-sklearn"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Distributed",
+        "sklearn",
+        "joblib"
+      ]
+    },
+    {
+      "name": "MLOps PyTorch Distributed",
+      "slug": "mlops-pytorch-distributed",
+      "description": "DDP/torchrun launch for PyTorch starters with single-process fallback (torch.distributed-only).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/mlops-pytorch-distributed",
+      "type": [
+        "mlops-pytorch"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Distributed",
+        "PyTorch",
+        "DDP"
+      ]
+    },
+    {
+      "name": "MLOps TensorFlow Distributed",
+      "slug": "mlops-tensorflow-distributed",
+      "description": "tf.distribute strategies for TensorFlow starters with CPU-single fallback (no new deps).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/mlops-tensorflow-distributed",
+      "type": [
+        "mlops-tensorflow"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Distributed",
+        "TensorFlow"
+      ]
+    },
+    {
       "name": "FastAPI LangGraph Chat",
       "slug": "fastapi-langgraph-chat",
       "description": "Multi-step agent chat via a small LangGraph state graph (router, tool executor, responder) with offline mock tools.",
