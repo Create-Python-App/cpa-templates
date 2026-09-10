@@ -12,7 +12,7 @@ from mlops_pytorch.models.build import MLPClassifier, NormalizedMLP
 
 
 def register_model_version(
-    model: torch.nn.Module, name: str, run_id: str, input_example: np.ndarray | None = None
+    model: torch.nn.Module, name: str, run_id: str, input_example: np.ndarray
 ) -> str:
     """Log the trained model under the active run and register a new version.
 
