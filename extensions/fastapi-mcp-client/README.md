@@ -19,7 +19,7 @@ Add the extension to your FastAPI application:
 
 ```python
 from fastapi import FastAPI
-from fastapi_mcp_client import MCPClient
+from app.core.mcp_client import MCPClient
 
 app = FastAPI()
 
@@ -61,7 +61,7 @@ servers:
 Run the test suite:
 
 ```bash
-pytest extensions/fastapi-mcp-client/tests/test_mcp_client.py -v
+pytest tests/test_mcp_client.py -v
 ```
 
 ## License
