@@ -1,0 +1,11 @@
+{
+  "name": "mlops-sklearn-starter",
+  "customOptions": [
+    {
+      "key": "experimentName",
+      "type": "string",
+      "message": "MLflow experiment name (e.g. mlops-sklearn-local)",
+      "default": "mlops-sklearn-local"
+    }
+  ]
+}

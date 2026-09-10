@@ -1,4 +1,4 @@
-experiment_name: mlops-sklearn-local
+experiment_name: {{ experimentName }}
 random_seed: 42
 steps: [loading, preprocessing, features, model, training, evaluate]
 
@@ -21,4 +21,4 @@ training:
   cv_folds: 1
 
 serving:
-  model_uri: "models:/mlops-sklearn-local@production"
+  model_uri: "models:/{{ experimentName }}@production"
