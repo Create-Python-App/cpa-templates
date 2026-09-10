@@ -21,6 +21,7 @@ CANONICAL_TEMPLATE_BY_TYPE: dict[str, str] = {
     "uv-workspace": "uv-workspace-starter",
     "mlops-sklearn": "mlops-sklearn-starter",
     "mlops-pytorch": "mlops-pytorch-starter",
+    "mlops-tensorflow": "mlops-tensorflow-starter",
 }
 
 
