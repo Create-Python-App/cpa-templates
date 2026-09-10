@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Any, Generator
+from typing import Any
 
 from fastapi import HTTPException, status
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
