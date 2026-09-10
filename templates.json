@@ -588,6 +588,22 @@
       ]
     },
     {
+      "name": "FastAPI LangGraph Chat",
+      "slug": "fastapi-langgraph-chat",
+      "description": "Multi-step agent chat via a small LangGraph state graph (router, tool executor, responder) with offline mock tools.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-langgraph-chat",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "ai-ml-applications",
+      "labels": [
+        "LangGraph",
+        "AI",
+        "Agents",
+        "FastAPI"
+      ]
+    },
+    {
       "name": "Django Spectacular",
       "slug": "django-spectacular",
       "description": "OpenAPI 3 schema generation and Swagger UI for Django REST Framework.",
