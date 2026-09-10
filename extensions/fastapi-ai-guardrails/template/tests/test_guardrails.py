@@ -2,7 +2,7 @@
 
 import pytest
 
-from fastapi_ai_guardrails.core.guardrails import (
+from app.core.guardrails import (
     GuardrailError,
     apply_input_guardrails,
     apply_output_guardrails,
