@@ -1,8 +1,0 @@
-{
-  "id": "mlops-pytorch-default",
-  "description": "MLOps PyTorch starter with GitHub CI",
-  "templateDir": "mlops-pytorch-starter",
-  "addons": [
-    "github-setup"
-  ]
-}
