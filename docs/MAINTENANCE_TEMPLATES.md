@@ -273,4 +273,6 @@ If any step fails, fix the template or extension, then regenerate from scratch. 
 
 ## Quality checklist
 
-See [TEMPLATE_QUALITY_M1.md](./TEMPLATE_QUALITY_M1.md) for the FastAPI M1 bar and per-template `QUALITY.md` files.
+See [TEMPLATE_QUALITY_M1.md](./TEMPLATE_QUALITY_M1.md) for the FastAPI M1 bar,
+[TEMPLATE_QUALITY_MLOPS.md](./TEMPLATE_QUALITY_MLOPS.md) for the MLOps M1 bar,
+and per-template `QUALITY.md` files.
