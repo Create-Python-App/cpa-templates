@@ -1,0 +1,76 @@
+# IAM role, Data Catalog database, script artifact, and Glue job.
+# Scaffold values come from cpa.config.json; override via terraform.tfvars.
+
+terraform {
+  required_version = ">= 1.6.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.aws_region
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_policy_document" "glue_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["glue.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "job_role" {
+  name               = "{{ jobName }}-role"
+  assume_role_policy = data.aws_iam_policy_document.glue_assume.json
+}
+
+resource "aws_iam_role_policy_attachment" "glue_service" {
+  role       = aws_iam_role.job_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+}
+
+resource "aws_s3_object" "job_script" {
+  bucket = trimprefix("{{ s3BucketPrefix }}", "s3://")
+  key    = "scripts/etl_job.py"
+  source = "${path.module}/../jobs/etl_job.py"
+  etag   = filemd5("${path.module}/../jobs/etl_job.py")
+}
+
+resource "aws_glue_catalog_database" "analytics" {
+  name = "{{ catalogDatabase }}"
+}
+
+resource "aws_glue_job" "etl" {
+  name              = "{{ jobName }}"
+  role_arn          = aws_iam_role.job_role.arn
+  glue_version      = "{{ glueVersion }}"
+  worker_type       = "{{ workerType }}"
+  number_of_workers = {{ dpuNumber }}
+
+  command {
+    name            = "glueetl"
+    script_location = "s3://${aws_s3_object.job_script.bucket}/${aws_s3_object.job_script.key}"
+    python_version  = "3"
+  }
+
+  default_arguments = {
+    "--job-bookmark-option" = "job-bookmark-enable"
+    "--catalog_database"    = aws_glue_catalog_database.analytics.name
+    "--s3_bucket_prefix"    = "{{ s3BucketPrefix }}"
+    "--TempDir"             = "s3://${aws_s3_object.job_script.bucket}/tmp/"
+  }
+
+  execution_property {
+    max_concurrent_runs = 1
+  }
+}
