@@ -123,6 +123,18 @@
         "MLflow",
         "Python"
       ]
+    },
+    {
+      "slug": "data-engineering",
+      "name": "Data Engineering",
+      "description": "Batch ETL starters on managed data platforms.",
+      "details": "Use when the deliverable is a scheduled batch pipeline — Glue jobs with bookmarks and Data Catalog tables.",
+      "labels": [
+        "Data Engineering",
+        "ETL",
+        "AWS Glue",
+        "Python"
+      ]
     }
   ],
   "templates": [
@@ -244,6 +256,22 @@
         "MLOps",
         "TensorFlow",
         "MLflow",
+        "Python",
+        "uv"
+      ]
+    },
+    {
+      "name": "Glue ETL Job",
+      "slug": "glue-etl-job",
+      "description": "Batch ETL on AWS Glue with PySpark, job bookmarks, and Data Catalog. Terraform deploy ships in the base template.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/glue-etl-job",
+      "type": "glue-etl",
+      "category": "data-engineering",
+      "labels": [
+        "AWS Glue",
+        "ETL",
+        "PySpark",
+        "Terraform",
         "Python",
         "uv"
       ]

@@ -1,0 +1,55 @@
+"""Glue job entrypoint (runs on the AWS Glue runtime, not locally).
+
+Deploy flow: ``terraform apply`` uploads this script to S3 and registers the
+``{{ jobName }}`` job with job bookmarks enabled, so each run only processes
+newly arrived source objects.
+
+Runtime inputs arrive as Glue job arguments (see ``terraform/main.tf``):
+
+- ``--JOB_NAME`` — injected automatically by Glue; drives job bookmarks.
+- ``--catalog_database`` — Data Catalog database for output tables.
+- ``--s3_bucket_prefix`` — S3 prefix holding ``raw/`` input and ``processed/`` output.
+"""
+
+import sys
+
+from awsglue.context import GlueContext  # type: ignore[import]
+from awsglue.job import Job  # type: ignore[import]
+from awsglue.utils import getResolvedOptions  # type: ignore[import]
+from pyspark.context import SparkContext  # type: ignore[import]
+
+from glue_etl.transforms import clean_batch
+
+DEFAULT_CATALOG_DATABASE = "{{ catalogDatabase }}"
+DEFAULT_S3_BUCKET_PREFIX = "{{ s3BucketPrefix }}"
+REQUIRED_KEYS = ["id"]
+
+
+def run() -> int:
+    args = getResolvedOptions(sys.argv, ["JOB_NAME", "catalog_database", "s3_bucket_prefix"])
+    catalog_database = args["catalog_database"] or DEFAULT_CATALOG_DATABASE
+    s3_prefix = (args["s3_bucket_prefix"] or DEFAULT_S3_BUCKET_PREFIX).rstrip("/")
+
+    sc = SparkContext.getOrCreate()
+    glue_context = GlueContext(sc)
+    spark = glue_context.spark_session
+    job = Job(glue_context)
+    job.init(args["JOB_NAME"], args)
+
+    source = spark.read.option("header", "true").csv(f"{s3_prefix}/raw/").collect()
+    cleaned = clean_batch([row.asDict() for row in source], REQUIRED_KEYS)
+
+    if cleaned:
+        spark.createDataFrame(cleaned).write.mode("append").partitionBy(
+            "ingestion_date"
+        ).parquet(f"{s3_prefix}/processed/")
+        print(f"Wrote {len(cleaned)} records from {s3_prefix}/raw/ into {catalog_database}.")
+    else:
+        print("No new records; nothing to write.")
+
+    job.commit()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(run())

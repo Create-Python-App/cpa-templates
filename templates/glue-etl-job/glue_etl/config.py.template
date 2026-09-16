@@ -1,0 +1,22 @@
+"""Job settings loaded from environment / .env.
+
+Scaffold-time values (``cpa.config.json``) become the defaults below; every
+field can still be overridden at deploy or run time through the environment.
+"""
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+
+    job_name: str = "{{ jobName }}"
+    catalog_database: str = "{{ catalogDatabase }}"
+    s3_bucket_prefix: str = "{{ s3BucketPrefix }}"
+    glue_version: str = "{{ glueVersion }}"
+    worker_type: str = "{{ workerType }}"
+    dpu_number: int = {{ dpuNumber }}
+    aws_region: str = "us-east-1"
+
+
+settings = Settings()
