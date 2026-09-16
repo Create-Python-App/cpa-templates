@@ -1,7 +1,7 @@
 # Project Structure
 
 `fastapi-starter` uses a feature-based architecture inspired by
-Create-Node-App's `react-vite-starter` and the NaNLABS FastAPI boilerplate.
+Create-Node-App's `react-vite-starter` and widely used FastAPI feature-based layout conventions.
 
 ## Layout
 
