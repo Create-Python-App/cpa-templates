@@ -3,6 +3,8 @@
 > How to handle security alerts, audits, and hardening in the `create-python-app` ecosystem.
 >
 > Read after the top-level [MAINTENANCE_RUNBOOK.md](./MAINTENANCE_RUNBOOK.md).
+>
+> **Last updated:** September 2026 | Covers: `cpa-templates` templates and extensions as of September 2026, including MLOps (sklearn, PyTorch, TensorFlow) and AI/LLM extensions.
 
 ---
 
@@ -10,8 +12,8 @@
 
 There are three main channels:
 
-1. **GitHub Dependabot alerts** — vulnerabilities in direct and transitive dependencies.
-2. **OSV-Scanner CI** — runs in `create-python-app` via `.github/workflows/osv-scanner.yml`.
+1. **GitHub Dependabot alerts** — vulnerabilities in direct and transitive dependencies. Runs on both `create-python-app` and `cpa-templates`.
+2. **OSV-Scanner CI** — runs in `create-python-app` via `.github/workflows/osv-scanner.yml`. Currently **not run on cpa-templates**; Dependabot alerts are the primary scanner for template and extension dependencies (see [Limitations](#limitations) below).
 3. **CodeQL alerts** — code scanning alerts in `create-python-app` and `cpa-templates`.
 
 Check all three when doing security work:
@@ -30,12 +32,15 @@ gh code-scanning alerts list --repo Create-Python-App/cpa-templates --state open
 
 ## 2. Triage
 
-| Severity | Action |
-|---|---|
-| Critical / High in CLI code path | P0 — fix immediately and release |
-| High in transitive dependency of a template | P1 — fix within the sprint |
-| Moderate / Low | Batch with other maintenance |
-| Informational only | Document and close if not actionable |
+| Severity | Action | Notes |
+|---|---|---|
+| Critical / High in CLI code path | P0 — fix immediately and release | — |
+| High in **fastapi-starter** or **django-api** | P1 — fix within the sprint | Affects majority of users |
+| High in **MLOps templates** (sklearn, PyTorch, TensorFlow) | P1 — fix within the sprint | See [Section 5.2](#52-ml-framework-dependency-profiles) for audit guidance |
+| High in **AI/LLM extensions** (fastapi-ai-chat, fastapi-langgraph-chat, etc.) | P1 — fix within the sprint | High indirect user impact via LLM provider deps |
+| High in other templates/extensions | P2 — fix in next maintenance cycle | Narrower user base |
+| Moderate / Low | Batch with other maintenance | — |
+| Informational only | Document and close if not actionable | — |
 
 Questions to ask:
 
@@ -43,6 +48,8 @@ Questions to ask:
 - Can we bump the dependency without breaking the template/extension?
 - Is the fix already available upstream on PyPI?
 - Can we mitigate with `pyproject.toml` constraints while waiting for upstream?
+- **For MLOps templates:** Does the vulnerability exist in the transitive tree of a heavy framework (PyTorch/TensorFlow/scikit-learn)? These may have overlapping transitive graphs and require coordinated pins.
+- **For AI/LLM extensions:** Does the issue affect the LLM provider SDK (openai, anthropic, langchain) or a known-problematic transitive like urllib3?
 
 ---
 
@@ -95,7 +102,100 @@ If no fixed version exists or the bump is breaking, open a tracking issue and do
 
 ---
 
-## 5. Running audits locally
+## 5. Dependency profiles by template type
+
+### 5.1 Standard templates (FastAPI, Django, CLI)
+
+These have lightweight, API-focused dependency trees:
+
+- **fastapi-starter**: FastAPI, uvicorn, pydantic, httpx (dev)
+- **django-api**: Django, gunicorn, psycopg3 (opt)
+- **cli-starter**: Typer, rich (minimal)
+- **celery-worker**: Celery, redis (opt), psycopg3 (opt)
+
+Vulnerabilities in these are usually straightforward to fix via direct dependency bumps. Audit via Dependabot or local `pip-audit`.
+
+### 5.2 MLOps templates: sklearn, PyTorch, TensorFlow
+
+These templates introduce **heavy transitive dependency trees** with scientific computing stacks:
+
+**mlops-sklearn-starter:**
+```toml
+dependencies = [
+  "fastapi>=0.115.0",
+  "matplotlib>=3.9.0",
+  "mlflow>=2.15.0",
+  "numpy>=2.0.0",
+  "pydantic>=2.9.0",
+  "pyyaml>=6.0.0",
+  "scikit-learn>=1.5.0",
+  "uvicorn[standard]>=0.30.0",
+]
+```
+
+**mlops-pytorch-starter, mlops-tensorflow-starter:** Similar, plus `torch>=2.4.0` or `tensorflow>=2.17.0`.
+
+**Audit considerations:**
+
+- The NumPy, SciPy, and framework stacks (PyTorch/TensorFlow) evolve rapidly; always pin lower bounds to stable point releases.
+- MLflow adds transitive deps (sqlalchemy, alembic, gunicorn); review MLflow's `setup.py` when an MLflow bump is involved.
+- PyTorch and TensorFlow have independent security schedules; monitor their GitHub releases and PyPI pages separately.
+- **Local audit:**
+
+  ```bash
+  cd templates/mlops-sklearn-starter && uv sync --all-groups
+  uv run pip-audit
+
+  cd templates/mlops-pytorch-starter && uv sync --all-groups
+  uv run pip-audit
+
+  cd templates/mlops-tensorflow-starter && uv sync --all-groups
+  uv run pip-audit
+  ```
+
+- **Coordinated fixes:** If a transitive (e.g., urllib3, requests) affects all three MLOps templates, coordinate pins across all three `pyproject.toml` files in one PR to keep the lock graphs aligned.
+
+### 5.3 AI/LLM extensions
+
+These extensions add LLM-provider SDKs and retrieval libraries, introducing their own vulnerability surfaces:
+
+| Extension | Key dependencies | Audit focus |
+|-----------|-------------------|------------|
+| `fastapi-ai-chat` | langchain-core, pydantic | Provider abstraction layer (mock-only in MVP) |
+| `fastapi-ai-guardrails` | guardrails-ai, pydantic | Guardrails library and its transitive graph |
+| `fastapi-langgraph-chat` | langgraph, langchain, pydantic | Agent framework (newer, less mature) |
+| `fastapi-mcp-client` | mcp (Model Context Protocol), aiohttp | Protocol client library and HTTP stack |
+| `fastapi-mlflow-tracing` | mlflow, opentelemetry | MLflow integration + observability stack |
+| `fastapi-rag-pgvector` | langchain, psycopg3, pgvector | Vector DB client + retrieval chain |
+
+**Audit considerations:**
+
+- **LLM provider SDKs** (openai, anthropic, cohere) ship under their own release cadence; check GitHub Security Advisories for these packages directly.
+- **langchain and langgraph** are actively developed; newer releases may have breaking changes. Test extensions against current versions before bumping.
+- **Transitive HTTP libraries** (urllib3, requests, aiohttp) appear in LLM SDK trees; prioritize fixes in these layers.
+- **Local audit:**
+
+  ```bash
+  cd extensions/fastapi-ai-chat && uv sync
+  uv run pip-audit
+
+  cd extensions/fastapi-langgraph-chat && uv sync
+  uv run pip-audit
+
+  # Repeat for other AI/LLM extensions
+  ```
+
+- **Note:** AI/LLM extensions apply on top of a `fastapi-starter` or similar base; vulnerabilities in the base template propagate. Always audit the **full generated project** after adding an AI/LLM extension:
+
+  ```bash
+  cd my-app && uv sync --all-groups && uv run pip-audit
+  ```
+
+---
+
+## 6. Running audits locally
+
+### 6.1 In create-python-app
 
 ```bash
 # In create-python-app (requires pip-audit or osv-scanner)
@@ -111,7 +211,7 @@ osv-scanner -r .
 
 ---
 
-## 6. CodeQL fixes
+## 7. CodeQL fixes
 
 CodeQL alerts often relate to:
 
@@ -129,7 +229,7 @@ If an alert is a false positive, dismiss it with a comment explaining why.
 
 ---
 
-## 7. Validation
+## 8. Validation
 
 After any security change:
 
@@ -140,7 +240,7 @@ After any security change:
 
 ---
 
-## 8. Checklist
+## 9. Checklist
 
 - [ ] Alert has been triaged and prioritized.
 - [ ] Fix is minimal and scoped.
@@ -148,3 +248,19 @@ After any security change:
 - [ ] CI passes.
 - [ ] Generated projects still install, lint, and test.
 - [ ] A release tag is planned if the fix affects a published PyPI package.
+
+---
+
+## 10. Limitations
+
+### OSV-Scanner coverage gap in cpa-templates
+
+Currently, OSV-Scanner runs only in the `create-python-app` repository (via `.github/workflows/osv-scanner.yml`). The `cpa-templates` repository relies on **Dependabot alerts alone** for supply-chain scanning.
+
+**Implications:**
+
+- Vulnerabilities in template and extension dependencies are flagged by Dependabot, not OSV-Scanner.
+- Dependabot coverage is comprehensive but may have different latency and sensitivity than OSV-Scanner.
+- If OSV-Scanner is added to `cpa-templates` in the future, this section should be updated and any workflow conflicts resolved.
+
+**Workaround:** Maintainers can run OSV-Scanner locally on template and extension directories as part of security audits (see [Section 6](#6-running-audits-locally)).
