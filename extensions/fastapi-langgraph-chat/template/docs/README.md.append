@@ -1,0 +1,1 @@
+- [LANGGRAPH_CHAT_GUIDE.md](./LANGGRAPH_CHAT_GUIDE.md) — LangGraph multi-step agent chat (router → tools → responder, mock tools)

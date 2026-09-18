@@ -26,6 +26,9 @@ STACK_PREFIX_BY_TYPE: dict[str, str] = {
     "celery-worker": "celery",
     "cli-app": "cli",
     "uv-workspace": "uv-workspace",
+    "mlops-sklearn": "mlops-sklearn",
+    "mlops-pytorch": "mlops-pytorch",
+    "mlops-tensorflow": "mlops-tensorflow",
 }
 
 REQUIRED_TEMPLATE_DOCS = (
@@ -37,6 +40,8 @@ REQUIRED_TEMPLATE_DOCS = (
     "docs/TYPING.md",
 )
 
+# mlops-sklearn (and other non-HTTP types) intentionally do not require docs/API.md.
+# Only HTTP API templates (fastapi-backend, django-backend) serve OpenAPI docs.
 HTTP_API_TYPES = frozenset({"fastapi-backend", "django-backend"})
 
 
@@ -82,6 +87,12 @@ def validate_extension_folder_name(directory: str, types: list[str], slug: str) 
             f"extension {slug}: multi-type overlays must use all-* folder "
             f"(got `{directory}` for types={types})"
         )
+        return errors
+
+    # Special case: flower-docker is celery-worker monitoring, allowed despite prefix
+    # (flower is the canonical tool name; both ship Dockerfile/compose.yml for
+    # celery-worker and are mutually incompatible with celery-docker).
+    if directory == "flower-docker" and types == ["celery-worker"]:
         return errors
 
     prefix = STACK_PREFIX_BY_TYPE.get(types[0])
@@ -131,9 +142,41 @@ def main() -> None:
 
     schema_path = REPO_ROOT / "templates.schema.json"
     if schema_path.is_file():
-        json.loads(schema_path.read_text(encoding="utf-8"))
+        try:
+            import jsonschema  # type: ignore
+        except ImportError:
+            errors.append(
+                "jsonschema is required for schema validation "
+                "(pip install jsonschema>=4.20.0)"
+            )
+        else:
+            try:
+                schema = json.loads(schema_path.read_text(encoding="utf-8"))
+                # Strip JSON Schema meta key not part of the domain schema
+                instance = {k: v for k, v in registry.items() if k != "$schema"}
+                jsonschema.validate(instance=instance, schema=schema)
+            except jsonschema.exceptions.ValidationError as exc:
+                path = "/".join(str(p) for p in exc.path) or "<root>"
+                errors.append(
+                    f"templates.json failed JSON Schema validation: "
+                    f"{exc.message} (at {path})"
+                )
+            except jsonschema.exceptions.SchemaError as exc:
+                errors.append(f"templates.schema.json is invalid: {exc}")
+            except json.JSONDecodeError as exc:
+                errors.append(f"templates.schema.json is not valid JSON: {exc}")
+            except Exception as exc:  # pragma: no cover - defensive
+                errors.append(f"templates.json schema validation failed: {exc}")
 
     category_slugs = {c["slug"] for c in registry.get("categories", [])}
+
+    template_types: set[str] = set()
+    for template in registry.get("templates", []):
+        t = template.get("type")
+        if isinstance(t, list):
+            template_types.update([x for x in t if isinstance(x, str) and x])
+        elif isinstance(t, str) and t:
+            template_types.add(t)
 
     for template in registry.get("templates", []):
         slug = template.get("slug", "<unknown>")
@@ -145,6 +188,17 @@ def main() -> None:
         if path is None or not path.is_dir():
             errors.append(f"template {slug}: missing on-disk path {path}")
             continue
+        # 202: regression guard - README/README.template coexistence without overlay
+        # REPO_ROOT is imported from registry; raw_base is the template root
+        if directory:
+            raw_base = REPO_ROOT / "templates" / directory
+            has_bank = (raw_base / "README.md").is_file()
+            has_template = (raw_base / "README.md.template").is_file()
+            has_overlay = (raw_base / "template").is_dir()
+            if has_bank and has_template and not has_overlay:
+                errors.append(
+                    f"template {slug}: README.md and README.md.template coexist at same level without template/ overlay (see #202)"
+                )
         category = template.get("category")
         if category not in category_slugs:
             errors.append(f"template {slug}: unknown category {category}")
@@ -171,6 +225,13 @@ def main() -> None:
         if not types:
             errors.append(f"extension {slug}: empty type")
         else:
+            for type_name in types:
+                if type_name not in template_types:
+                    errors.append(
+                        f'extension {slug}: unknown type "{type_name}". '
+                        f"Supported template types: {', '.join(sorted(template_types))}"
+                    )
+
             errors.extend(validate_extension_folder_name(directory, types, slug))
 
         for other_slug in extension.get("incompatibleWith") or []:
@@ -185,6 +246,23 @@ def main() -> None:
                 errors.append(
                     f"extension {slug}: incompatibleWith {other_slug} "
                     "is not symmetric"
+                )
+
+        # CPA is type-based, but validate compatibleWith if ever used (CVA parity)
+        for other_slug in extension.get("compatibleWith") or []:
+            other = next(
+                (e for e in registry["extensions"] if e["slug"] == other_slug), None
+            )
+            if other is not None:
+                continue
+            # also check templates as valid target for compatibleWith (CVA semantics)
+            t_other = next(
+                (t for t in registry.get("templates", []) if t.get("slug") == other_slug),
+                None,
+            )
+            if t_other is None:
+                errors.append(
+                    f"extension {slug}: compatibleWith unknown slug {other_slug}"
                 )
 
     if errors:

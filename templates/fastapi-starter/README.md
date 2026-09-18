@@ -97,7 +97,6 @@ Scaffold-time options (`cpa.config.json`):
 | Option | Default | Description |
 |--------|---------|-------------|
 | `apiPrefix` | `/api/v1` | Prefix when mounting `app/api/router.py` |
-| `enableCors` | `true` | Whether generated `app/main.py` registers CORS middleware |
 
 ## Contributing
 
@@ -121,6 +120,7 @@ Use catalog slugs (not informal names like `docker` / `vscode`):
 | `postgres` | Postgres Compose + driver |
 | `development-container` | VS Code Dev Container |
 | `github-setup` | CI / Dependabot / issue templates |
+| `fastapi-cors` | CORS middleware configuration |
 
 Migrations are not bundled in the base starter. Add `fastapi-sqlalchemy` (and usually
 `postgres`) when you need Alembic/`DATABASE_URL` workflows.

@@ -24,7 +24,7 @@ The starter ships a focused suite next to the feature modules:
 
 ```text
 tests/
-  test_health.py    # Health feature + CORS smoke coverage
+  test_health.py    # Health feature smoke coverage
 ```
 
 As the API grows, mirror the feature-based app layout:
@@ -78,15 +78,6 @@ assert resp.headers["x-request-id"] == "test-req-1"
 assert resp.json()["metadata"]["request_id"] == "test-req-1"
 ```
 
-## CORS coverage
-
-When `enableCors` is enabled at scaffold time, assert middleware is present:
-
-```python
-from app.main import app
-
-assert any(m.cls.__name__ == "CORSMiddleware" for m in app.user_middleware)
-```
 
 ## Tips
 

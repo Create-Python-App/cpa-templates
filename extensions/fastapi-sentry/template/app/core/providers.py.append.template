@@ -1,0 +1,6 @@
+
+
+@register
+def _sentry(app: FastAPI) -> None:
+    from app.core.sentry import init_sentry
+    init_sentry()

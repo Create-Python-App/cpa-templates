@@ -145,7 +145,29 @@ Use symmetric `incompatibleWith` when two extensions would overwrite the same
 generated paths (for example two Docker overlays that both ship `Dockerfile` /
 `compose.yml` for the **same** template `type`). Today stack Docker extensions
 are isolated by `type`; when a type gains a second packaging strategy, declare
-mutual incompatibility like cna-templates does for Redux saga/thunk.
+mutual incompatibility like cna-templates does for Redux saga/thunk. Example:
+`celery-docker` and the upcoming `flower-docker` (PR #178) both target
+`celery-worker` and ship a Compose stack for the same worker type — they must
+declare `incompatibleWith` on both entries when `flower-docker` lands (validation
+is symmetric; see `scripts/ci/validate-registry.py` and `templates.schema.json`).
+
+**Authoring rules:**
+
+1. **Declare on both sides.** If extension `A` is incompatible with `B`, then `A` must list `B` in its `incompatibleWith` array **and** `B` must list `A` in its `incompatibleWith` array. CPA validates this symmetry at registry load time.
+2. **Use slugs, not names.** Reference entries by their `slug` string — not the human-readable `name` — so renames to display names don't silently break validation.
+3. **Scope to the narrowest conflict surface.** Only declare incompatibility when the overlay truly overwrites shared paths (e.g. `Dockerfile`, `compose.yml`, `app/core/providers.py`). For softer constraints — version ranges, optional features, shared optional deps — prefer dependency versioning or optional `cpa.config.json` toggles rather than hard incompatibility.
+4. **Same `type` first.** Most `incompatibleWith` declarations are within a single template `type` (e.g. two FastAPI Docker strategies). Cross-type incompatibility is rare and should be explicitly justified in the PR description.
+5. **Document the rationale.** Record the colliding paths in the PR description, this document (`AUTHORING.md`), or `AI_ML_AUTHORING.md` so future maintainers know whether the constraint can be relaxed. (`templates.json` is strict JSON and does not support inline comments.)
+
+**Checklist for new `incompatibleWith` entries:**
+
+- [ ] Both entries list each other by `slug`
+- [ ] Slugs referenced are valid entries in `templates.json`
+- [ ] The collision path(s) are documented in the PR, `AUTHORING.md`, or `AI_ML_AUTHORING.md`
+- [ ] An existing `incompatibleWith` wasn't already covering the pair
+- [ ] If a new packaging strategy was introduced, it was discussed in the issue or Discord first
+
+See [Registering in `templates.json`](#registering-in-templatesjson) for the JSON schema and the `templates.schema.json` validation.
 
 ### Template quality bar (every catalog template)
 
@@ -232,6 +254,79 @@ New and updated **templates** should treat typed Python as the default quality b
 - Prefer shipping typing tooling in `pyproject.toml` dependency groups when practical
 
 Extensions should not undo typing (avoid untyped overlays that fight strict checking).
+## Extension auto-wiring
+
+Extensions that contribute runtime behaviour (middleware, routers, instrumentation) use the existing `.append` / `.append.template` mechanism to wire themselves into the generated project automatically. No manual edits to the base template files are needed.
+
+Two patterns cover all current use cases.
+
+### FastAPI — provider registry
+
+The `fastapi-starter` base template ships `app/core/providers.py` with a lightweight registry:
+
+```python
+# app/core/providers.py (generated)
+AppProvider = Callable[[FastAPI], None]
+_providers: list[AppProvider] = []
+
+def register(fn: AppProvider) -> AppProvider: ...
+def setup_app(app: FastAPI) -> None: ...
+```
+
+`app/main.py` calls `setup_app(app)` once, after base middleware is configured.
+
+Extensions register their setup function by adding `template/app/core/providers.py.append.template`. Use the `@register` decorator with a lazy import to avoid ruff E402 (import-not-at-top):
+
+```python
+# extensions/fastapi-cors/template/app/core/providers.py.append.template
+
+@register
+def _cors(app: FastAPI) -> None:  # registered last — CORS wraps all others
+    from app.core.cors import setup_cors
+    setup_cors(app)
+```
+
+**Ordering:** providers are called in the order they are appended (scaffold addon order). Because FastAPI's `add_middleware` is LIFO, middleware added last becomes the outermost wrapper — `fastapi-cors` must be the last extension in the addon list when ordering matters.
+
+### FastAPI — feature router registration
+
+Feature extensions (auth, chat, …) add `template/app/api/router.py.append`:
+
+```python
+# extensions/fastapi-auth-jwt/template/app/api/router.py.append
+from app.features.auth.router import router as auth_router
+router.include_router(auth_router)
+```
+
+`router` is already defined in `app/api/router.py` before the appended content runs.
+
+### Django — settings and URL append
+
+Django loads `settings.py` as a Python module, so list concatenation and dict mutation are valid at module scope. Extensions append to `config/settings.py` and `config/urls.py`:
+
+```python
+# extensions/django-spectacular/template/config/settings.py.append
+INSTALLED_APPS += ["drf_spectacular"]
+REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
+```
+
+```python
+# extensions/django-spectacular/template/config/urls.py.append
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+urlpatterns += [
+    path(f"{api_prefix}/schema/", SpectacularAPIView.as_view(), name="schema"),
+    ...
+]
+```
+
+`urlpatterns` and `api_prefix` are already defined in the base `urls.py`.
+
+### Checklist additions for auto-wired extensions
+
+- [ ] Append file targets a path that exists in the base template
+- [ ] The append file contains only the minimal wiring or configuration — no logic already in the helper module (a `@register` call for FastAPI providers, `router.include_router()` for FastAPI routers, or a `+=` / dict-mutation statement for Django settings/URLs)
+- [ ] For FastAPI middleware extensions that call `app.add_middleware()`, verify the extension is listed last in the addon order in CI profiles (last registered = outermost middleware via FastAPI's LIFO rule)
+
 ## `pyproject.toml` merge
 
 When scaffolding layers include a `pyproject.toml`, CPA **merges** into the destination file instead of overwriting it.
@@ -302,22 +397,30 @@ Full reference: [create-python-app `docs/PYPROJECT_MERGE.md`](https://github.com
 - An extension has a `type` string **or array** of strings.
 - An extension is compatible when `template.type` appears in `[extension.type].flat()`.
 
-### `incompatibleWith`
+### `incompatibleWith` — when and how
 
-Declare mutually exclusive extensions in `templates.json`. CPA validates selected combinations at scaffold time.
+Use `incompatibleWith` when two extensions would write the same file for the same `type` — e.g. `Dockerfile`, `compose.yml`, `.env.example`, or `pyproject.toml` overlay. Example: `celery-docker` vs `flower-docker` both target `celery-worker` and ship a Compose stack for the same worker (similarly, two FastAPI middleware extensions that both patch `app/core/providers.py`).
+
+- **Symmetric (required):** if `A` lists `B`, then `B` must list `A`. Validated by [`scripts/ci/validate-registry.py`](../scripts/ci/validate-registry.py) (symmetry + existence).
+- **Same `type` only:** both extensions must share the same `type` (e.g. `celery-worker`). Cross-type is rare and needs justification.
+- **Slugs, not names:** reference the `slug` field.
 
 ```json
 {
-  "name": "Example A",
-  "slug": "example-a",
-  "incompatibleWith": ["example-b"],
-  "...": "..."
+  "slug": "flower-docker",
+  "incompatibleWith": ["celery-docker"]
+},
+{
+  "slug": "celery-docker",
+  "incompatibleWith": ["flower-docker"]
 }
 ```
 
-When two extensions logically conflict (two middleware choices, two container runtimes), add `incompatibleWith` on **both** entries. Use this for logical conflicts; use semver or dependency constraints for softer peer restrictions.
+- **Validation:** `python scripts/ci/validate-registry.py` fails on unknown or asymmetric slugs.
+- **Testing:** L2 fails if both extensions are selected together (combination rejected at scaffold time).
+- **Schema:** [`templates.schema.json`](../templates.schema.json) → `extensions[].incompatibleWith`.
 
-Schema: `templates.schema.json` → `extensions[].incompatibleWith`.
+See also the [path-collision rules](#incompatiblewith-path-collisions) above.
 
 ## Generation order
 
@@ -364,7 +467,7 @@ Verify generated output: `uv sync`, `uv run ruff check .`, `uv run pytest`, and 
 - [ ] Artifacts under `template/`; bank `README.md` outside (does not overwrite project README)
 - [ ] `docs/<TOPIC>_GUIDE.md` + `docs/README.md.append` for generated-project docs
 - [ ] Partial `pyproject.toml` only when adding dependencies
-- [ ] `.append` files target paths that exist in the base template
+- [ ] `.append` / `.append.template` files target paths that exist in the base template (use provider registry or router append for runtime wiring — see [Extension auto-wiring](#extension-auto-wiring))
 - [ ] Compose files follow `compose.yml` / `docker/<engine>/` conventions
 - [ ] `incompatibleWith` defined for mutually exclusive extensions
 - [ ] Bank README covers when to use, what is copied, and verification pointers
@@ -373,3 +476,10 @@ Verify generated output: `uv sync`, `uv run ruff check .`, `uv run pytest`, and 
 ## Future templates
 
 Planned starters not yet in the registry are listed in [FUTURE_TEMPLATES.md](./FUTURE_TEMPLATES.md).
+
+## AI/ML catalog
+
+For AI/ML taxonomy, categories, and template-vs-extension rules see
+[AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md). MLOps templates and extensions must
+also follow the shared feature-module, testing, CI-profile, environment, and
+composition contract in [MLOPS_CONTRACT.md](./MLOPS_CONTRACT.md).

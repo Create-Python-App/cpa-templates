@@ -1,0 +1,2 @@
+
+- [Rate Limiting Guide](RATE_LIMIT_GUIDE.md): Configuring limits, proxies, and multi-worker edge cases.

@@ -9,7 +9,6 @@ Copy `.env.example` to `.env` (never commit real secrets).
 | Variable | Typical default | Purpose |
 |----------|-----------------|---------|
 | `API_PREFIX` | `/api/v1` | URL prefix for the composed API router |
-| `ENABLE_CORS` | `true` / scaffold-dependent | Toggle CORS when settings read this flag |
 | App-specific keys | — | Add in `app/core/config.py` (Pydantic Settings) and document here |
 
 Scaffold-time options from `cpa.config.json` bake defaults into generated files:
@@ -17,9 +16,8 @@ Scaffold-time options from `cpa.config.json` bake defaults into generated files:
 | Option | Default | Effect |
 |--------|---------|--------|
 | `apiPrefix` | `/api/v1` | Mounted API prefix in `app/main.py` / settings |
-| `enableCors` | `true` | Whether CORS middleware is registered |
 
-Override at generation time with `--set apiPrefix=/api --set enableCors=false`.
+Override at generation time with `--set apiPrefix=/api`.
 
 ## uv
 

@@ -1,0 +1,8 @@
+{
+  "id": "mlops-sklearn-tabular",
+  "description": "MLOps sklearn starter with the tabular data pack",
+  "templateDir": "mlops-sklearn-starter",
+  "addons": [
+    "all-mlops-tabular-data"
+  ]
+}

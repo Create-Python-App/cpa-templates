@@ -8,6 +8,7 @@ Copied into generated projects (via `template/`):
 |------|---------|
 | `pyproject.toml` | Merges `PyJWT[crypto]`, `pwdlib[argon2]`, and `email-validator` |
 | `app/features/auth/` | Schemas, service helpers, demo `/auth` router |
+| `app/api/router.py.append` | Auto-mounts the auth router in `app/api/router.py` |
 | `.env.example.append` | `JWT_SECRET`, algorithm, expiry |
 | `docs/AUTH_JWT_GUIDE.md` | Long-form guide for the generated project |
 | `docs/README.md.append` | Index bullet for `docs/README.md` |

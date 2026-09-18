@@ -1,0 +1,36 @@
+"""App provider registry.
+
+Extensions register setup functions here via ``.append.template`` files.
+Each provider receives the FastAPI app instance and configures it
+(middleware, exception handlers, instrumentation, etc.).
+
+Registration order matches scaffold addon order. Providers are applied
+in that order by ``setup_app``; middleware added via ``app.add_middleware``
+follows FastAPI's LIFO execution order (last-added = outermost wrapper).
+"""
+
+from __future__ import annotations
+
+from collections.abc import Callable
+
+from fastapi import FastAPI
+
+AppProvider = Callable[[FastAPI], None]
+_providers: list[AppProvider] = []
+
+
+def register(fn: AppProvider) -> AppProvider:
+    """Register a provider function.
+
+    Called by extensions via ``.append.template`` files — not by application
+    code directly. Returns the function unchanged so it can also be used as a
+    decorator.
+    """
+    _providers.append(fn)
+    return fn
+
+
+def setup_app(app: FastAPI) -> None:
+    """Apply all registered providers to *app* in registration order."""
+    for provider in _providers:
+        provider(app)

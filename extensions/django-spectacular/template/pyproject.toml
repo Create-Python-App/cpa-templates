@@ -1,0 +1,4 @@
+[project]
+dependencies = [
+  "drf-spectacular>=0.30.0",
+]

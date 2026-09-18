@@ -1,0 +1,63 @@
+name: "🐛 Bug Report"
+description: Report a defect or regression in a template or extension
+title: "[Bug]: "
+labels: [bug]
+assignees: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Steps
+      description: |
+        Provide a self-contained, concise snippet or steps to reproduce the issue.
+        For template/extension bugs include the scaffold command (e.g. `uvx create-awesome-python-app --template file://...`).
+      placeholder: |
+        1. Run `uvx create-awesome-python-app my-app --template fastapi-starter --addons ...`
+        2. cd my-app && uv sync && uv run pytest
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Current Behavior
+      description: |
+        What actually happened? Include full errors, stack traces, and relevant logs.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version used
+      description: Version of the template/extension or CLI (`uvx create-awesome-python-app --version`).
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        OS, Python version (`python --version`), uv version (`uv --version`), etc.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Anything else that might be relevant for troubleshooting.
+    validations:
+      required: false

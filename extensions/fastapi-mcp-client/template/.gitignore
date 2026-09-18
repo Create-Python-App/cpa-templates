@@ -1,0 +1,11 @@
+# FastAPI MCP client extension
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+.env
+data/
+dist/
+*.egg-info/
+mcp_servers.yaml

@@ -1,0 +1,11 @@
+{
+  "name": "mlops-tensorflow-starter",
+  "customOptions": [
+    {
+      "key": "experimentName",
+      "type": "string",
+      "message": "MLflow experiment name (e.g. mlops-tensorflow-local)",
+      "default": "mlops-tensorflow-local"
+    }
+  ]
+}

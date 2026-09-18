@@ -1,0 +1,27 @@
+name: "📕 Documentation Issue"
+description: Report an issue in the documentation
+title: "[Docs]: "
+labels: [documentation]
+assignees: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the issue
+      description: A clear and concise description of what is wrong or missing.
+    validations:
+      required: true
+  - type: textarea
+    id: links
+    attributes:
+      label: Links
+      description: Include links to the affected documentation page(s) or file(s).
+    validations:
+      required: false
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Fix
+      description: How should the documentation be corrected or improved?
+    validations:
+      required: false

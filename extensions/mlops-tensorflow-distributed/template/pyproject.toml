@@ -1,0 +1,11 @@
+# No extra runtime dependencies: this extension only uses libraries the
+# compatible starter already ships (joblib/torch.distributed/tf.distribute).
+[project]
+dependencies = []
+
+# Ship the helpers as an installed top-level package so generated tests can
+# import them exactly like the starter's own `src/` package. `force-include`
+# is a new key here, so the CLI pyproject merge adds it without touching the
+# template's own `packages` list.
+[tool.hatch.build.targets.wheel]
+force-include = { "mlops_tensorflow_distributed" = "mlops_tensorflow_distributed" }

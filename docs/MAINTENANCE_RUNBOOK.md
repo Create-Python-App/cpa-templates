@@ -203,3 +203,7 @@ uv run ruff check .
 | Date | Change | PR |
 |---|---|---|
 | 2026-07-16 | Initial CPA maintenance runbook suite (ported from cna-templates) | TBD |
+
+## AI/ML catalog
+
+- [AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md)

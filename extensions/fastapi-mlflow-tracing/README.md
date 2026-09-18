@@ -1,0 +1,44 @@
+# MLflow Tracing (extension bank)
+
+Maintainer-facing notes for the **fastapi-mlflow-tracing** extension in `cpa-templates`.
+
+Copied into generated projects (via `template/`):
+
+| Path | Purpose |
+|------|---------|
+| `pyproject.toml` | Merges `mlflow>=3.15.1` into project dependencies |
+| `app/core/mlflow_tracing.py` | `MLflowTracingSettings`, `configure_mlflow_tracing()`, `maybe_start_span`, `set_attribute` |
+| `app/core/providers.py.append.template` | Auto-registers `configure_mlflow_tracing` in the app provider registry |
+| `.env.example.append` | `MLFLOW_ENABLED`, tracking URI, experiment name |
+| `tests/test_mlflow_tracing.py` | Offline unit tests using a local `file://` tracking directory |
+| `docs/MLFLOW_TRACING_GUIDE.md` | Long-form guide for the generated project |
+| `docs/README.md.append` | Index bullet for `docs/README.md` |
+
+The bank `README.md` (this file) stays **outside** `template/` so it does not overwrite the project README.
+
+`configure_mlflow_tracing` is registered automatically in `app/core/providers.py` via the `.append.template` mechanism — no changes to `app/main.py` are needed. The helper exposes `maybe_start_span` and `set_attribute` for use by AI extensions.
+
+## Apply
+
+```sh
+uvx create-awesome-python-app my-api \
+  --template fastapi-starter \
+  --addons fastapi-mlflow-tracing \
+  --yes
+```
+
+## Verify after scaffold
+
+```sh
+uv sync
+# Confirm disabled by default (no-op, no MLflow import)
+uv run python -c "from app.core.mlflow_tracing import configure_mlflow_tracing; configure_mlflow_tracing()"
+# Run offline tests
+uv run pytest tests/test_mlflow_tracing.py -v
+```
+
+See `template/docs/MLFLOW_TRACING_GUIDE.md` for full usage, configuration, and troubleshooting.
+
+> **Note**
+>
+> For the MLflow vs OpenTelemetry decision and coexistence rules, see the **Observability policy** in [`docs/MLOPS_CONTRACT.md`](../../docs/MLOPS_CONTRACT.md).

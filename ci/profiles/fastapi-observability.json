@@ -1,0 +1,12 @@
+{
+  "id": "fastapi-observability",
+  "description": "FastAPI with OpenTelemetry, CORS, SQLAlchemy and RAG pgvector",
+  "templateDir": "fastapi-starter",
+  "addons": [
+    "github-setup",
+    "fastapi-cors",
+    "fastapi-sqlalchemy",
+    "fastapi-opentelemetry",
+    "fastapi-rag-pgvector"
+  ]
+}

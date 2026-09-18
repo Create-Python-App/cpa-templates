@@ -1,0 +1,85 @@
+# fastapi-ai-guardrails Extension
+
+## Overview
+
+This extension provides comprehensive input and output guardrail validation for FastAPI AI applications, ensuring safety and quality standards are maintained throughout the AI pipeline.
+
+## Features
+
+- **Input Validation**: Required fields, max length limits, blocked patterns
+- **Output Validation**: Structured response checks, safety filters
+- **Configurable Rules**: Easy customization for specific use cases
+- **Error Handling**: Clear GuardrailError exceptions with descriptive messages
+
+## Integration
+
+Add to your `extension-addons` in `cpa.config.json`:
+
+```json
+{
+  "extension-addons": ["fastapi-ai-guardrails"]
+}
+```
+
+## Usage Examples
+
+### Basic Usage
+
+```python
+from app.core.guardrails import apply_input_guardrails, apply_output_guardrails
+
+# Validate user input
+validated_input = apply_input_guardrails(
+    user_query,
+    max_length=1000,
+    blocked_patterns=["ignore previous instructions", "delete everything"],
+    required_fields=["user_id", "query_type"]
+)
+
+# Validate model output
+validated_output = apply_output_guardrails(
+    model_response,
+    max_length=500,
+    blocked_patterns=["@", "mailto:"],
+    required_fields=["answer", "confidence"]
+)
+```
+
+### Configuration for Your App
+
+Create `app/config/guardrails.yaml`:
+
+```yaml
+input:
+  max_length: 1000
+  blocked_patterns:
+    - "ignore"
+    - "bypass"
+    - "override"
+  required_fields:
+    - "user_id"
+    - "session_id"
+
+output:
+  max_length: 500
+  blocked_patterns:
+    - "@"
+    - "mailto:"
+    - "tel:"
+  required_fields:
+    - "response"
+    - "confidence"
+```
+
+## Testing
+
+Run extension tests:
+
+```bash
+cd extensions/fastapi-ai-guardrails
+pytest tests/ -v
+```
+
+## License
+
+MIT

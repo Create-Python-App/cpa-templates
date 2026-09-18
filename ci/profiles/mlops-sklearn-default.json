@@ -1,0 +1,8 @@
+{
+  "id": "mlops-sklearn-default",
+  "description": "MLOps sklearn starter with GitHub CI",
+  "templateDir": "mlops-sklearn-starter",
+  "addons": [
+    "github-setup"
+  ]
+}

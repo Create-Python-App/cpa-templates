@@ -1,0 +1,11 @@
+{
+  "id": "fastapi-data",
+  "description": "FastAPI with Redis, rate limiting and MLflow tracing (data layer)",
+  "templateDir": "fastapi-starter",
+  "addons": [
+    "pre-commit",
+    "fastapi-redis",
+    "fastapi-rate-limit",
+    "fastapi-mlflow-tracing"
+  ]
+}

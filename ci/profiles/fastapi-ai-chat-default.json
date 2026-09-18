@@ -1,0 +1,9 @@
+{
+  "id": "fastapi-ai-chat-default",
+  "description": "FastAPI AI chat application with GitHub CI",
+  "templateDir": "fastapi-starter",
+  "addons": [
+    "github-setup",
+    "fastapi-ai-chat"
+  ]
+}

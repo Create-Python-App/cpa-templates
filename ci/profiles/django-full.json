@@ -1,0 +1,12 @@
+{
+  "id": "django-full",
+  "description": "Django API with OpenAPI (django-spectacular), Postgres and Dev Container",
+  "templateDir": "django-api",
+  "addons": [
+    "github-setup",
+    "development-container",
+    "django-docker",
+    "postgres",
+    "django-spectacular"
+  ]
+}

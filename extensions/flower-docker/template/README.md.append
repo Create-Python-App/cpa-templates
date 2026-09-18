@@ -1,0 +1,55 @@
+# Flower Monitoring Extension
+
+Adds Flower monitoring dashboard for Celery workers via Docker Compose.
+
+## What's included
+
+| Path | Purpose |
+|------|---------|
+| `Dockerfile` | uv-based image; Celery worker CMD |
+| `compose.yml` | Compose with worker + flower services |
+| `.env.example` | Example environment variables for Flower |
+| `docs/README.md.append` | Index bullet for docs |
+| `docs/FLOWER_GUIDE.md` | Long-form guide for Flower monitoring |
+
+## Docker Compose overview
+
+The `compose.yml` adds a Flower service that:
+- Runs the official `flower` Docker image
+- Exposes the dashboard on port 5555
+- Connects to the Redis broker used by the Celery worker
+- Reads configuration from environment variables (never hardcoded)
+
+### Environment variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `FLOWER_PORT` | `5555` | Port for the Flower dashboard |
+| `FLOWER_HOST` | `0.0.0.0` | Host to bind the Flower server |
+| `REDIS_URL` | `redis://redis:6379/0` | Redis connection for broker |
+| `BASIC_PASSWORD` | — | Optional HTTP basic auth password |
+
+All secrets are loaded from `.env` files at runtime. No credentials are
+stored in the repository.
+
+## Apply
+
+```sh
+uvx create-awesome-python-app my-worker \
+  --template celery-worker \
+  --addons flower-docker \
+  --yes
+```
+
+## Verify
+
+```sh
+docker compose up --build
+# Flower dashboard: http://localhost:5555
+```
+
+## Compatibility
+
+- Compatible with the `celery-worker` template (L2)
+- Requires `celery-docker` extension for Docker Compose support
+- Works alongside Redis-based brokers

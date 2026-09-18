@@ -99,6 +99,42 @@
         "Workspace",
         "Python"
       ]
+    },
+    {
+      "slug": "ai-ml-applications",
+      "name": "AI/ML Applications",
+      "description": "FastAPI AI and ML capability extensions.",
+      "details": "Add when you need LLM-backed chat, retrieval, or agent endpoints on a FastAPI starter.",
+      "labels": [
+        "AI",
+        "ML",
+        "LangChain",
+        "FastAPI"
+      ]
+    },
+    {
+      "slug": "mlops",
+      "name": "MLOps",
+      "description": "MLOps framework starters and training/serving pipelines.",
+      "details": "CPU-first sklearn/pytorch/tensorflow topologies with MLflow-friendly defaults.",
+      "labels": [
+        "MLOps",
+        "sklearn",
+        "MLflow",
+        "Python"
+      ]
+    },
+    {
+      "slug": "data-engineering",
+      "name": "Data Engineering",
+      "description": "Batch ETL starters on managed data platforms.",
+      "details": "Use when the deliverable is a scheduled batch pipeline — Glue jobs with bookmarks and Data Catalog tables.",
+      "labels": [
+        "Data Engineering",
+        "ETL",
+        "AWS Glue",
+        "Python"
+      ]
     }
   ],
   "templates": [
@@ -178,6 +214,67 @@
         "Python",
         "Typer"
       ]
+    },
+    {
+      "name": "MLOps sklearn Starter",
+      "slug": "mlops-sklearn-starter",
+      "description": "CPU-first sklearn MLOps pipeline with YAML configs, step architecture, local MLflow, and batch/FastAPI serving.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/mlops-sklearn-starter",
+      "type": "mlops-sklearn",
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "sklearn",
+        "MLflow",
+        "Python",
+        "uv"
+      ]
+    },
+    {
+      "name": "MLOps PyTorch Starter",
+      "slug": "mlops-pytorch-starter",
+      "description": "CPU-first PyTorch MLOps pipeline with YAML configs, step architecture, local MLflow, TorchScript export, and batch/FastAPI serving.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/mlops-pytorch-starter",
+      "type": "mlops-pytorch",
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "PyTorch",
+        "MLflow",
+        "Python",
+        "uv"
+      ]
+    },
+    {
+      "name": "MLOps TensorFlow Starter",
+      "slug": "mlops-tensorflow-starter",
+      "description": "CPU-first TensorFlow MLOps pipeline with YAML configs, step architecture, local MLflow, SavedModel export, and batch/FastAPI serving.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/mlops-tensorflow-starter",
+      "type": "mlops-tensorflow",
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "TensorFlow",
+        "MLflow",
+        "Python",
+        "uv"
+      ]
+    },
+    {
+      "name": "Glue ETL Job",
+      "slug": "glue-etl-job",
+      "description": "Batch ETL on AWS Glue with PySpark, job bookmarks, and Data Catalog. Terraform deploy ships in the base template.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=templates/glue-etl-job",
+      "type": "glue-etl",
+      "category": "data-engineering",
+      "labels": [
+        "AWS Glue",
+        "ETL",
+        "PySpark",
+        "Terraform",
+        "Python",
+        "uv"
+      ]
     }
   ],
   "extensions": [
@@ -191,6 +288,9 @@
         "cli-app",
         "django-backend",
         "fastapi-backend",
+        "mlops-sklearn",
+        "mlops-pytorch",
+        "mlops-tensorflow",
         "uv-workspace"
       ],
       "category": "ci",
@@ -239,6 +339,22 @@
       ]
     },
     {
+      "name": "FastAPI CORS",
+      "slug": "fastapi-cors",
+      "description": "CORS middleware helper for FastAPI (no-op without CORS_ORIGINS).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-cors",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "security",
+      "labels": [
+        "CORS",
+        "Security",
+        "FastAPI",
+        "Middleware"
+      ]
+    },
+    {
       "name": "FastAPI Docker",
       "slug": "fastapi-docker",
       "description": "Dockerfile and Compose for FastAPI (uvicorn app.main:app). Reach for it when containerizing the FastAPI starter.",
@@ -281,7 +397,25 @@
         "Docker",
         "Celery",
         "Container"
-      ]
+      ],
+      "incompatibleWith": ["flower-docker"]
+    },
+    {
+      "name": "Flower (Celery monitoring)",
+      "slug": "flower-docker",
+      "description": "Flower monitoring for Celery tasks — Compose stack with Redis, worker, and Flower dashboard (port 5555).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/flower-docker",
+      "type": [
+        "celery-worker"
+      ],
+      "category": "observability",
+      "labels": [
+        "Flower",
+        "Celery",
+        "Monitoring",
+        "Observability"
+      ],
+      "incompatibleWith": ["celery-docker"]
     },
     {
       "name": "FastAPI SQLAlchemy",
@@ -376,8 +510,259 @@
       "labels": [
         "OpenTelemetry",
         "Tracing",
+        "Observability"
+      ],
+      "incompatibleWith": [
+        "fastapi-mlflow-tracing"
+      ]
+    },
+    {
+      "name": "FastAPI Rate Limit",
+      "slug": "fastapi-rate-limit",
+      "description": "Rate limiting helper using slowapi (in-memory by default, Redis-ready).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-rate-limit",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "security",
+      "labels": [
+        "Rate Limit",
+        "Security",
+        "FastAPI"
+      ]
+    },
+    {
+      "name": "FastAPI MLflow Tracing",
+      "slug": "fastapi-mlflow-tracing",
+      "description": "Generic MLflow tracing infrastructure for FastAPI. Disabled by default; exposes reusable primitives for future extensions.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-mlflow-tracing",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "observability",
+      "labels": [
+        "MLflow",
+        "Tracing",
         "Observability",
         "FastAPI"
+      ],
+      "incompatibleWith": [
+        "fastapi-opentelemetry"
+      ]
+    },
+    {
+      "name": "FastAPI RAG pgvector",
+      "slug": "fastapi-rag-pgvector",
+      "description": "Foundational RAG data layer using pgvector. Provides agnostic chunking, embedding generation, and vector retrieval services.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-rag-pgvector",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "ai-ml-applications",
+      "labels": [
+        "RAG",
+        "AI",
+        "pgvector",
+        "FastAPI",
+        "PostgreSQL"
+      ]
+    },
+    {
+      "name": "FastAPI AI Chat",
+      "slug": "fastapi-ai-chat",
+      "description": "Minimal /chat endpoint backed by LangChain's BaseChatModel. Mock provider by default \u2014 drop in a real provider via init_chat_model() with no interface change.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-ai-chat",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "ai-ml-applications",
+      "labels": [
+        "LangChain",
+        "AI",
+        "Chat",
+        "FastAPI"
+      ]
+    },
+    {
+      "name": "FastAPI MCP Client",
+      "slug": "fastapi-mcp-client",
+      "description": "Model Context Protocol client for FastAPI AI apps. Typed tool registry with env-driven MCP server configuration.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-mcp-client",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "ai-ml-applications",
+      "labels": [
+        "MCP",
+        "AI",
+        "Tools",
+        "FastAPI"
+      ]
+    },
+    {
+      "name": "FastAPI AI Guardrails",
+      "slug": "fastapi-ai-guardrails",
+      "description": "Typed input/output guardrail hooks for FastAPI AI apps. Required-field, length, and blocked-pattern validation with extensible rules.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-ai-guardrails",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "ai-ml-applications",
+      "labels": [
+        "AI",
+        "Guardrails",
+        "Safety",
+        "FastAPI"
+      ]
+    },
+    {
+      "name": "All MLOps GitHub Actions",
+      "slug": "all-mlops-github-actions",
+      "description": "MLOps CI for MLOps starters: lint, unit tests, and a pipeline train smoke on push and pull requests.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-github-actions",
+      "type": [
+        "mlops-sklearn",
+        "mlops-pytorch",
+        "mlops-tensorflow"
+      ],
+      "category": "ci",
+      "labels": [
+        "MLOps",
+        "CI",
+        "GitHub Actions"
+      ]
+    },
+    {
+      "name": "All MLOps Tabular Data",
+      "slug": "all-mlops-tabular-data",
+      "description": "Tabular data pack for MLOps starters: synthetic generation, disjoint splitting, train-only standardization, and schema validation (NumPy-only).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-tabular-data",
+      "type": [
+        "mlops-sklearn",
+        "mlops-pytorch",
+        "mlops-tensorflow"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Data",
+        "Tabular",
+        "NumPy"
+      ]
+    },
+    {
+      "name": "All MLOps Sequence Data",
+      "slug": "all-mlops-sequence-data",
+      "description": "Sequence data pack for MLOps starters: synthetic series, sliding windows, temporal splitting, and schema validation (NumPy-only).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-sequence-data",
+      "type": [
+        "mlops-sklearn",
+        "mlops-pytorch",
+        "mlops-tensorflow"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Data",
+        "Sequence",
+        "NumPy"
+      ]
+    },
+    {
+      "name": "All MLOps Image Data",
+      "slug": "all-mlops-image-data",
+      "description": "Image data pack for MLOps starters: synthetic uint8 images, unit-range normalization, and schema validation (NumPy-only).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/all-mlops-image-data",
+      "type": [
+        "mlops-sklearn",
+        "mlops-pytorch",
+        "mlops-tensorflow"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Data",
+        "Image",
+        "NumPy"
+      ]
+    },
+    {
+      "name": "MLOps sklearn Distributed",
+      "slug": "mlops-sklearn-distributed",
+      "description": "Parallel grid search for sklearn starters: sequential/threads/processes backends with deterministic fallback (joblib-only).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/mlops-sklearn-distributed",
+      "type": [
+        "mlops-sklearn"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Distributed",
+        "sklearn",
+        "joblib"
+      ]
+    },
+    {
+      "name": "MLOps PyTorch Distributed",
+      "slug": "mlops-pytorch-distributed",
+      "description": "DDP/torchrun launch for PyTorch starters with single-process fallback (torch.distributed-only).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/mlops-pytorch-distributed",
+      "type": [
+        "mlops-pytorch"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Distributed",
+        "PyTorch",
+        "DDP"
+      ]
+    },
+    {
+      "name": "MLOps TensorFlow Distributed",
+      "slug": "mlops-tensorflow-distributed",
+      "description": "tf.distribute strategies for TensorFlow starters with CPU-single fallback (no new deps).",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/mlops-tensorflow-distributed",
+      "type": [
+        "mlops-tensorflow"
+      ],
+      "category": "mlops",
+      "labels": [
+        "MLOps",
+        "Distributed",
+        "TensorFlow"
+      ]
+    },
+    {
+      "name": "FastAPI LangGraph Chat",
+      "slug": "fastapi-langgraph-chat",
+      "description": "Multi-step agent chat via a small LangGraph state graph (router, tool executor, responder) with offline mock tools.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/fastapi-langgraph-chat",
+      "type": [
+        "fastapi-backend"
+      ],
+      "category": "ai-ml-applications",
+      "labels": [
+        "LangGraph",
+        "AI",
+        "Agents",
+        "FastAPI"
+      ]
+    },
+    {
+      "name": "Django Spectacular",
+      "slug": "django-spectacular",
+      "description": "OpenAPI 3 schema generation and Swagger UI for Django REST Framework.",
+      "url": "https://github.com/Create-Python-App/cpa-templates?subdir=extensions/django-spectacular",
+      "type": [
+        "django-backend"
+      ],
+      "category": "observability",
+      "labels": [
+        "Django",
+        "OpenAPI",
+        "Swagger",
+        "DRF"
       ]
     }
   ]

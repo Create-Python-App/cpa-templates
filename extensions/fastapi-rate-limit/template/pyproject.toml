@@ -1,0 +1,4 @@
+[project]
+dependencies = [
+  "slowapi>=0.1.10",
+]

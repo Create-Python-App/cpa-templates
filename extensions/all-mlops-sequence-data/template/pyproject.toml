@@ -1,0 +1,12 @@
+# No extra runtime dependencies: the data packs are NumPy-only and every
+# MLOps starter already depends on NumPy.
+[project]
+dependencies = []
+
+# Ship the framework-agnostic helpers as an installed top-level package so
+# generated tests (and serving code) can `import data_packs.<modality>`
+# exactly like the starter's own `src/` package. `force-include` is a new
+# key here, so the CLI pyproject merge adds it without touching the
+# template's own `packages` list.
+[tool.hatch.build.targets.wheel]
+force-include = { "data_packs" = "data_packs" }

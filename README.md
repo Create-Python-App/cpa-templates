@@ -4,6 +4,11 @@
 ![Python Version](https://img.shields.io/badge/python-3.12+-green.svg)
 [![Discord](https://img.shields.io/discord/1527933660764831825?label=Discord&logo=discord&logoColor=white)](https://discord.gg/bR5VyATgka)
 
+[![CI Integrity (L0)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-integrity.yml/badge.svg?branch=main)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-integrity.yml)
+[![CI Templates (L1)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-templates.yml/badge.svg?branch=main)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-templates.yml)
+[![CI Extensions (L2)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-extensions.yml/badge.svg?branch=main)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-extensions.yml)
+[![CI Profiles (L3)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-profiles.yml/badge.svg?branch=main)](https://github.com/Create-Python-App/cpa-templates/actions/workflows/ci-profiles.yml)
+
 Official templates and extensions for [create-awesome-python-app](https://github.com/Create-Python-App/create-python-app).
 
 ## Quick start
@@ -37,6 +42,7 @@ CI=true uvx create-awesome-python-app my-api \
 | [celery-worker](./templates/celery-worker) | `celery-worker` | Celery worker with modular tasks, Redis defaults, pydantic-settings, and eager-mode tests |
 | [django-api](./templates/django-api) | `django-backend` | Django + DRF API with feature apps, OpenAPI-friendly health probes, uv, and Ruff |
 | [uv-workspace-starter](./templates/uv-workspace-starter) | `uv-workspace` | Python monorepo using uv workspaces: shared packages and apps with one lockfile, Ruff, and Pyright |
+| [mlops-sklearn-starter](./templates/mlops-sklearn-starter) | `mlops-sklearn` | CPU-first sklearn MLOps pipeline with YAML configs, step architecture, local MLflow, and batch/FastAPI serving |
 
 ## Documentation
 
@@ -44,7 +50,10 @@ CI=true uvx create-awesome-python-app my-api \
 |---|---|
 | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | System overview, type system, generation flow |
 | [docs/AUTHORING.md](./docs/AUTHORING.md) | Directory layout, `cpa.config.json`, extensions |
+| [docs/AUTHORING.es.md](./docs/AUTHORING.es.md) | Spanish translation of AUTHORING.md |
 | [docs/TESTING.md](./docs/TESTING.md) | Local testing and CI workflow |
+| [docs/AI_ML_AUTHORING.md](./docs/AI_ML_AUTHORING.md) | Taxonomy and constraints for AI/ML templates and extensions |
+| [docs/recipes/FASTAPI_AI_ROUTE_OWNERSHIP.md](./docs/recipes/FASTAPI_AI_ROUTE_OWNERSHIP.md) | Prefix ownership, mounting, and middleware hooks for FastAPI AI extensions |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | How to add templates and extensions |
 | [docs/MAINTENANCE_RUNBOOK.md](./docs/MAINTENANCE_RUNBOOK.md) | Operating runbook: decision trees, checklists, and procedures for maintaining the CLI and templates |
 | [docs/MAINTENANCE_TEMPLATES.md](./docs/MAINTENANCE_TEMPLATES.md) | Guidance for inspecting, fixing, and adding templates and extensions |
