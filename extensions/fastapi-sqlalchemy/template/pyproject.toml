@@ -1,5 +1,5 @@
 [project]
 dependencies = [
-  "sqlalchemy>=2.0.52",
+  "sqlalchemy>=2.0.54",
   "alembic>=1.20.0",
 ]
