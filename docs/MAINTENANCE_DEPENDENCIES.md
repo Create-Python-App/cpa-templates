@@ -4,6 +4,8 @@
 >
 > Read after the top-level [MAINTENANCE_RUNBOOK.md](./MAINTENANCE_RUNBOOK.md).
 
+> Last reviewed: 2026-09-23
+
 ---
 
 ## 1. Investigating a dependency
@@ -71,6 +73,62 @@ If a version is missing, PyPI returns 404 or `uv pip index versions` omits it. T
 
 **Fix:** Update `requires-python` in the template `pyproject.toml` consistently, and ensure CI uses a matching Python version.
 
+### 2.4 AI/ML dependency graph
+
+The catalog now includes framework starters, AI-capability overlays, data
+modality packs, and distributed-training helpers. Treat these as separate
+dependency classes when investigating a resolution failure:
+
+| Layer | Current examples | Dependency guidance |
+|---|---|---|
+| Framework starter | `mlops-sklearn-starter`, `mlops-pytorch-starter`, `mlops-tensorflow-starter` | Start with one framework base. The starters are CPU-first and already include the framework runtime (`scikit-learn`, `torch`, or `tensorflow-cpu`). |
+| AI application overlay | `fastapi-ai-chat`, `fastapi-langgraph-chat`, `fastapi-mcp-client` | Inspect the merged FastAPI graph. Chat and agent overlays can both own chat routes; verify route ownership before composing them. |
+| Data modality overlay | `all-mlops-tabular-data`, `all-mlops-sequence-data`, `all-mlops-image-data` | These packs are intentionally NumPy-only and should not pull a second framework into the project. Select the modality needed by the profile. |
+| Distributed overlay | `mlops-sklearn-distributed`, `mlops-pytorch-distributed`, `mlops-tensorflow-distributed` | Prefer the starter's existing runtime. The current extensions add no new runtime package for PyTorch or TensorFlow and use `joblib` for sklearn parallelism. |
+
+For the current AI/ML taxonomy, template-vs-extension decisions, categories,
+and composition rules, see [AI/ML authoring](./AI_ML_AUTHORING.md) and the
+[authoring guide](./AUTHORING.md#ai-ml-catalog). In particular, do not solve a
+soft dependency overlap by adding `incompatibleWith`: that field is for a
+verified generated-file/path collision and must be symmetric. For example,
+the existing `fastapi-mlflow-tracing` / `fastapi-opentelemetry` constraint is
+about duplicate instrumentation, not merely shared observability packages.
+Document route or file ownership before adding a new AI conflict, and update
+both registry entries when a hard conflict is confirmed.
+
+#### CPU-first and GPU variants
+
+- Keep base templates and CI profiles CPU-only. Do not add CUDA toolkits,
+  vendor GPU wheels, or a mandatory accelerator dependency to make local
+  tests pass.
+- `mlops-tensorflow-starter` deliberately uses `tensorflow-cpu`. PyTorch and
+  the other starters are also authored and tested for CPU execution; GPU users
+  should follow the framework's platform-specific installation instructions
+  in the generated project's environment rather than changing the catalog
+  dependency blindly.
+- When a GPU package uses a separate index, extra, or platform marker, verify
+  that choice against the target OS, Python version, and uv lock resolution.
+  Keep the CPU path reproducible and testable in CI, and document any
+  accelerator setup as an opt-in deployment concern.
+- Never assume that a successful CPU lock proves a GPU lock is valid. Resolve
+  and smoke-test each supported accelerator target separately when a template
+  explicitly adds one.
+
+#### AI/ML resolution workflow
+
+1. Scaffold the smallest affected combination: one framework starter plus the
+   proposed overlay(s). Avoid testing every AI/ML extension in one profile.
+2. Run `uv sync` on a clean generated project and inspect `uv tree` for the
+   framework, `langchain*`, `torch`, `tensorflow*`, and large transitive
+   packages. A fresh sync is important because CI may not receive a committed
+   lockfile.
+3. If the graph fails, identify whether the cause is a version/Python/platform
+   constraint, a package-index choice, or a generated-file collision. Fix
+   dependency ranges or optional configuration first; reserve
+   `incompatibleWith` for the last case.
+4. Run the affected L2 extension test and the smallest relevant L3 profile.
+   Keep modality combinations representative rather than exhaustive.
+
 ---
 
 ## 3. Updating dependencies
@@ -107,6 +165,14 @@ Generated projects **do** commit `uv.lock` when the template or extension includ
 - Adding a constraint group or override in `create-python-app` core (see [MAINTENANCE_SECURITY.md](./MAINTENANCE_SECURITY.md)).
 
 Avoid relying on transient PyPI states; pin when reproducibility matters.
+
+For the expanded AI/ML catalog, treat a lockfile as a resolved environment,
+not as proof that every platform can install it. Recreate it after changing a
+framework or AI overlay, inspect the result with `uv tree`, and validate a
+fresh `uv sync` without relying on the developer's cache. Check the uv version
+used by GitHub Actions as well as the local uv version when a lock format or
+resolution behavior changes; the CI setup is maintained in the workflow's
+`astral-sh/setup-uv` step.
 
 ---
 
