@@ -37,7 +37,7 @@ gh code-scanning alerts list --repo Create-Python-App/cpa-templates --state open
 | Critical / High in CLI code path | P0 — fix immediately and release | — |
 | High in **fastapi-starter** or **django-api** | P1 — fix within the sprint | Affects majority of users |
 | High in **MLOps templates** (sklearn, PyTorch, TensorFlow) | P1 — fix within the sprint | See [Section 5.2](#52-mlops-templates-sklearn-pytorch-tensorflow) for audit guidance |
-| High in **AI/LLM extensions** (fastapi-ai-chat, fastapi-langgraph-chat, etc.) | P1 — fix within the sprint | High indirect user impact via LLM provider deps |
+| High in **AI/LLM extensions** (fastapi-ai-chat, fastapi-langgraph-chat, etc.) | P1 — fix within the sprint | Review the full generated application's dependency graph; provider SDKs may be added by the generated application rather than the extension |
 | High in other templates/extensions | P2 — fix in next maintenance cycle | Narrower user base |
 | Moderate / Low | Batch with other maintenance | — |
 | Informational only | Document and close if not actionable | — |
