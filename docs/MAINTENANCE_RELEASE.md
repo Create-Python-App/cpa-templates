@@ -2,6 +2,8 @@
 
 > How to manage releases and PyPI publishing for `create-python-app`.
 >
+> **Last refreshed:** 2026-09-21 (post-v0.3.0)
+>
 > Read after the top-level [MAINTENANCE_RUNBOOK.md](./MAINTENANCE_RUNBOOK.md).
 
 ---
@@ -14,6 +16,8 @@
 - `create-awesome-python-app` — CLI entry point (`uvx create-awesome-python-app`)
 
 Releases are tag-triggered via GitHub Actions. No manual `uv publish` from a local machine unless you are performing an emergency break-glass procedure documented by maintainers.
+
+**Recent release cadence:** Two releases (v0.2.12 and v0.3.0) in ~3 months, with v0.3.0 (2026-09-10) shipping new CLI features (--json, --category, --config, --skip-install, Rich spinner, shell completion docs).
 
 Flow:
 
@@ -44,6 +48,11 @@ The `publish.yml` workflow uses PyPI **Trusted Publishing** via OIDC. Requiremen
 2. The workflow job must request `id-token: write` permission.
 3. The PyPI project must trust the GitHub environment (`pypi`) for this repository.
 4. Tags must match the expected pattern: `create-awesome-python-app@*`.
+5. Docker actions in the build matrix are current as of v0.3.0 release:
+   - `docker/setup-qemu-action@v4.3`
+   - `docker/setup-buildx-action@v4.3`
+   - `docker/login-action@v4.6`
+6. MegaLinter is v10+ in the publish CI gate (upgraded from v9).
 
 No long-lived `PYPI_TOKEN` secret is required when trusted publishing is configured.
 
@@ -74,6 +83,10 @@ Check:
 
 - Tag matches `create-awesome-python-app@*` filter in `publish.yml`.
 - Workflow file exists on the tagged commit.
+
+### 4.4 Docker CDN sync delays
+
+**Status (v0.3.0):** Verify whether the CDN race condition (slow Docker layer availability post-publish) has been resolved upstream. If layers are not immediately available after push, add an explicit wait in the workflow before consuming freshly-published images. This was a known issue in earlier releases; check the current state with your infrastructure team.
 
 ---
 
