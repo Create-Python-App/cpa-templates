@@ -77,7 +77,7 @@ If a version is missing, PyPI returns 404 or `uv pip index versions` omits it. T
 
 ### 3.1 In an extension
 
-1. Edit `extensions/<slug>/pyproject.toml` (partial manifest with only the keys the extension adds).
+1. Edit the dependency manifest that is copied into the generated project. Many extensions keep it at `extensions/<slug>/template/pyproject.toml`; some keep it at the extension root. These are partial manifests containing only the keys the extension adds.
 2. Use conservative ranges: `>=x.y.z,<next-major` or compatible caret-style bounds where appropriate.
 3. Avoid major-version bumps unless you have validated breaking changes.
 4. Re-scaffold the extension with each compatible template and run validation.
