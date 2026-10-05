@@ -4,7 +4,7 @@
 >
 > Read after the top-level [MAINTENANCE_RUNBOOK.md](./MAINTENANCE_RUNBOOK.md).
 >
-> **Last updated:** September 2026 | Covers: `cpa-templates` templates and extensions as of September 2026, including MLOps (sklearn, PyTorch, TensorFlow) and AI/LLM extensions.
+> **Last updated:** October 2026 | Covers: `cpa-templates` templates and extensions as of October 2026, including MLOps (sklearn, PyTorch, TensorFlow) and AI/LLM extensions.
 
 ---
 
@@ -139,6 +139,8 @@ dependencies = [
 
 **mlops-tensorflow-starter:** Same shared dependencies, plus `tensorflow-cpu>=2.16.0`.
 
+These starters declare dependency ranges in `pyproject.toml` and do not commit `uv.lock` files. `uv sync --all-groups` resolves the dependency graph for each starter, so audit each resolved environment independently instead of relying on a lockfile or the direct dependency list alone.
+
 **Audit considerations:**
 
 - NumPy and the framework stacks (PyTorch/TensorFlow) bring large transitive trees that evolve rapidly. Lower bounds do not cap vulnerable future versions; inspect the resolved environment when auditing.
@@ -147,14 +149,9 @@ dependencies = [
 - **Local audit:**
 
   ```bash
-  cd templates/mlops-sklearn-starter && uv sync --all-groups
-  uv run pip-audit
-
-  cd templates/mlops-pytorch-starter && uv sync --all-groups
-  uv run pip-audit
-
-  cd templates/mlops-tensorflow-starter && uv sync --all-groups
-  uv run pip-audit
+  (cd templates/mlops-sklearn-starter && uv sync --all-groups && uv run --with pip-audit pip-audit)
+  (cd templates/mlops-pytorch-starter && uv sync --all-groups && uv run --with pip-audit pip-audit)
+  (cd templates/mlops-tensorflow-starter && uv sync --all-groups && uv run --with pip-audit pip-audit)
   ```
 
 - **Coordinated fixes:** If a transitive dependency affects multiple MLOps templates, update every affected `pyproject.toml` in one PR and validate each resolved environment.
