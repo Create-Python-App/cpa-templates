@@ -137,10 +137,22 @@ Every task should follow these phases:
 
 ## 6. Repositories at a glance
 
-| Repo | What it is | Critical files | Critical CI |
-|---|---|---|---|
-| `create-python-app` | CLI + monorepo | `packages/*/pyproject.toml`, `.github/workflows/publish.yml` | `test.yml`, `lint.yml`, `type-check.yml`, `publish.yml`, `osv-scanner.yml` |
-| `cpa-templates` | Template/extension bank | `templates.json`, `templates.schema.json`, `templates/`, `extensions/`, `ci/profiles/` | `ci-integrity.yml`, `ci-templates.yml`, `ci-extensions.yml`, `ci-profiles.yml` |
+### `create-python-app`
+
+- **What it is:** CLI and monorepo, published as `create-awesome-python-app`.
+- **Critical files:** `packages/*/pyproject.toml`, `.github/workflows/`.
+- **Critical CI:** `test.yml`, `lint.yml`, `type-check.yml`, `mega-linter.yml`,
+  `osv-scanner.yml`, `prepare-release.yml`, `publish.yml`, `publish-docker.yml`,
+  `publish-aur.yml`, `notify-homebrew.yml`, `smoke-distribution.yml`, and
+  `scaffold-cross-platform.yml`.
+
+### `cpa-templates`
+
+- **What it is:** template and extension bank consumed by the CLI.
+- **Critical files:** `templates.json`, `templates.schema.json`, `templates/`,
+  `extensions/`, and `ci/profiles/`.
+- **Critical CI:** CI Integrity (L0), CI Templates (L1), CI Extensions (L2),
+  and CI Profiles (L3).
 
 ---
 
@@ -186,7 +198,7 @@ uv run ruff check .
 ## 8. Related documentation
 
 | File | Use |
-|---|---|
+| --- | --- |
 | [docs/ARCHITECTURE.md](./ARCHITECTURE.md) | How templates and extensions are composed |
 | [docs/AUTHORING.md](./AUTHORING.md) | File conventions, Jinja, `cpa.config.json`, `pyproject.toml` merge |
 | [docs/TESTING.md](./TESTING.md) | Local test commands |
@@ -195,15 +207,22 @@ uv run ruff check .
 | [docs/MAINTENANCE_SECURITY.md](./MAINTENANCE_SECURITY.md) | Security alerts, audits, Dependabot |
 | [docs/MAINTENANCE_CI.md](./MAINTENANCE_CI.md) | CI workflows, troubleshooting |
 | [docs/MAINTENANCE_RELEASE.md](./MAINTENANCE_RELEASE.md) | PyPI releases and tagging |
+| [docs/TEMPLATE_QUALITY_M1.md](./TEMPLATE_QUALITY_M1.md) | Minimum quality bar for templates |
+| [docs/TEMPLATE_QUALITY_MLOPS.md](./TEMPLATE_QUALITY_MLOPS.md) | MLOps template quality expectations |
+| [docs/MLOPS_CONTRACT.md](./MLOPS_CONTRACT.md) | Shared MLOps integration contract |
+| [docs/FUTURE_TEMPLATES.md](./FUTURE_TEMPLATES.md) | Candidate template roadmap |
+| [docs/AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md) | AI/ML catalog authoring guidance |
 
 ---
 
 ## 9. Runbook changelog
 
-| Date | Change | PR |
-|---|---|---|
-| 2026-07-16 | Initial CPA maintenance runbook suite (ported from cna-templates) | TBD |
-
-## AI/ML catalog
-
-- [AI_ML_AUTHORING.md](./AI_ML_AUTHORING.md)
+| Date | Change | PR / reference |
+| --- | --- | --- |
+| 2026-07-16 | Initial CPA maintenance runbook suite (ported from cna-templates) | [#42](https://github.com/Create-Python-App/cpa-templates/pull/42) |
+| 2026-07-26 | Add AI/ML authoring guidance | [#104](https://github.com/Create-Python-App/cpa-templates/pull/104) |
+| 2026-10-04 | Refresh maintenance and template quality guides | [#241](https://github.com/Create-Python-App/cpa-templates/pull/241) |
+| 2026-10-05 | Refresh security maintenance guide | [#244](https://github.com/Create-Python-App/cpa-templates/pull/244) |
+| 2026-10-06 | Clarify per-type canonical templates for L2 | Issue [#249](https://github.com/Create-Python-App/cpa-templates/issues/249), commit `9e94024` |
+| 2026-10-06 | Align release guide with current workflows | [#247](https://github.com/Create-Python-App/cpa-templates/pull/247) |
+| 2026-10-06 | Refresh CI inventory and documentation index | Closes #248 |
