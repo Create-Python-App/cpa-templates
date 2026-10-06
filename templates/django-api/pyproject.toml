@@ -8,7 +8,7 @@ dependencies = [
   "django>=6.1.1,<7.0",
   "djangorestframework>=3.18.1",
   "gunicorn>=26.2.0",
-  "python-dotenv>=1.2.3",
+  "python-dotenv>=1.2.4",
 ]
 
 [dependency-groups]
