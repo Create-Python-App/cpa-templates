@@ -2,7 +2,7 @@
 
 > How to manage releases and PyPI publishing for `create-python-app`.
 >
-> **Last refreshed:** 2026-09-21 (post-v0.3.0)
+> **Last refreshed:** 2026-10-05 (verified against `create-python-app` release workflows)
 >
 > Read after the top-level [MAINTENANCE_RUNBOOK.md](./MAINTENANCE_RUNBOOK.md).
 
@@ -15,44 +15,44 @@
 - `create-python-app-core` — scaffolding engine
 - `create-awesome-python-app` — CLI entry point (`uvx create-awesome-python-app`)
 
-Releases are tag-triggered via GitHub Actions. No manual `uv publish` from a local machine unless you are performing an emergency break-glass procedure documented by maintainers.
+Releases are prepared through the `Prepare release PR` workflow and published by the `Release` workflow in the [`create-python-app` monorepo](https://github.com/Create-Python-App/create-python-app). Do not run `uv publish` locally unless maintainers invoke a documented emergency break-glass procedure.
 
-**Recent release cadence:** Two releases (v0.2.12 and v0.3.0) in ~3 months, with v0.3.0 (2026-09-10) shipping new CLI features (--json, --category, --config, --skip-install, Rich spinner, shell completion docs).
+**Recent release cadence:** Three releases from 2026-07-28 through 2026-09-15 (v0.2.12, v0.3.0, and v0.3.1). Version 0.3.0 shipped CLI features (`--json`, `--category`, `--config`, `--skip-install`, Rich spinner, and shell completion docs); 0.3.1 was a maintenance release for Ruff and GitHub Actions updates.
 
 Flow:
 
-1. Merge fixes to `main`.
-2. Create and push a tag: `create-awesome-python-app@X.Y.Z`.
-3. The `Release` workflow builds wheels, creates a GitHub Release, and publishes to PyPI with OIDC trusted publishing.
+1. Run the `Prepare release PR` workflow with the version and release notes. It updates both package versions, the CLI's core dependency, and `CHANGELOG.md`.
+2. Review and merge the generated release PR after CI passes.
+3. Push the matching tag: `create-awesome-python-app@X.Y.Z`.
+4. The `Release` workflow builds both packages, creates the GitHub Release, and publishes them to PyPI with OIDC trusted publishing.
+5. After `Release` succeeds, Docker, AUR, and Homebrew distribution workflows run from `workflow_run`; verify those workflows and the distribution smoke tests.
 
 ---
 
 ## 2. Preparing a release
 
-Before tagging:
+Before preparing a release:
 
 1. Ensure `main` CI is green.
-2. Update version fields in `packages/create-awesome-python-app/pyproject.toml` and `packages/create-python-app-core/pyproject.toml` if not already bumped on `main`.
-3. Update CHANGELOG or release notes when the project maintains them.
+2. Run `Prepare release PR` with the proposed semantic version and release notes; the workflow updates both `pyproject.toml` files, the core version requirement in the CLI, and `CHANGELOG.md`.
+3. Review the generated diff, confirm the versions are consistent, and merge the PR before tagging.
 4. Confirm template catalog URLs in `cpa-templates` still resolve (templates are fetched from GitHub, not PyPI).
 
-Unlike the CNA Changesets flow, CPA currently uses explicit version bumps and tags. Follow existing repo conventions when that evolves.
+CPA uses an explicit release PR and tag, rather than Changesets. The release preparation workflow is the source of truth for version and changelog edits.
 
 ---
 
 ## 3. Publishing requirements
 
-The `publish.yml` workflow uses PyPI **Trusted Publishing** via OIDC. Requirements:
+The `publish.yml` workflow (named **Release**) uses PyPI **Trusted Publishing** via OIDC. Requirements:
 
 1. Every publishable `pyproject.toml` must declare correct project metadata and repository links.
 2. The workflow job must request `id-token: write` permission.
 3. The PyPI project must trust the GitHub environment (`pypi`) for this repository.
 4. Tags must match the expected pattern: `create-awesome-python-app@*`.
-5. Docker actions in the build matrix are current as of v0.3.0 release:
-   - `docker/setup-qemu-action@v4.3`
-   - `docker/setup-buildx-action@v4.3`
-   - `docker/login-action@v4.6`
-6. MegaLinter is v10+ in the publish CI gate (upgraded from v9).
+5. The separate `publish-docker.yml` workflow runs after the Release workflow succeeds. It waits until the package appears in PyPI's JSON API and simple index and its wheel URL responds, then builds the image. This wait handles the observed PyPI CDN/indexing delay; do not add an arbitrary fixed sleep.
+6. Docker actions are pinned by commit SHA in `publish-docker.yml`; check that workflow for the current versions. They are not part of the PyPI publish job.
+7. MegaLinter runs in its own CI workflow and is not a step in `publish.yml`. Require the repository's configured CI checks to pass before merging the release PR.
 
 No long-lived `PYPI_TOKEN` secret is required when trusted publishing is configured.
 
@@ -84,9 +84,9 @@ Check:
 - Tag matches `create-awesome-python-app@*` filter in `publish.yml`.
 - Workflow file exists on the tagged commit.
 
-### 4.4 Docker CDN sync delays
+### 4.4 PyPI indexing delay for Docker builds
 
-**Status (v0.3.0):** Verify whether the CDN race condition (slow Docker layer availability post-publish) has been resolved upstream. If layers are not immediately available after push, add an explicit wait in the workflow before consuming freshly-published images. This was a known issue in earlier releases; check the current state with your infrastructure team.
+`publish-docker.yml` starts only after the Release workflow succeeds and polls the PyPI JSON API, simple index, and wheel URL before building. If it times out, inspect those three checks in the run log and verify the package/version on PyPI before rerunning the workflow. The current workflow already handles the known indexing race; do not add a second wait without reproducing a remaining failure.
 
 ---
 
