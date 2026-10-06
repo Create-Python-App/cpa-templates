@@ -51,7 +51,7 @@ CI must always scaffold with **`uvx create-awesome-python-app@latest` from PyPI*
 |-------|----------|------------------|
 | **L0** | `ci-integrity.yml` | Registry paths exist; categories valid; curated profiles valid |
 | **L1** | `ci-templates.yml` | Every template scaffolds alone + `uv sync` + ruff (+ mypy/pyright when configured) + pytest |
-| **L2** | `ci-extensions.yml` | Each extension alone on the canonical template (`fastapi-starter`) |
+| **L2** | `ci-extensions.yml` | Each extension alone on the canonical template for each `type` it declares (`CANONICAL_TEMPLATE_BY_TYPE` in `scripts/ci/registry.py`) |
 | **L3** | `ci-profiles.yml` | Curated one-per-category stacks in `ci/profiles/*.json` |
 
 **Not run:** stacking every compatible extension at once (that is not a user journey and hides attribution).

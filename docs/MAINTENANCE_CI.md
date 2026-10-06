@@ -107,11 +107,15 @@ Matrix from `templates.json`. Each cell:
 
 ### L2 — Extensions
 
-One extension on `fastapi-starter` (canonical for `fastapi-backend`). On pull
-requests, the generator uses `--changed-only` unless `templates.json`,
-`scripts/ci/`, `ci/profiles/`, or `ci-*.yml` changes; those broad changes
-force a full matrix. Pushes to `main`, weekly runs, and manual dispatch use the
-full matrix.
+One extension on the canonical template for each `type` it declares, as mapped
+by `CANONICAL_TEMPLATE_BY_TYPE` in `scripts/ci/registry.py` (for example,
+`fastapi-backend` → `fastapi-starter`, `django-backend` → `django-api`,
+`mlops-pytorch` → `mlops-pytorch-starter`). Multi-type extensions get one cell
+per canonical template; a declared type missing from the map fails matrix
+generation, so new template types must be added there. On pull requests, the
+generator uses `--changed-only` unless `templates.json`, `scripts/ci/`,
+`ci/profiles/`, or `ci-*.yml` changes; those broad changes force a full
+matrix. Pushes to `main`, weekly runs, and manual dispatch use the full matrix.
 
 ### L3 — Profiles
 
