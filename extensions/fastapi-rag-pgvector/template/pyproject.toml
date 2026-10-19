@@ -1,5 +1,5 @@
 [project]
 dependencies = [
-    "pgvector>=0.5.0",
+    "pgvector>=0.5.1",
     "psycopg[binary]>=3.3.6",
 ]

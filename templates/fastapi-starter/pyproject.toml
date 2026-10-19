@@ -5,8 +5,8 @@ description = "FastAPI API starter scaffolded with create-awesome-python-app"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-  "fastapi>=0.142.2",
-  "pydantic-settings>=2.15.0",
+  "fastapi>=0.143.3",
+  "pydantic-settings>=2.16.0",
   "python-dotenv>=1.2.4",
   "uvicorn[standard]>=0.54.0",
 ]
