@@ -1,5 +1,5 @@
 [project]
 dependencies = [
-  "langchain-core>=1.7.6",
-  "langgraph>=1.2.20",
+  "langchain-core>=1.8.0",
+  "langgraph>=1.2.21",
 ]
